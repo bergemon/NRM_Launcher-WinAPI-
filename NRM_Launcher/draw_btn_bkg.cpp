@@ -111,10 +111,8 @@ void draw_active_button_background(HWND hWnd, HDC hDC)
 	GetClientRect(hWnd, rect);
 
 	HDC hMemDC = CreateCompatibleDC(hDC);
-	HBITMAP hOldBitmap = (HBITMAP)SelectObject(
-		hMemDC,
-		CreateCompatibleBitmap(hDC, rect->right, rect->bottom)
-	);
+	HBITMAP hBitmap = CreateCompatibleBitmap(hDC, rect->right, rect->bottom);
+	HBITMAP hOldBitmap = (HBITMAP)SelectObject(hMemDC, hBitmap);
 
 	// Need to translate, y = 0 starts from bottom
 	int32_t translated_yPos = MAIN_WINDOW_HEIGHT - btnPos.pos_y - btnPos.height;
@@ -179,6 +177,7 @@ void draw_active_button_background(HWND hWnd, HDC hDC)
 
 	BitBlt(hDC, 0, 0, background.GetWidth(), background.GetHeight(), hMemDC, 0, 0, SRCCOPY);
 
-	DeleteObject(SelectObject(hDC, hOldBitmap));
+	SelectObject(hDC, hOldBitmap);
+	DeleteObject(hBitmap);
 	DeleteDC(hMemDC);
 }

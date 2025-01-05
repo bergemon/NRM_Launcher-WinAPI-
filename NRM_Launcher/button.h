@@ -77,7 +77,9 @@ public:
 		BUTTON_TYPE btnType,
 		BUTTON_PROPERTIES props,
 		const char* bkgFileName = nullptr,
-		uint32_t exPadding = 0
+		uint32_t exPadding = 0,
+		uint32_t x = 0,
+		uint32_t y = 0
 	);
 
 	static LAUNCHER_BUTTONS& getButtonsClass()

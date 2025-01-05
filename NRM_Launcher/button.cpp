@@ -65,7 +65,9 @@ bool LAUNCHER_BUTTONS::create_button(
 	BUTTON_TYPE btnType,
 	BUTTON_PROPERTIES props,
 	const char* bkgFileName,
-	uint32_t exPadding
+	uint32_t exPadding,
+	uint32_t x,
+	uint32_t y
 )
 {
 	if (!m_initialized)
@@ -74,8 +76,22 @@ bool LAUNCHER_BUTTONS::create_button(
 		return false;
 	}
 
-	uint32_t x_coord = MAIN_WINDOW_WIDTH - props.width - BTNS_X_COORD_INVERT;
-	uint32_t y_coord = MAIN_WINDOW_HEIGHT - props.height - m_buttonsHeight;
+	uint32_t x_coord;
+	uint32_t y_coord;
+	bool std_btn = false;
+
+	if (!x)
+	{
+		x_coord = MAIN_WINDOW_WIDTH - props.width - BTNS_X_COORD_INVERT;
+		y_coord = MAIN_WINDOW_HEIGHT - props.height - m_buttonsHeight;
+		std_btn = true;
+	}
+	else
+	{
+		x_coord = x;
+		y_coord = y;
+	}
+
 	uint32_t width = props.width;
 	uint32_t height = props.height;
 	btnsBkgPaths[btnType] = { bkgFileName, x_coord, y_coord - exPadding, width, height };
@@ -88,7 +104,10 @@ bool LAUNCHER_BUTTONS::create_button(
 		width, height
 	);
 
-	m_buttonsHeight += props.height + 10 + exPadding;
+	if (std_btn)
+	{
+		m_buttonsHeight += props.height + BTNS_STD_PADDING + exPadding;
+	}
 
 	return true;
 }
@@ -167,6 +186,8 @@ LAUNCHER_BUTTONS::BUTTON::BUTTON(
 //====================================================================
 LAUNCHER_BUTTONS::BUTTON::~BUTTON()
 {
-	DeleteObject(m_hBtnWnd);
+	RemoveProp(m_hBtnWnd, TEXT("buttonType"));
+	DestroyWindow(m_hBtnWnd);
+	m_hBtnWnd = nullptr;
 }
 //====================================================================

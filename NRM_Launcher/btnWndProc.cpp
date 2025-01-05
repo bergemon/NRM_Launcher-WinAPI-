@@ -81,6 +81,8 @@ LRESULT CALLBACK LAUNCHER_BUTTONS::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, 
 		DestroyWindow(hWnd);
 		break;
 	case WM_DESTROY:
+		RemoveProp(hWnd, TEXT("BitmapBits"));
+		RemoveProp(hWnd, TEXT("InfoHeader"));
 		PostQuitMessage(0);
 		break;
 	default:

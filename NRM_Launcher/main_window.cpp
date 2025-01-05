@@ -32,6 +32,7 @@ MainWindow::MainWindow(
 	HICON hIcon = LoadIconW(hInstance, MAKEINTRESOURCE(IDI_NRMICON));
 	if (!hIcon) {
 		MessageBox(NULL, L"Can not load icon", L"Error", MB_OK);
+		return;
 	}
 
 	window_class->cbSize = sizeof(*window_class);
@@ -91,6 +92,8 @@ MainWindow::MainWindow(
 		NULL
 	);
 
+	DeleteObject(window_class->hbrBackground);
+	DestroyIcon(hIcon);
 	free(window_class);
 	free(desktopRect);
 
@@ -106,5 +109,7 @@ MainWindow::MainWindow(
 //====================================================================
 MainWindow::~MainWindow()
 {
+	DestroyWindow(m_hMainWnd);
+	m_hMainWnd = nullptr;
 }
 //====================================================================

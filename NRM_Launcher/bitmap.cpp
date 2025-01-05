@@ -10,9 +10,22 @@ CUSTOM_BITMAP::CUSTOM_BITMAP()
 //====================================================================
 CUSTOM_BITMAP::~CUSTOM_BITMAP()
 {
-	if (m_pInfoHead) delete[] m_pInfoHead;
-	if (m_aBitmapBits) delete[] m_aBitmapBits;
-	if (m_outFile) m_outFile.close();
+	if (m_pInfoHead)
+	{
+		delete[] m_pInfoHead;
+	}
+	if (m_aBitmapBits)
+	{
+		delete[] m_aBitmapBits;
+	}
+	if (m_inpFile.is_open())
+	{
+		m_outFile.close();
+	}
+	if (m_outFile.is_open())
+	{
+		m_outFile.close();
+	}
 }
 //====================================================================
 BOOL CUSTOM_BITMAP::CreateDib24(int w, int h, const char* fileName)
