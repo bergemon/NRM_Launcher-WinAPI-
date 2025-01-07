@@ -83,6 +83,7 @@ bool CUSTOM_BITMAP::CreateBkgMask()
 
 		while (iter < m_imageSize - modImageSize)
 		{
+			// Bytes alignment
 			uint32_t modBytesPerLine = m_bytesPerLine % 3;
 			if (iter == (m_bytesPerLine - modBytesPerLine))
 			{

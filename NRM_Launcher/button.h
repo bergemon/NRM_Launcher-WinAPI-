@@ -2,7 +2,10 @@
 #include <windows.h>
 #include <cstdint>
 #include <string>
+#include <shellapi.h>
+#include "const.h"
 #include "stdlib.h"
+#include "settings_parser.h"
 
 //====================================================================
 struct BUTTON_PROPERTIES

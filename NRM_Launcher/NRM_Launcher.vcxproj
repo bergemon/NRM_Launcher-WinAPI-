@@ -132,18 +132,25 @@
     <ClCompile Include="bitmap.cpp" />
     <ClCompile Include="btnWndProc.cpp" />
     <ClCompile Include="button.cpp" />
+    <ClCompile Include="clear_cache.cpp" />
     <ClCompile Include="create_buttons.cpp" />
+    <ClCompile Include="create_process.cpp" />
     <ClCompile Include="draw_btn_bkg.cpp" />
     <ClCompile Include="mainWndProc.cpp" />
     <ClCompile Include="main_window.cpp" />
     <ClCompile Include="main_wrap.cpp" />
+    <ClCompile Include="settings_parser.cpp" />
     <ClCompile Include="win_main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bitmap.h" />
     <ClInclude Include="button.h" />
+    <ClInclude Include="clear_cache.h" />
     <ClInclude Include="const.h" />
+    <ClInclude Include="create_process.h" />
+    <ClInclude Include="defines.h" />
     <ClInclude Include="main_window.h" />
+    <ClInclude Include="settings_parser.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdlib.h" />
   </ItemGroup>

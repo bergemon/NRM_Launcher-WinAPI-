@@ -1,4 +1,5 @@
 #pragma once
+#include "defines.h"
 #include <cstdint>
 #include <string>
 
@@ -21,9 +22,13 @@
 #define BTN_DISCORD_X_COORD 40
 #define BTN_DISCORD_Y_COORD 400
 
+// Play button
+#define VIC_EXE_NAME "vic2.exe"
+
 // File paths
 #define APP_DIR "launcher"
 #define SLH "\\"
+#define GAME_PATH "game"
 #define MASK_PREFIX "mask_"
 #define MASK_PREFIX_LENGTH 5
 #define ACTIVE_PREFIX "active_"
@@ -43,3 +48,14 @@
 #define BKG_BUTTON_SETTINGS "settings.bmp"
 #define BKG_BUTTON_DOWNLOAD "download.bmp"
 #define BKG_BUTTON_DISCORD "discord.bmp"
+
+// Settings file
+#define SETTINGS "settings"
+#define SETTINGS_HEAD "NRM_LAUNCHER_SETTINGS"
+#define SETTINGS_LINE_TERMINATE ";"
+#define SETTINGS_DATA_LINES 2
+#define SETTINGS_LINE_MAX_LENGTH 200
+
+// Utility
+#define TO_W_STRING(quote) __to_wide_str(quote)
+#define __to_wide_str(quote) L##quote

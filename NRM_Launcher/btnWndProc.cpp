@@ -1,4 +1,6 @@
 #include "button.h"
+#include "clear_cache.h"
+#include "create_process.h"
 
 //====================================================================
 void draw_button_background(HWND hWnd, HDC hDC);
@@ -42,8 +44,37 @@ LRESULT CALLBACK LAUNCHER_BUTTONS::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, 
 		switch (*btnType)
 		{
 		case BUTTON_TYPE::BTN_EXIT:
+		{
 			SendMessage(GetParent(hWnd), WM_CLOSE, 0, 0);
 			break;
+		}
+		case BUTTON_TYPE::BTN_DISCORD:
+		{
+			try
+			{
+				std::wstring link = settings_find_line(L"discord_link:");
+				if ((int32_t)ShellExecute(NULL, L"open", link.c_str(), NULL, NULL, SW_SHOW) <= 32)
+				{
+					MessageBox(GetParent(hWnd), TEXT("Can not open link"), TEXT("Discord button error"), MB_OK);
+				}
+			}
+			catch (std::exception& e)
+			{
+				MessageBoxA(GetParent(hWnd), e.what(), "Discord button error", MB_OK);
+			}
+
+			break;
+		}
+		case BUTTON_TYPE::BTN_PLAY:
+			try
+			{
+				//clear_cache();
+				create_process();
+			}
+			catch (std::exception& e)
+			{
+				MessageBoxA(GetParent(hWnd), e.what(), "Play button error", MB_OK);
+			}
 		}
 
 		btnType = nullptr;
