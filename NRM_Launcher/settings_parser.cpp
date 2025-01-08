@@ -39,7 +39,7 @@
 		// Codepage must be UTF-16 LE BOM
 		if (!checked_bom)
 		{
-			if (buffer[0] != (wchar_t)0xfeff)
+			if (HIBYTE(buffer[0]) != (wchar_t)0xfe || LOBYTE(buffer[0]) != (wchar_t)0xff)
 			{
 				throw std::exception("Invalid codepage, must be UTF-16 LE");
 			}
@@ -134,11 +134,9 @@
 				{
 					// Every settings line except first must be ended by ";" symbol
 					if (
-						line.rfind(
-							TO_W_STRING(SETTINGS_LINE_TERMINATE))
-							!=
-							(line.size() - std::wstring(TO_W_STRING(SETTINGS_LINE_TERMINATE)).size() - 1)
-						)
+						line.rfind(TO_W_STRING(SETTINGS_LINE_TERMINATE))
+						!= line.size() - std::wstring(TO_W_STRING(SETTINGS_LINE_TERMINATE)).size() - 1
+					)
 					{
 						throw std::exception("Invalid settings data");
 					}

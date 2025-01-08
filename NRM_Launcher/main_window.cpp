@@ -43,7 +43,7 @@ MainWindow::MainWindow(
 	window_class->hInstance = hInstance;
 	window_class->hIcon = hIcon;
 	window_class->hIconSm = hIcon;
-	window_class->hCursor = LoadCursorW(NULL, IDC_ARROW);
+	window_class->hCursor = LoadCursor(hInstance, MAKEINTRESOURCE(IDC_CURSOR_NORMAL));
 	window_class->hbrBackground = (HBRUSH)CreateSolidBrush(RGB(255, 255, 255));
 	window_class->cbClsExtra = 0;
 	window_class->cbWndExtra = 0;

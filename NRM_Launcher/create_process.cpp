@@ -1,7 +1,7 @@
 #include "create_process.h"
 
 // This function can throw an exception!
-[[nodiscard]] void create_process()
+void create_process()
 {
 	namespace fs = std::filesystem;
 
@@ -11,9 +11,15 @@
 	std::string nCmd = "";
 
 	fs::path originalPath(fs::current_path());
-	fs::path cPath(fs::current_path());
-	cPath += GAME_PATH SLH;
-	fs::current_path(cPath);
+	fs::path game_path(fs::current_path());
+	game_path += SLH GAME_PATH;
+
+	if (!fs::exists(game_path))
+	{
+		throw std::exception("Game path does not exist");
+	}
+
+	fs::current_path(game_path);
 
 	bool result = CreateProcessA(
 		VIC_EXE_NAME,
@@ -27,12 +33,13 @@
 		&startUpInfo,
 		&processInfo
 	);
-	fs::current_path(originalPath);
 
 	if (!result)
 	{
-		throw std::exception("Can not create vic2 process");
+		throw std::exception("Can not create victoria 2 process");
 	}
+
+	fs::current_path(originalPath);
 
 	CloseHandle(processInfo.hProcess);
 	CloseHandle(processInfo.hThread);

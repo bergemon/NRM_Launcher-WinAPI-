@@ -4,4 +4,4 @@
 #include <string>
 #include "const.h"
 
-[[nodiscard]] void create_process() throw (std::exception);
+void create_process() throw (std::exception);

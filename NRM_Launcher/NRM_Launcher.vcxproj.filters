@@ -123,5 +123,28 @@
     <Image Include="..\..\NRM-Launcher\NrmLauncher\NRM.ico">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="resources\NRM.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\Games\Victoria 2 NRM v1.30.1\game\gfx\cursors\normal.cur">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\Games\Victoria 2 NRM v1.30.1\game\gfx\cursors\selected.cur">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resources\normal.cur">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resources\selected.cur">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\Games\Victoria 2 NRM v1.30.1\game\gfx\cursors\objective.cur">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\Games\Victoria 2 NRM v1.30.1\game\gfx\cursors\exploration.CUR">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -45,7 +45,7 @@ void LAUNCHER_BUTTONS::initialize(
 	window_class->hInstance = (HINSTANCE)GetWindowLongPtr(m_parent, GWLP_HINSTANCE);
 	window_class->hIcon = NULL;
 	window_class->hIconSm = NULL;
-	window_class->hCursor = LoadCursorW(NULL, IDC_HAND);
+	window_class->hCursor = LoadCursor(GetModuleHandle(NULL), MAKEINTRESOURCE(IDC_CURSOR_SELECTED));
 	window_class->hbrBackground = (HBRUSH)CreateSolidBrush(RGB(255, 255, 255));
 	window_class->cbClsExtra = 0;
 	window_class->cbWndExtra = 0;

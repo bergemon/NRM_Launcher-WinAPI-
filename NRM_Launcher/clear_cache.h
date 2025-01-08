@@ -3,4 +3,4 @@
 #include <filesystem>
 #include <string>
 
-[[nodiscard]] bool clear_cache() throw (std::exception);
+void clear_cache() throw (std::exception);

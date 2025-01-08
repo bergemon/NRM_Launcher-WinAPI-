@@ -1,11 +1,17 @@
 #include "clear_cache.h"
 
 // This function can throw en exception!
-[[nodiscard]] bool clear_cache()
+void clear_cache()
 {
 	namespace fs = std::filesystem;
 
 	char* docs_path = (char*)malloc(MAX_PATH);
+
+	if (!docs_path)
+	{
+		throw std::exception("Can not allocate memory for path buffer");
+	}
+
 	docs_path[MAX_PATH - 1] = '\0';
 
 	HRESULT res = SHGetFolderPathA(
@@ -18,21 +24,33 @@
 
 	if (res != S_OK)
 	{
-		return false;
+		throw std::exception("Can not get current user documents folder");
 	}
 
-	std::string end_path = docs_path;
+	std::string mapFolderPath = docs_path;
+	std::string flagsFolderPath = docs_path;
 	free(docs_path);
-	end_path.append("\\Paradox Interactive\\Victoria II\\map");
 
-	fs::path cache_path(end_path);
-	if (fs::exists(cache_path))
+	mapFolderPath.append("\\Paradox Interactive\\Victoria II\\map");
+	flagsFolderPath.append("\\Paradox Interactive\\Victoria II\\gfx");
+
+	fs::path map_cache_path(mapFolderPath);
+	fs::path flags_cache_path(flagsFolderPath);
+
+	if (fs::exists(map_cache_path) || fs::exists(flags_cache_path))
 	{
-		bool delete_res = fs::remove_all(cache_path);
+		bool delete_res = fs::remove_all(map_cache_path);
 		
-		if (fs::exists(cache_path) || !delete_res)
+		if (fs::exists(map_cache_path) || !delete_res)
 		{
-			throw std::exception("Can not delete cache directory");
+			throw std::exception("Can not delete map cache directory");
+		}
+
+		delete_res = fs::remove_all(flags_cache_path);
+
+		if (fs::exists(flags_cache_path) || !delete_res)
+		{
+			throw std::exception("Can not delete flags cache directory");
 		}
 	}
 }

@@ -43,6 +43,36 @@ LRESULT CALLBACK LAUNCHER_BUTTONS::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, 
 
 		switch (*btnType)
 		{
+		case BUTTON_TYPE::BTN_PLAY:
+		{
+			try
+			{
+				// Clear cache
+				clear_cache();
+				// Then start a game
+				create_process();
+			}
+			catch (std::exception& e)
+			{
+				MessageBoxA(GetParent(GetParent(hWnd)), e.what(), "Play button error", MB_OK);
+			}
+			break;
+		}
+		case BUTTON_TYPE::BTN_DOWNLOAD:
+		{
+			MessageBox(GetParent(hWnd), TEXT("Button has no functionality yet"), TEXT("Work in progress"), MB_OK);
+			break;
+		}
+		case BUTTON_TYPE::BTN_SETTINGS:
+		{
+			MessageBox(GetParent(hWnd), TEXT("Button has no functionality yet"), TEXT("Work in progress"), MB_OK);
+			break;
+		}
+		case BUTTON_TYPE::BTN_SUBMODS:
+		{
+			MessageBox(GetParent(hWnd), TEXT("Button has no functionality yet"), TEXT("Work in progress"), MB_OK);
+			break;
+		}
 		case BUTTON_TYPE::BTN_EXIT:
 		{
 			SendMessage(GetParent(hWnd), WM_CLOSE, 0, 0);
@@ -65,18 +95,7 @@ LRESULT CALLBACK LAUNCHER_BUTTONS::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, 
 
 			break;
 		}
-		case BUTTON_TYPE::BTN_PLAY:
-			try
-			{
-				//clear_cache();
-				create_process();
-			}
-			catch (std::exception& e)
-			{
-				MessageBoxA(GetParent(hWnd), e.what(), "Play button error", MB_OK);
-			}
 		}
-
 		btnType = nullptr;
 		break;
 	}
