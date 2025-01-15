@@ -47,9 +47,6 @@ LRESULT CALLBACK MainWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM
 		EndPaint(hWnd, &ps);
 		break;
 	}
-	case WM_CLOSE:
-		DestroyWindow(hWnd);
-		break;
 	case WM_KEYUP:
 	{
 		if (wParam == VK_ESCAPE)
@@ -58,6 +55,9 @@ LRESULT CALLBACK MainWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM
 		}
 		break;
 	}
+	case WM_CLOSE:
+		DestroyWindow(hWnd);
+		break;
 	case WM_DESTROY:
 		RemoveProp(hWnd, TEXT("BitmapBits"));
 		RemoveProp(hWnd, TEXT("InfoHeader"));

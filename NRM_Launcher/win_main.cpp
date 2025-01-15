@@ -50,7 +50,7 @@ int WINAPI MyWinMain(_In_ HINSTANCE hInstance, _In_ LPSTR lpCmdLine, _In_ int nC
 			// Window class
 			TEXT("SubmodsModal"),
 			// Titlebar text
-			TEXT("Choose submods to play"),
+			TEXT("Select submods to play"),
 			// hInstance & Cmd
 			hInstance, nCmdShow,
 			// Menu

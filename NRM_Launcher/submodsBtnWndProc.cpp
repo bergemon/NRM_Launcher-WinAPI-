@@ -76,10 +76,10 @@ LRESULT CALLBACK SUBMODS_BUTTONS::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 	}
 	case WM_CLOSE:
 		DestroyWindow(hWnd);
-		return 0;
+		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
-		break;
+		return 0;
 	default:
 		return DefWindowProc(hWnd, uMsg, wParam, lParam);
 	}

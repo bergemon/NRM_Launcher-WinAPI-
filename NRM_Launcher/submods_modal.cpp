@@ -63,7 +63,7 @@ void SUBMODS_MODAL_WINDOW::initialize(
 		// Window title
 		windowTitle,
 		// Window styles
-		WS_POPUP | WS_BORDER,
+		WS_POPUP | WS_BORDER | WS_CAPTION | WS_SYSMENU,
 		// Destination x & y
 		CW_USEDEFAULT, 0,
 		// Window width, height

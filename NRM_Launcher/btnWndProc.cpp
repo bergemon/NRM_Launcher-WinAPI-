@@ -55,7 +55,7 @@ LRESULT CALLBACK LAUNCHER_BUTTONS::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, 
 			}
 			catch (std::exception& e)
 			{
-				MessageBoxA(GetParent(GetParent(hWnd)), e.what(), "Play button error", MB_OK);
+				MessageBoxA(GetParent(hWnd), e.what(), "Play button error", MB_OK);
 			}
 			break;
 		}
@@ -73,7 +73,6 @@ LRESULT CALLBACK LAUNCHER_BUTTONS::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, 
 		{
 			SUBMODS_MODAL_WINDOW& submods_modal = SUBMODS_MODAL_WINDOW::getInstance();
 			submods_modal.show();
-			//MessageBox(GetParent(hWnd), TEXT("Button has no functionality yet"), TEXT("Work in progress"), MB_OK);
 			break;
 		}
 		case BUTTON_TYPE::BTN_EXIT:

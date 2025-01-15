@@ -84,7 +84,7 @@ void MainWindow::initialize(
 		// Window title
 		windowTitle,
 		// Window styles
-		WS_BORDER | WS_VISIBLE | WS_CAPTION | WS_MINIMIZEBOX,
+		WS_BORDER | WS_VISIBLE | WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
 		// Destination
 		(desktopRect->right - width) / 2,
 		(desktopRect->bottom - height) / 2,

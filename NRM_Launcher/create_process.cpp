@@ -1,7 +1,7 @@
 #include "create_process.h"
 
 // This function can throw an exception!
-void create_process()
+void create_process() throw (std::exception)
 {
 	namespace fs = std::filesystem;
 
