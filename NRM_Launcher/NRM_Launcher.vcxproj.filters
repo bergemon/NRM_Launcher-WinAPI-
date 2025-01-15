@@ -43,6 +43,21 @@
     <Filter Include="Source Files\settings_parser">
       <UniqueIdentifier>{fede9358-c5b5-49e9-abcb-99711bb827a1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\actions">
+      <UniqueIdentifier>{cd8b48a4-4362-4d2e-9332-249a7628a8a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\actions">
+      <UniqueIdentifier>{a126f9f6-2d3a-4105-9186-dd811f1675c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\submods_modal">
+      <UniqueIdentifier>{43fe7f78-3f87-49d3-934c-49a2a8ff802f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\submods_modal">
+      <UniqueIdentifier>{6ef22cb4-1249-42e8-88ca-e7b4c66e75d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\submods_modal\buttons">
+      <UniqueIdentifier>{23957450-129c-40bb-9ab0-ae40e52a7baf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="win_main.cpp">
@@ -75,11 +90,32 @@
     <ClCompile Include="settings_parser.cpp">
       <Filter>Source Files\settings_parser</Filter>
     </ClCompile>
-    <ClCompile Include="clear_cache.cpp">
+    <ClCompile Include="get_file_path.cpp">
       <Filter>Source Files\utils</Filter>
     </ClCompile>
     <ClCompile Include="create_process.cpp">
-      <Filter>Source Files\utils</Filter>
+      <Filter>Source Files\actions</Filter>
+    </ClCompile>
+    <ClCompile Include="clear_cache.cpp">
+      <Filter>Source Files\actions</Filter>
+    </ClCompile>
+    <ClCompile Include="submods_modal.cpp">
+      <Filter>Source Files\submods_modal</Filter>
+    </ClCompile>
+    <ClCompile Include="submodsWndProc.cpp">
+      <Filter>Source Files\submods_modal</Filter>
+    </ClCompile>
+    <ClCompile Include="submods_buttons.cpp">
+      <Filter>Source Files\submods_modal\buttons</Filter>
+    </ClCompile>
+    <ClCompile Include="submods_modal_create_buttons.cpp">
+      <Filter>Source Files\submods_modal\buttons</Filter>
+    </ClCompile>
+    <ClCompile Include="submodsBtnWndProc.cpp">
+      <Filter>Source Files\submods_modal\buttons</Filter>
+    </ClCompile>
+    <ClCompile Include="draw_submods_btn_background.cpp">
+      <Filter>Source Files\submods_modal\buttons</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -107,11 +143,20 @@
     <ClInclude Include="defines.h">
       <Filter>Header Files\constants</Filter>
     </ClInclude>
-    <ClInclude Include="clear_cache.h">
+    <ClInclude Include="get_file_path.h">
       <Filter>Header Files\utils</Filter>
     </ClInclude>
     <ClInclude Include="create_process.h">
-      <Filter>Header Files\utils</Filter>
+      <Filter>Header Files\actions</Filter>
+    </ClInclude>
+    <ClInclude Include="clear_cache.h">
+      <Filter>Header Files\actions</Filter>
+    </ClInclude>
+    <ClInclude Include="submods_modal.h">
+      <Filter>Header Files\submods_modal</Filter>
+    </ClInclude>
+    <ClInclude Include="submods_buttons.h">
+      <Filter>Header Files\submods_modal</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

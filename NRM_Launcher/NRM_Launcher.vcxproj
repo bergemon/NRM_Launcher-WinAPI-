@@ -136,10 +136,17 @@
     <ClCompile Include="create_buttons.cpp" />
     <ClCompile Include="create_process.cpp" />
     <ClCompile Include="draw_btn_bkg.cpp" />
+    <ClCompile Include="draw_submods_btn_background.cpp" />
+    <ClCompile Include="get_file_path.cpp" />
     <ClCompile Include="mainWndProc.cpp" />
     <ClCompile Include="main_window.cpp" />
     <ClCompile Include="main_wrap.cpp" />
     <ClCompile Include="settings_parser.cpp" />
+    <ClCompile Include="submodsBtnWndProc.cpp" />
+    <ClCompile Include="submodsWndProc.cpp" />
+    <ClCompile Include="submods_buttons.cpp" />
+    <ClCompile Include="submods_modal.cpp" />
+    <ClCompile Include="submods_modal_create_buttons.cpp" />
     <ClCompile Include="win_main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -149,10 +156,13 @@
     <ClInclude Include="const.h" />
     <ClInclude Include="create_process.h" />
     <ClInclude Include="defines.h" />
+    <ClInclude Include="get_file_path.h" />
     <ClInclude Include="main_window.h" />
     <ClInclude Include="settings_parser.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdlib.h" />
+    <ClInclude Include="submods_buttons.h" />
+    <ClInclude Include="submods_modal.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc" />

@@ -1,4 +1,5 @@
 ﻿#include "bitmap.h"
+#include "get_file_path.h"
 
 CUSTOM_BITMAP::CUSTOM_BITMAP()
 {
@@ -51,7 +52,7 @@ BOOL CUSTOM_BITMAP::CreateDib24(int w, int h, const char* fileName)
 	else return TRUE;
 }
 //====================================================================
-bool CUSTOM_BITMAP::CreateBkgMask()
+bool CUSTOM_BITMAP::CreateBkgMask(void(*mask_path)(std::string&))
 {
 	struct RGB
 	{
@@ -60,9 +61,14 @@ bool CUSTOM_BITMAP::CreateBkgMask()
 		uint8_t blue;
 	};
 
+	// Cut file name from path
+	std::string file_name = m_fileName.c_str();
+	cut_filename_from_btn_path(file_name);
+
+	// Get full mask path of the background
 	std::string mask_name;
-	mask_name.append(APP_DIR).append(SLH).append(MASK_PREFIX)
-	.append(m_fileName.substr(m_fileName.find("\\") + 1, m_fileName.size() - std::string(APP_DIR "\\").size()));
+	mask_path(mask_name);
+	mask_name.append(file_name);
 
 	std::filesystem::path mask_file = mask_name.c_str();
 	
@@ -179,3 +185,4 @@ void CUSTOM_BITMAP::StoreDib24()
 	m_outFile.write((char*)&m_infoHead, m_infoHeadSize);
 	m_outFile.write((char*)m_aBitmapBits, m_imageSize);
 }
+//====================================================================

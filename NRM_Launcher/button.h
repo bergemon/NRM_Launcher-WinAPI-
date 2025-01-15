@@ -16,7 +16,7 @@ struct BUTTON_PROPERTIES
 //====================================================================
 struct BUTTON_POSITION
 {
-	std::string btnBkgPath = "";
+	std::string btnBkgName = "";
 	uint32_t pos_x = 0;
 	uint32_t pos_y = 0;
 	uint32_t width = 0;
@@ -38,13 +38,13 @@ class LAUNCHER_BUTTONS
 public:
 
 	//====================================================================
-	// Class customButton for each button
+	// Class for each button
 	class BUTTON
 	{
 	public:
 		BUTTON(
-			HWND m_parent,
-			std::wstring_view m_className,
+			HWND parent,
+			std::wstring_view className,
 			BUTTON_TYPE btnType,
 			int nCmdShow,
 			uint32_t x = CW_USEDEFAULT,
@@ -85,7 +85,7 @@ public:
 		uint32_t y = 0
 	);
 
-	static LAUNCHER_BUTTONS& getButtonsClass()
+	static LAUNCHER_BUTTONS& getInstance()
 	{
 		static LAUNCHER_BUTTONS btns;
 		return btns;
@@ -96,10 +96,10 @@ private:
 	LAUNCHER_BUTTONS(const LAUNCHER_BUTTONS&) = delete;
 	LAUNCHER_BUTTONS operator=(const LAUNCHER_BUTTONS&) = delete;
 
-	static bool m_initialized;
+	bool m_initialized = false;
 	uint32_t m_buttonsHeight = 70;
 	std::wstring m_className;
-	static int m_nCmdShow;
+	int m_nCmdShow;
 	HWND m_parent;
 	std::list<BUTTON> m_Vbuttons;
 };

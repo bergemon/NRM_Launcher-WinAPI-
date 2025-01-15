@@ -1,5 +1,6 @@
 #include "button.h"
 #include "bitmap.h"
+#include "get_file_path.h"
 
 //====================================================================
 std::map<uint32_t, BUTTON_POSITION> btnsBkgPaths;
@@ -7,27 +8,29 @@ std::map<uint32_t, BUTTON_POSITION> btnsBkgPaths;
 void draw_button_background(HWND hWnd, HDC hDC)
 {
 	uint32_t* btnType = (uint32_t*)GetProp(hWnd, TEXT("buttonType"));
-	BUTTON_POSITION btnPos;
-	std::string bkgPath = "";
+	BUTTON_POSITION btnInfo;
+	std::string bkgPath;
+
 	try
 	{
-		btnPos = btnsBkgPaths.at(*btnType);
-		bkgPath = btnPos.btnBkgPath.c_str();
+		btnInfo = btnsBkgPaths.at(*btnType);
+		get_button_bkg_path(bkgPath);
+		bkgPath.append(btnInfo.btnBkgName.c_str());
 	}
 	catch (std::out_of_range& e)
 	{
-		btnPos.pos_x = 0;
-		btnPos.pos_y = 0;
-		btnPos.width = 0;
-		btnPos.height = 0;
+		btnInfo.pos_x = 0;
+		btnInfo.pos_y = 0;
+		btnInfo.width = 0;
+		btnInfo.height = 0;
 		bkgPath = "";
 	}
 
 	// Need to translate, y = 0 starts from bottom
-	int32_t translated_yPos = MAIN_WINDOW_HEIGHT - btnPos.pos_y - btnPos.height;
+	int32_t translated_yPos = MAIN_WINDOW_HEIGHT - btnInfo.pos_y - btnInfo.height;
 	StretchDIBits(
-		hDC, 0, 0, btnPos.width, btnPos.height,
-		btnPos.pos_x, translated_yPos, btnPos.width, btnPos.height,
+		hDC, 0, 0, btnInfo.width, btnInfo.height,
+		btnInfo.pos_x, translated_yPos, btnInfo.width, btnInfo.height,
 		GetProp(GetParent(hWnd), TEXT("BitmapBits")),
 		(BITMAPINFO*)GetProp(GetParent(hWnd), TEXT("InfoHeader")),
 		DIB_RGB_COLORS, SRCCOPY
@@ -43,13 +46,16 @@ void draw_button_background(HWND hWnd, HDC hDC)
 
 	CUSTOM_BITMAP background;
 	background.LoadFromFile(bkgPath.c_str());
-	if (!background.CreateBkgMask())
+	if (!background.CreateBkgMask(get_button_mask_path))
 	{
 		MessageBox(hWnd, TEXT("Can not create mask for a button background"), TEXT("Error"), 0);
 	}
 
-	std::string maskPath = APP_DIR SLH MASK_PREFIX;
-	maskPath.append(bkgPath.substr(bkgPath.find("\\") + 1, bkgPath.size() - 1 - bkgPath.find("\\")));
+	std::string maskPath;
+	get_button_mask_path(maskPath);
+	maskPath.append(btnInfo.btnBkgName.c_str());
+
+	// First draw mask, then background
 	CUSTOM_BITMAP mask_bkg;
 	mask_bkg.LoadFromFile(maskPath.c_str());
 	mask_bkg.Draw(
@@ -65,7 +71,6 @@ void draw_button_background(HWND hWnd, HDC hDC)
 		// Raster-operation code
 		SRCAND
 	);
-
 	background.Draw(
 		hDC,
 		// Destination x and y
@@ -86,19 +91,19 @@ void draw_button_background(HWND hWnd, HDC hDC)
 void draw_active_button_background(HWND hWnd, HDC hDC)
 {
 	uint32_t* btnType = (uint32_t*)GetProp(hWnd, TEXT("buttonType"));
-	BUTTON_POSITION btnPos;
-	std::string bkgPath = "";
+	BUTTON_POSITION btnInfo;
+	std::string bkgPath;
+
 	try
 	{
-		btnPos = btnsBkgPaths.at(*btnType);
-		bkgPath = btnPos.btnBkgPath.c_str();
+		btnInfo = btnsBkgPaths.at(*btnType);
 	}
 	catch (std::out_of_range& e)
 	{
-		btnPos.pos_x = 0;
-		btnPos.pos_y = 0;
-		btnPos.width = 0;
-		btnPos.height = 0;
+		btnInfo.pos_x = 0;
+		btnInfo.pos_y = 0;
+		btnInfo.width = 0;
+		btnInfo.height = 0;
 		bkgPath = "";
 	}
 
@@ -115,36 +120,28 @@ void draw_active_button_background(HWND hWnd, HDC hDC)
 	HBITMAP hOldBitmap = (HBITMAP)SelectObject(hMemDC, hBitmap);
 
 	// Need to translate, y = 0 starts from bottom
-	int32_t translated_yPos = MAIN_WINDOW_HEIGHT - btnPos.pos_y - btnPos.height;
+	int32_t translated_yPos = MAIN_WINDOW_HEIGHT - btnInfo.pos_y - btnInfo.height;
 	StretchDIBits(
-		hMemDC, 0, 0, btnPos.width, btnPos.height,
-		btnPos.pos_x, translated_yPos, btnPos.width, btnPos.height,
+		hMemDC, 0, 0, btnInfo.width, btnInfo.height,
+		btnInfo.pos_x, translated_yPos, btnInfo.width, btnInfo.height,
 		GetProp(GetParent(hWnd), TEXT("BitmapBits")),
 		(BITMAPINFO*)GetProp(GetParent(hWnd), TEXT("InfoHeader")),
 		DIB_RGB_COLORS, SRCCOPY
 	);
 
+	// Get button active background path
+	get_button_active_bkg_path(bkgPath);
+	bkgPath.append(btnInfo.btnBkgName.c_str());
+
 	CUSTOM_BITMAP background;
-	bkgPath = APP_DIR;
-	bkgPath.append(SLH)
-		.append(BTN_PREFIX)
-		.append(ACTIVE_PREFIX)
-		.append(
-			btnPos.btnBkgPath.substr(
-				btnPos.btnBkgPath.find("\\") + 1 + BTN_PREFIX_LENGTH,
-				btnPos.btnBkgPath.size() - 1 - btnPos.btnBkgPath.find("\\") - BTN_PREFIX_LENGTH
-			)
-		);
 	background.LoadFromFile(bkgPath.c_str());
 
-	std::string maskPath = APP_DIR SLH MASK_PREFIX BTN_PREFIX;
-	maskPath.append(
-		bkgPath.substr(
-			bkgPath.find("\\") + 1 + BTN_PREFIX_LENGTH + ACTIVE_PREFIX_LENGTH,
-			bkgPath.size() - 1 - bkgPath.find("\\") - BTN_PREFIX_LENGTH - ACTIVE_PREFIX_LENGTH
-		)
-	);
+	// Get button mask background path
+	std::string maskPath;
+	get_button_mask_path(maskPath);
+	maskPath.append(btnInfo.btnBkgName.c_str());
 
+	// First - draw mask, then active button background
 	CUSTOM_BITMAP mask_bkg;
 	mask_bkg.LoadFromFile(maskPath.c_str());
 	mask_bkg.Draw(
@@ -160,7 +157,6 @@ void draw_active_button_background(HWND hWnd, HDC hDC)
 		// Raster-operation code
 		SRCAND
 	);
-
 	background.Draw(
 		hMemDC,
 		// Destination x and y

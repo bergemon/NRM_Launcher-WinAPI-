@@ -29,16 +29,13 @@
 #define APP_DIR "launcher"
 #define SLH "\\"
 #define GAME_PATH "game"
+#define BUTTONS_PATH "buttons"
+#define MASKS_PATH "masks"
+#define BUTTONS_BKG_FULL_PATH APP_DIR SLH BUTTONS_PATH SLH
+#define MASKS_FULL_PATH APP_DIR SLH BUTTONS_PATH SLH MASKS_PATH SLH
 #define MASK_PREFIX "mask_"
-#define MASK_PREFIX_LENGTH 5
 #define ACTIVE_PREFIX "active_"
-#define ACTIVE_PREFIX_LENGTH 7
 #define BTN_PREFIX "btn_"
-#define BTN_PREFIX_LENGTH 4
-
-// Make string filepaths macro
-#define BACKGROUND_PATH(path) std::string(APP_DIR SLH path).c_str()
-#define BTN_BKG_PATH(path) std::string(APP_DIR SLH BTN_PREFIX path).c_str()
 
 // Images names
 #define MAIN_BACKGROUND "background.bmp"
@@ -59,3 +56,22 @@
 // Utility
 #define TO_W_STRING(quote) __to_wide_str(quote)
 #define __to_wide_str(quote) L##quote
+
+// Submods window
+#define SUBMODS_WINDOW_PATH "submods_window"
+#define SUBMODS_WINDOW_BACKGROUND "submods_background.bmp"
+#define SUBMODS_BUTTONS_PATH "buttons"
+#define SUBMODS_MASKS_PATH "masks"
+#define SUBMODS_BUTTONS_FULL_PATH APP_DIR SLH SUBMODS_WINDOW_PATH SLH SUBMODS_BUTTONS_PATH
+#define SUBMODS_WINDOW_WIDTH 250
+#define SUBMODS_WINDOW_HEIGHT 400
+#define SUBMODS_WINDOW_BUTTONS_X_OFFSET 50
+#define SUBMODS_STD_BUTTON_WIDTH 150
+#define SUBMODS_STD_BUTTON_HEIGHT 30
+#define SUBMODS_STD_BUTTON_Y_START 350
+#define SUBMODS_STD_BUTTON_Y_SPACE 10
+#define SUBMOD_BUTTON_WIDTH 150
+#define SUBMOD_BUTTON_HEIGHT 20
+#define BTNS_SUBMODS_X_COORD_INVERT(width) ((SUBMODS_WINDOW_WIDTH - width) / 2)
+#define SUBMODS_WINDOW_X_OFFSET (MAIN_WINDOW_WIDTH - SUBMODS_WINDOW_WIDTH) / 2
+#define SUBMODS_WINDOW_Y_OFFSET (MAIN_WINDOW_HEIGHT - SUBMODS_WINDOW_HEIGHT) / 2

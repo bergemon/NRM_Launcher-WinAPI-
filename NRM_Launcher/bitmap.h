@@ -9,7 +9,7 @@ public:
 	CUSTOM_BITMAP();
 	~CUSTOM_BITMAP();
 	BOOL CreateDib24(int w, int h, const char* fileName);
-	bool CreateBkgMask();
+	bool CreateBkgMask(void(*mask_path)(std::string&));
 	void StoreDib24();
 	BOOL LoadFromFile(const char* fileName);
 	void SetPixel(int x, int y, COLORREF color);

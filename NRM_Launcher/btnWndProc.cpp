@@ -1,6 +1,7 @@
 #include "button.h"
 #include "clear_cache.h"
 #include "create_process.h"
+#include "submods_modal.h"
 
 //====================================================================
 void draw_button_background(HWND hWnd, HDC hDC);
@@ -70,12 +71,14 @@ LRESULT CALLBACK LAUNCHER_BUTTONS::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, 
 		}
 		case BUTTON_TYPE::BTN_SUBMODS:
 		{
-			MessageBox(GetParent(hWnd), TEXT("Button has no functionality yet"), TEXT("Work in progress"), MB_OK);
+			SUBMODS_MODAL_WINDOW& submods_modal = SUBMODS_MODAL_WINDOW::getInstance();
+			submods_modal.show();
+			//MessageBox(GetParent(hWnd), TEXT("Button has no functionality yet"), TEXT("Work in progress"), MB_OK);
 			break;
 		}
 		case BUTTON_TYPE::BTN_EXIT:
 		{
-			SendMessage(GetParent(hWnd), WM_CLOSE, 0, 0);
+			SendMessage(GetParent(hWnd), WM_CLOSE, NULL, NULL);
 			break;
 		}
 		case BUTTON_TYPE::BTN_DISCORD:
@@ -131,8 +134,6 @@ LRESULT CALLBACK LAUNCHER_BUTTONS::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, 
 		DestroyWindow(hWnd);
 		break;
 	case WM_DESTROY:
-		RemoveProp(hWnd, TEXT("BitmapBits"));
-		RemoveProp(hWnd, TEXT("InfoHeader"));
 		PostQuitMessage(0);
 		break;
 	default:

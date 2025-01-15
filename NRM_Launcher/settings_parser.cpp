@@ -1,7 +1,4 @@
 #include "settings_parser.h"
-#ifdef DEBUG
-	#include "windows.h"
-#endif
 
 [[nodiscard]] bool is_settings_exist()
 {

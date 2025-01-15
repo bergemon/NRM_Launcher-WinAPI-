@@ -41,14 +41,14 @@ void clear_cache()
 	{
 		bool delete_res = fs::remove_all(map_cache_path);
 		
-		if (fs::exists(map_cache_path) || !delete_res)
+		if (fs::exists(map_cache_path) && !delete_res)
 		{
 			throw std::exception("Can not delete map cache directory");
 		}
 
 		delete_res = fs::remove_all(flags_cache_path);
 
-		if (fs::exists(flags_cache_path) || !delete_res)
+		if (fs::exists(flags_cache_path) && !delete_res)
 		{
 			throw std::exception("Can not delete flags cache directory");
 		}

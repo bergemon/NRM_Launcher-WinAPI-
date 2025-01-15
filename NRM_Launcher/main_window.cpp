@@ -3,42 +3,50 @@
 #include "button.h"
 
 //====================================================================
-std::string MainWindow::m_strBkgFileName;
+MainWindow& MainWindow::getInstance()
+{
+	static MainWindow main_window;
+	return main_window;
+}
 //====================================================================
-MainWindow::MainWindow(
+MainWindow::MainWindow()
+{
+}
+//====================================================================
+void MainWindow::initialize(
 	LPCWSTR className,
 	LPCWSTR windowTitle,
 	HINSTANCE hInstance,
 	int nCmdShow,
 	LPCWSTR menuName,
-	uint32_t classStyle,
 	uint32_t width,
 	uint32_t height,
-	DWORD windowStyle,
-	DWORD windowExStyle,
 	const char* bkgFileName
-)
+) throw (std::exception)
 {
+
+	if (m_initialized)
+	{
+		throw std::exception("Main window is already initialized");
+	}
+
 	m_strBkgFileName = bkgFileName;
 
 	WNDCLASSEX* window_class = (WNDCLASSEX*)malloc(sizeof(WNDCLASSEX));
-
 	if (window_class == NULL)
 	{
-		MessageBox(NULL, L"Can not allocate memory for WNDCLASSEX structure", L"Error", MB_OK);
-		return;
+		throw std::exception("Can not allocate memory for WNDCLASSEX structure");
 	}
 
 	HICON hIcon = LoadIconW(hInstance, MAKEINTRESOURCE(IDI_NRMICON));
 	if (!hIcon) {
-		MessageBox(NULL, L"Can not load icon", L"Error", MB_OK);
-		return;
+		throw std::exception("Can not load icon");
 	}
 
 	window_class->cbSize = sizeof(*window_class);
 	window_class->lpszClassName = className;
 	window_class->lpszMenuName = menuName;
-	window_class->style = classStyle;
+	window_class->style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
 	window_class->lpfnWndProc = this->WndProc;
 	window_class->hInstance = hInstance;
 	window_class->hIcon = hIcon;
@@ -50,7 +58,7 @@ MainWindow::MainWindow(
 
 	if (!RegisterClassEx(window_class))
 	{
-		MessageBox(NULL, L"Cannot register window class", L"Error", MB_OK);
+		throw std::exception("Can not register window class");
 		return;
 	}
 
@@ -58,25 +66,25 @@ MainWindow::MainWindow(
 	RECT* desktopRect = (RECT*)malloc(sizeof(RECT));
 	if (!desktopRect)
 	{
-		MessageBox(NULL, L"Cannot allocate memory for window reactangle", L"Error", MB_OK);
+		throw std::exception("Can not allocate memory for window reactangle");
 		return;
 	}
 	bool get_rect_res = GetWindowRect(desktopWindow, desktopRect);
 	if (!get_rect_res)
 	{
-		MessageBox(NULL, L"Cannot get desktop window reactangle", L"Error", MB_OK);
+		throw std::exception("Can not get desktop window reactangle");
 		return;
 	}
 
-	m_hMainWnd = CreateWindowExW(
+	m_hMainWnd = CreateWindowEx(
 		// WindowExStyles
-		windowExStyle,
+		WS_EX_TRANSPARENT,
 		// UTF-16 name of the creating class
 		className,
 		// Window title
 		windowTitle,
 		// Window styles
-		windowStyle,
+		WS_BORDER | WS_VISIBLE | WS_CAPTION | WS_MINIMIZEBOX,
 		// Destination
 		(desktopRect->right - width) / 2,
 		(desktopRect->bottom - height) / 2,
@@ -99,17 +107,16 @@ MainWindow::MainWindow(
 
 	if (!m_hMainWnd)
 	{
-		MessageBox(NULL, TEXT("Cannot create main window"), TEXT("Error"), MB_OK);
+		throw std::exception("Can not create main window");
 		return;
 	}
 
-	ShowWindow(m_hMainWnd, nCmdShow);
+	m_initialized = true;
+
+	//ShowWindow(m_hMainWnd, SW_SHOWDEFAULT);
 	UpdateWindow(m_hMainWnd);
 }
-//====================================================================
 MainWindow::~MainWindow()
 {
-	DestroyWindow(m_hMainWnd);
-	m_hMainWnd = nullptr;
 }
 //====================================================================

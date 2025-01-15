@@ -2,10 +2,8 @@
 #include "button.h"
 #include "resource.h"
 
-bool LAUNCHER_BUTTONS::m_initialized = false;
+//====================================================================
 extern std::map<uint32_t, BUTTON_POSITION> btnsBkgPaths;
-int LAUNCHER_BUTTONS::m_nCmdShow;
-
 //====================================================================
 LAUNCHER_BUTTONS::LAUNCHER_BUTTONS() {}
 //====================================================================
@@ -22,7 +20,7 @@ void LAUNCHER_BUTTONS::initialize(
 {
 	if (m_initialized)
 	{
-		MessageBox(NULL, L"Button class is already initialized", L"Error", MB_OK);
+		MessageBox(NULL, TEXT("Button class is already initialized"), TEXT("Error"), MB_OK);
 		return;
 	}
 
@@ -30,7 +28,7 @@ void LAUNCHER_BUTTONS::initialize(
 
 	if (window_class == NULL)
 	{
-		MessageBox(NULL, L"Cannot allocate memory for WNDCLASSEX structure", L"Error", MB_OK);
+		MessageBox(NULL, TEXT("Cannot allocate memory for WNDCLASSEX structure"), TEXT("Error"), MB_OK);
 		std::exit(1);
 	}
 
@@ -52,7 +50,7 @@ void LAUNCHER_BUTTONS::initialize(
 
 	if (!RegisterClassEx(window_class))
 	{
-		MessageBox(NULL, L"Cannot register window class", L"Error", MB_OK);
+		MessageBox(NULL, TEXT("Cannot register window class"), TEXT("Error"), MB_OK);
 		std::exit(1);
 	}
 
@@ -99,8 +97,10 @@ bool LAUNCHER_BUTTONS::create_button(
 	m_Vbuttons.emplace_back(
 		m_parent, m_className, btnType,
 		// Cmd
-		LAUNCHER_BUTTONS::m_nCmdShow,
+		m_nCmdShow,
+		// X and Y coords
 		x_coord, y_coord - exPadding,
+		// Width & height
 		width, height
 	);
 
@@ -125,7 +125,8 @@ LAUNCHER_BUTTONS::BUTTON::BUTTON(
 {
 	m_hBtnWnd = CreateWindowEx(
 		// WindowExStyles
-		0,
+		NULL,
+		// Class name and title bar text
 		m_className.data(), TEXT(""),
 		// Window styles
 		WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
@@ -180,7 +181,7 @@ LAUNCHER_BUTTONS::BUTTON::BUTTON(
 		return;
 	}
 
-	ShowWindow(m_hBtnWnd, nCmdShow);
+	//ShowWindow(m_hMainWnd, SW_SHOWDEFAULT);
 	UpdateWindow(m_hBtnWnd);
 }
 //====================================================================
