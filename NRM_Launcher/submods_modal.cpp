@@ -1,7 +1,10 @@
 #include "submods_modal.h"
 #include "resource.h"
 #include "const.h"
+#include "parse_submods.h"
 
+//====================================================================
+extern std::list<PARSED_SUBMOD> parsed_submods;
 //====================================================================
 [[nodiscard]] SUBMODS_MODAL_WINDOW& SUBMODS_MODAL_WINDOW::getInstance()
 {
@@ -89,6 +92,15 @@ void SUBMODS_MODAL_WINDOW::initialize(
 
 	m_hParentWND = hParent;
 	m_initialized = true;
+
+	try
+	{
+		parse_submods();
+	}
+	catch (std::exception& e)
+	{
+		MessageBoxA(hParent, e.what(), "Error", MB_OK);
+	}
 }
 //====================================================================
 void SUBMODS_MODAL_WINDOW::show()
@@ -141,7 +153,9 @@ void SUBMODS_MODAL_WINDOW::hide()
 	{
 		ShowWindow(m_hSubmodsWND, SW_HIDE);
 		EnableWindow(m_hParentWND, TRUE);
+		SetActiveWindow(m_hParentWND);
 		SetFocus(m_hParentWND);
+		BringWindowToTop(m_hParentWND);
 	}
 }
 //====================================================================

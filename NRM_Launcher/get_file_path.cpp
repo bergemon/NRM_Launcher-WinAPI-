@@ -53,3 +53,16 @@ void get_submods_btns_mask_path(std::string& str)
 	str.clear();
 	str = SUBMODS_BUTTONS_FULL_PATH SLH SUBMODS_MASKS_PATH SLH MASK_PREFIX BTN_PREFIX;
 }
+//====================================================================
+void get_submods_checkbox_path(std::string& str)
+{
+	str.clear();
+	str = SUBMODS_BUTTONS_FULL_PATH SLH BTN_PREFIX;
+}
+//====================================================================
+void get_submods_checkbox_mask_path(std::string& str)
+{
+	str.clear();
+	str = SUBMODS_BUTTONS_FULL_PATH SLH SUBMODS_MASKS_PATH SLH MASK_PREFIX BTN_PREFIX;
+}
+//====================================================================

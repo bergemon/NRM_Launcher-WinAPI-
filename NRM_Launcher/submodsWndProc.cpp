@@ -1,5 +1,6 @@
 #include "submods_modal.h"
 #include "get_file_path.h"
+#include "submods_utils.h"
 #include "bitmap.h"
 
 //====================================================================
@@ -52,10 +53,9 @@ LRESULT CALLBACK SUBMODS_MODAL_WINDOW::WndProc(HWND hWnd, UINT uMsg, WPARAM wPar
 		}
 		break;
 	case WM_CLOSE:
-	{
+		set_submods_unchecked();
 		SUBMODS_MODAL_WINDOW::getInstance().hide();
 		return WM_USER;
-	}
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;

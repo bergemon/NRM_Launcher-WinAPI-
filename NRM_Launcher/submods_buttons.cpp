@@ -23,6 +23,11 @@ SUBMODS_BUTTONS::~SUBMODS_BUTTONS()
 {
 }
 //====================================================================
+std::list<SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON>& SUBMODS_BUTTONS::get_submods_buttons()
+{
+	return m_listButtons;
+}
+//====================================================================
 void SUBMODS_BUTTONS::initiliaze(
 	HWND hParent,
 	LPCWSTR className
@@ -68,6 +73,41 @@ void SUBMODS_BUTTONS::initiliaze(
 	m_initialized = true;
 }
 //====================================================================
+bool SUBMODS_BUTTONS::create_submod_button(
+	BUTTON_PROPERTIES props,
+	const char* submod_name,
+	const char* submod_path,
+	uint32_t exPadding
+)
+{
+	if (!m_initialized)
+	{
+		MessageBox(NULL, TEXT("Submods buttons window class not initialized!"), TEXT("Need to initialize buttons window class"), MB_OK);
+		return false;
+	}
+
+	uint32_t x_coord;
+	uint32_t y_coord;
+
+	x_coord = SUBMODS_BUTTONS_X_OFFSET;
+	y_coord = m_submodBtnOffset;
+
+	uint32_t width = props.width;
+	uint32_t height = props.height;
+	submodsBtnsBkgPaths[SUBMODS_BUTTON_TYPE::BTN_SUBMOD] = { "submod.bmp", x_coord, y_coord, width, height };
+
+	m_listButtons.emplace_back(
+		m_parent, m_className, SUBMODS_BUTTON_TYPE::BTN_SUBMOD,
+		x_coord, y_coord,
+		width, height,
+		submod_name, submod_path
+	);
+
+	m_submodBtnOffset += props.height + SUBMOD_BUTTONS_Y_PADDING + exPadding;
+
+	return true;
+}
+//====================================================================
 bool SUBMODS_BUTTONS::create_button(
 	SUBMODS_BUTTON_TYPE btnType,
 	BUTTON_PROPERTIES props,
@@ -83,38 +123,60 @@ bool SUBMODS_BUTTONS::create_button(
 		return false;
 	}
 
-	uint32_t x_coord;
-	uint32_t y_coord;
-	bool std_btn = false;
-
-	if (!x)
-	{
-		x_coord = SUBMODS_WINDOW_WIDTH - props.width - BTNS_SUBMODS_X_COORD_INVERT(props.width);
-		y_coord = SUBMODS_WINDOW_HEIGHT - props.height - m_submodBtnOffset;
-		std_btn = true;
-	}
-	else
-	{
-		x_coord = x;
-		y_coord = y;
-	}
-
-	uint32_t width = props.width;
-	uint32_t height = props.height;
-	submodsBtnsBkgPaths[btnType] = { bkgFileName, x_coord, y_coord - exPadding, width, height };
+	submodsBtnsBkgPaths[btnType] = { bkgFileName, x, y - exPadding, props.width, props.height };
 
 	m_listButtons.emplace_back(
 		m_parent, m_className, btnType,
-		x_coord, y_coord,
-		width, height
+		x, y,
+		props.width, props.height
 	);
 
-	if (std_btn)
-	{
-		m_submodBtnOffset += props.height + BTNS_STD_PADDING + exPadding;
-	}
-
 	return true;
+}
+//====================================================================
+void SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::set_checked(bool is_checked)
+{
+	m_checked = is_checked;
+}
+//====================================================================
+SUBMODS_BUTTON_TYPE SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::get_button_type()
+{
+	return m_buttonType;
+}
+//====================================================================
+bool SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::is_checked()
+{
+	return m_checked;
+}
+//====================================================================
+uint32_t SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::get_xPos()
+{
+	return m_xPos;
+}
+//====================================================================
+uint32_t SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::get_yPos()
+{
+	return m_yPos;
+}
+//====================================================================
+uint32_t SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::get_width()
+{
+	return m_width;
+}
+//====================================================================
+uint32_t SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::get_height()
+{
+	return m_height;
+}
+//====================================================================
+const std::string& SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::get_submod_name() const
+{
+	return m_submod_name;
+}
+//====================================================================
+const std::string& SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::get_submod_path() const
+{
+	return m_submod_path;
 }
 //====================================================================
 SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::SUBMODS_WINDOW_BUTTON(
@@ -124,8 +186,12 @@ SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::SUBMODS_WINDOW_BUTTON(
 	uint32_t x,
 	uint32_t y,
 	uint32_t width,
-	uint32_t height
-) : m_width(width), m_height(height), m_buttonType(btnType), m_className(className)
+	uint32_t height,
+	const char* submod_name,
+	const char* submod_path,
+	bool checked
+) : m_width(width), m_height(height), m_buttonType(btnType), m_className(className),
+	m_submod_name(submod_name), m_submod_path(submod_path), m_checked(checked), m_xPos(x), m_yPos(y)
 {
 	m_hBtnWnd = CreateWindowEx(
 		// WindowExStyles
@@ -168,7 +234,8 @@ SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::SUBMODS_WINDOW_BUTTON(
 	}
 	error.append(L".");
 
-	SetProp(m_hBtnWnd, TEXT("buttonType"), &m_buttonType);
+	SetProp(m_hBtnWnd, TEXT("buttonType"), (SUBMODS_BUTTON_TYPE* const)&m_buttonType);
+	SetProp(m_hBtnWnd, TEXT("ButtonClass"), this);
 
 	if (!m_hBtnWnd)
 	{
@@ -182,5 +249,106 @@ SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::SUBMODS_WINDOW_BUTTON(
 //====================================================================
 SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::~SUBMODS_WINDOW_BUTTON()
 {
+	RemoveProp(m_hBtnWnd, TEXT("buttonType"));
+	RemoveProp(m_hBtnWnd, TEXT("ButtonClass"));
+}
+//====================================================================
+void draw_text_unchecked_submod(
+	HWND hWnd,
+	HDC hDC,
+	const std::string& submod_name,
+	LOGFONT& lf,
+	COLORREF& outline,
+	COLORREF& red,
+	RECT& rect
+)
+{
+	// Create font indirect
+	HFONT font, oldFont;
+	font = CreateFontIndirect(&lf);
+	oldFont = (HFONT)SelectObject(hDC, font);
+
+	// Transparent text background
+	SetBkMode(hDC, TRANSPARENT);
+	// Create font indirect
+	oldFont = (HFONT)SelectObject(hDC, CreateFontIndirect(&lf));
+
+	// Cut submod name if it is too long
+	std::string final_submod_name = submod_name;
+	if (submod_name.length() > SUBMOD_NAME_MAX_LENGTH_TO_DRAW)
+	{
+		final_submod_name = submod_name.substr(0, SUBMOD_NAME_MAX_LENGTH_TO_DRAW - 3);
+		final_submod_name.append("...");
+	}
+
+	// Text outline by drawing text with offset
+	SetTextColor(hDC, outline);
+	rect.left = 28;
+	rect.top = 2;
+	DrawTextA(hDC, final_submod_name.c_str(), -1, &rect, DT_LEFT);
+	rect.left = 30;
+	rect.top = 0;
+	DrawTextA(hDC, final_submod_name.c_str(), -1, &rect, DT_LEFT);
+
+	// Text to draw
+	SetTextColor(hDC, red);
+	rect.left = 29;
+	rect.top = 1;
+	DrawTextA(hDC, final_submod_name.c_str(), -1, &rect, DT_LEFT);
+
+	// Delete font
+	DeleteObject(SelectObject(hDC, oldFont));
+}
+//====================================================================
+void draw_text_checked_submod(
+	HWND hWnd,
+	HDC hDC,
+	const std::string& submod_name,
+	LOGFONT& lf,
+	COLORREF& outline,
+	COLORREF& green,
+	RECT& rect
+)
+{
+	// Create font indirect
+	HFONT font, oldFont;
+	font = CreateFontIndirect(&lf);
+	oldFont = (HFONT)SelectObject(hDC, font);
+
+	// Cut submod name if it is too long
+	std::string final_submod_name = submod_name;
+	if (submod_name.length() > SUBMOD_NAME_MAX_LENGTH_TO_DRAW)
+	{
+		final_submod_name = submod_name.substr(0, SUBMOD_NAME_MAX_LENGTH_TO_DRAW - 3);
+		final_submod_name.append("...");
+	}
+
+	// Transparent text background
+	SetBkMode(hDC, TRANSPARENT);
+	// Create font indirect
+	oldFont = (HFONT)SelectObject(hDC, CreateFontIndirect(&lf));
+
+	// Text outline by drawing text with offset
+	SetTextColor(hDC, outline);
+	rect.left = 28;
+	rect.top = 2;
+	DrawTextA(hDC, final_submod_name.c_str(), -1, &rect, DT_LEFT);
+	rect.left = 30;
+	rect.top = 0;
+	DrawTextA(hDC, final_submod_name.c_str(), -1, &rect, DT_LEFT);
+
+	// Text to draw
+	SetTextColor(hDC, green);
+	rect.left = 29;
+	rect.top = 1;
+	DrawTextA(hDC, final_submod_name.c_str(), -1, &rect, DT_LEFT);
+
+	// Delete font
+	DeleteObject(SelectObject(hDC, oldFont));
+}
+//====================================================================
+SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON& get_submod_button_prop(HWND hWnd)
+{
+	return *(SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON*)GetProp(hWnd, TEXT("ButtonClass"));
 }
 //====================================================================

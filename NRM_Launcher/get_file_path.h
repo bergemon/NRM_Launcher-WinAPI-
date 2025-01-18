@@ -21,3 +21,7 @@ void get_submods_active_btns_bkg_path(std::string& str);
 //====================================================================
 void get_submods_btns_mask_path(std::string& str);
 //====================================================================
+void get_submods_checkbox_path(std::string& str);
+//====================================================================
+void get_submods_checkbox_mask_path(std::string& str);
+//====================================================================

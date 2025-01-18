@@ -58,6 +58,12 @@
     <Filter Include="Source Files\submods_modal\buttons">
       <UniqueIdentifier>{23957450-129c-40bb-9ab0-ae40e52a7baf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\submods_modal\submods_parser">
+      <UniqueIdentifier>{53f979b8-31c4-4393-adfd-4267ac22895c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\submods_modal\submods_parser">
+      <UniqueIdentifier>{b4e7cef5-6157-495c-952c-7b8e72fec3fe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="win_main.cpp">
@@ -117,6 +123,12 @@
     <ClCompile Include="draw_submods_btn_background.cpp">
       <Filter>Source Files\submods_modal\buttons</Filter>
     </ClCompile>
+    <ClCompile Include="parse_submods.cpp">
+      <Filter>Source Files\submods_modal\submods_parser</Filter>
+    </ClCompile>
+    <ClCompile Include="submods_uitls.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdlib.h">
@@ -157,6 +169,12 @@
     </ClInclude>
     <ClInclude Include="submods_buttons.h">
       <Filter>Header Files\submods_modal</Filter>
+    </ClInclude>
+    <ClInclude Include="parse_submods.h">
+      <Filter>Header Files\submods_modal\submods_parser</Filter>
+    </ClInclude>
+    <ClInclude Include="submods_utils.h">
+      <Filter>Header Files\utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
