@@ -1,6 +1,6 @@
 #pragma once
 #include <windows.h>
-#include "stdlib.h"
+#include "stdlibs.h"
 #include "const.h"
 
 class CUSTOM_BITMAP
@@ -14,11 +14,11 @@ public:
 	BOOL LoadFromFile(const char* fileName);
 	void SetPixel(int x, int y, COLORREF color);
 	int Draw(HDC hdc, int xDst, int yDst, int wDst, int hDst, int xSrc, int ySrc, int wSrc, int hSrc, DWORD rop);
-	BYTE* GetBitmapBits() { return m_aBitmapBits; }
-	BITMAPINFOHEADER* GetInfoHeader() { return m_pInfoHead; }
-	int GetWidth() { return m_width; }
-	int GetHeight() { return m_height; }
-	const wchar_t* GetError() { return m_error.c_str(); }
+	BYTE* GetBitmapBits();
+	BITMAPINFOHEADER* GetInfoHeader();
+	int GetWidth();
+	int GetHeight();
+	const wchar_t* GetError();
 
 private:
 	int m_width;

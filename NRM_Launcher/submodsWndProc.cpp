@@ -6,7 +6,6 @@
 //====================================================================
 LRESULT CALLBACK SUBMODS_MODAL_WINDOW::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	static CUSTOM_BITMAP background;
 	HDC hDC;
 	RECT rect;
 
@@ -14,19 +13,6 @@ LRESULT CALLBACK SUBMODS_MODAL_WINDOW::WndProc(HWND hWnd, UINT uMsg, WPARAM wPar
 	{
 	case WM_CREATE:
 	{
-		hDC = GetDC(hWnd);
-
-		std::string bkgPath;
-		get_submods_bkg_path(bkgPath);
-		bkgPath.append(SUBMODS_MODAL_WINDOW::getInstance().get_background_path().data());
-		background.LoadFromFile(bkgPath.c_str());
-
-		// We will get this data when we need to draw submods window background on buttons
-		// to make them transparent
-		SetProp(hWnd, TEXT("BitmapBits"), background.GetBitmapBits());
-		SetProp(hWnd, TEXT("InfoHeader"), background.GetInfoHeader());
-
-		ReleaseDC(hWnd, hDC);
 		break;
 	}
 	case WM_PAINT:
@@ -34,6 +20,9 @@ LRESULT CALLBACK SUBMODS_MODAL_WINDOW::WndProc(HWND hWnd, UINT uMsg, WPARAM wPar
 		PAINTSTRUCT ps;
 		hDC = BeginPaint(hWnd, &ps);
 
+		SUBMODS_MODAL_WINDOW& submods_window = SUBMODS_MODAL_WINDOW::getInstance();
+
+		CUSTOM_BITMAP& background = submods_window.get_background();
 		background.Draw(hDC, 0, 0,
 			SUBMODS_WINDOW_WIDTH, SUBMODS_WINDOW_HEIGHT,
 			0, 0,
@@ -53,7 +42,7 @@ LRESULT CALLBACK SUBMODS_MODAL_WINDOW::WndProc(HWND hWnd, UINT uMsg, WPARAM wPar
 		}
 		break;
 	case WM_CLOSE:
-		set_submods_unchecked();
+		clear_buttons_state_in_buffer();
 		SUBMODS_MODAL_WINDOW::getInstance().hide();
 		return WM_USER;
 	case WM_DESTROY:

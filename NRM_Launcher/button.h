@@ -1,10 +1,8 @@
 #pragma once
 #include <windows.h>
-#include <cstdint>
-#include <string>
 #include <shellapi.h>
 #include "const.h"
-#include "stdlib.h"
+#include "stdlibs.h"
 #include "settings_parser.h"
 
 //====================================================================
@@ -35,8 +33,6 @@ enum BUTTON_TYPE
 //====================================================================
 class LAUNCHER_BUTTONS
 {
-public:
-
 	//====================================================================
 	// Class for each button
 	class BUTTON
@@ -46,6 +42,7 @@ public:
 			HWND parent,
 			std::wstring_view className,
 			BUTTON_TYPE btnType,
+			const char* background_file_name,
 			int nCmdShow,
 			uint32_t x = CW_USEDEFAULT,
 			uint32_t y = 0,
@@ -55,17 +52,25 @@ public:
 
 		~BUTTON();
 
-		uint32_t getHeight() { return m_height; };
+		std::string_view get_background_file_name();
+		uint32_t getHeight();
+		uint32_t getWidth();
+		uint32_t get_posX();
+		uint32_t get_posY();
+		uint32_t get_button_type();
 
 	private:
 		HWND m_hBtnWnd;
 		uint32_t m_width;
 		uint32_t m_height;
+		uint32_t m_posX;
+		uint32_t m_posY;
 		uint32_t m_buttonType;
+		std::string m_bkgFileName;
 		std::wstring_view m_className;
 	};
 	//====================================================================
-
+public:
 	~LAUNCHER_BUTTONS();
 
 	static LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -85,11 +90,10 @@ public:
 		uint32_t y = 0
 	);
 
-	static LAUNCHER_BUTTONS& getInstance()
-	{
-		static LAUNCHER_BUTTONS btns;
-		return btns;
-	}
+	static LAUNCHER_BUTTONS& getInstance();
+	friend BUTTON& get_button_prop(HWND hWnd);
+	friend void draw_button_background(HWND hWnd, HDC hDC);
+	friend void draw_active_button_background(HWND hWnd, HDC hDC);
 
 private:
 	LAUNCHER_BUTTONS();
@@ -103,4 +107,6 @@ private:
 	HWND m_parent;
 	std::list<BUTTON> m_Vbuttons;
 };
+//====================================================================
+LAUNCHER_BUTTONS::BUTTON& get_button_prop(HWND hWnd);
 //====================================================================

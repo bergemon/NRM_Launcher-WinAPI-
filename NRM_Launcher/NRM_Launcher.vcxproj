@@ -163,7 +163,7 @@
     <ClInclude Include="parse_submods.h" />
     <ClInclude Include="settings_parser.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="stdlib.h" />
+    <ClInclude Include="stdlibs.h" />
     <ClInclude Include="submods_buttons.h" />
     <ClInclude Include="submods_modal.h" />
     <ClInclude Include="submods_utils.h" />

@@ -30,7 +30,12 @@ void MainWindow::initialize(
 		throw std::exception("Main window is already initialized");
 	}
 
+	// Init main window background BITMAP
 	m_strBkgFileName = bkgFileName;
+	std::string bkgPath;
+	get_main_bkg_path(bkgPath);
+	bkgPath.append(m_strBkgFileName.c_str());
+	m_backrgound.LoadFromFile(bkgPath.c_str());
 
 	WNDCLASSEX* window_class = (WNDCLASSEX*)malloc(sizeof(WNDCLASSEX));
 	if (window_class == NULL)
@@ -118,5 +123,20 @@ void MainWindow::initialize(
 }
 MainWindow::~MainWindow()
 {
+}
+//====================================================================
+const HWND MainWindow::getHWnd()
+{
+	return m_hMainWnd;
+}
+//====================================================================
+CUSTOM_BITMAP& MainWindow::get_background()
+{
+	return m_backrgound;
+}
+//====================================================================
+const std::string_view MainWindow::get_bkg_filename()
+{
+	return std::string_view(m_strBkgFileName);
 }
 //====================================================================

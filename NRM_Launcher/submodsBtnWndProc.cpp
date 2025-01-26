@@ -43,12 +43,12 @@ LRESULT CALLBACK SUBMODS_BUTTONS::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 		if (btnType == SUBMODS_BUTTON_TYPE::BTN_SUBMOD)
 		{
 			const std::string& submod_name = button_class.get_submod_name();
-			bool checked = button_class.is_checked();
+			bool checked = button_class.get_buffer_button().m_isChecked;
 
 			GetClientRect(hWnd, &rect);
 
 			// Draw background
-			draw_submods_checkbox_btn_background(hWnd, hDC, button_class);
+			draw_submods_checkbox_btn_background(hWnd, hDC);
 
 			// Draw text
 			if (!checked)
@@ -72,6 +72,7 @@ LRESULT CALLBACK SUBMODS_BUTTONS::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 		switch (btnType)
 		{
 		case SUBMODS_BUTTON_TYPE::BTN_SAVE:
+			save_checked_from_buffer();
 			SUBMODS_MODAL_WINDOW::getInstance().hide();
 			break;
 		case SUBMODS_BUTTON_TYPE::BTN_SUBMOD:
@@ -79,26 +80,29 @@ LRESULT CALLBACK SUBMODS_BUTTONS::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 			hDC = GetDC(hWnd);
 
 			const std::string& submod_name = button_class.get_submod_name();
-			bool checked = button_class.is_checked();
+
+			SUBMOD_BUTTON_BUFFER& button_buffer = button_class.get_buffer_button();
+
+			bool checked = button_buffer.m_isChecked;
 
 			GetClientRect(hWnd, &rect);
 
-			if (checked == true)
+			if (checked)
 			{
-				button_class.set_checked(false);
+				button_buffer.m_isChecked = false;
 
 				// Draw background
-				draw_submods_checkbox_btn_background(hWnd, hDC, button_class);
+				draw_submods_checkbox_btn_background(hWnd, hDC);
 
 				// Draw text
 				draw_text_unchecked_submod(hWnd, hDC, submod_name, lf, outline, red, rect);
 			}
-			else if (checked == false)
+			else
 			{
-				button_class.set_checked(true);
+				button_buffer.m_isChecked = true;
 
 				// Draw background
-				draw_submods_checkbox_btn_background(hWnd, hDC, button_class);
+				draw_submods_checkbox_btn_background(hWnd, hDC);
 
 				// Draw text
 				draw_text_checked_submod(hWnd, hDC, submod_name, lf, outline, green, rect);
@@ -108,7 +112,7 @@ LRESULT CALLBACK SUBMODS_BUTTONS::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 			break;
 		}
 		case SUBMODS_BUTTON_TYPE::BTN_CANCEL:
-			set_submods_unchecked();
+			clear_buttons_state_in_buffer();
 			SUBMODS_MODAL_WINDOW::getInstance().hide();
 			break;
 		}

@@ -17,6 +17,12 @@ class SUBMODS_BUTTONS
 {
 private:
 	class SUBMODS_WINDOW_BUTTON;
+
+	struct SUBMOD_BUTTON_BUFFER
+	{
+		SUBMODS_WINDOW_BUTTON& m_button;
+		bool m_isChecked;
+	};
 public:
 	static LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
@@ -46,11 +52,16 @@ public:
 	);
 
 	std::list<SUBMODS_WINDOW_BUTTON>& get_submods_buttons();
+	std::vector<SUBMOD_BUTTON_BUFFER>& get_submods_buttons_buffer();
 
-	friend void set_submods_unchecked();
-	friend void draw_submods_checkbox_btn_background(HWND hWnd, HDC hDC, SUBMODS_WINDOW_BUTTON& button_class);
+	friend void fill_submods_buffer();
+	friend void save_checked_from_buffer();
 	friend SUBMODS_WINDOW_BUTTON& get_submod_button_prop(HWND hWnd);
+	friend void clear_buttons_state_in_buffer();
 	friend void create_process() throw (std::exception);
+	friend void draw_submods_btn_background(HWND hWnd, HDC hDC);
+	friend void draw_submods_active_btn_background(HWND hWnd, HDC hDC);
+	friend void draw_submods_checkbox_btn_background(HWND hWnd, HDC hDC);
 
 	~SUBMODS_BUTTONS();
 
@@ -62,6 +73,7 @@ private:
 		SUBMODS_WINDOW_BUTTON(
 			HWND parent,
 			std::wstring_view className,
+			const char* background_file_name,
 			SUBMODS_BUTTON_TYPE btnType,
 			uint32_t x = CW_USEDEFAULT,
 			uint32_t y = 0,
@@ -73,6 +85,7 @@ private:
 		);
 		~SUBMODS_WINDOW_BUTTON();
 
+		HWND get_hWnd();
 		void set_checked(bool is_checked);
 		bool is_checked();
 		SUBMODS_BUTTON_TYPE get_button_type();
@@ -80,6 +93,9 @@ private:
 		uint32_t get_yPos();
 		uint32_t get_width();
 		uint32_t get_height();
+		std::string_view get_background_file_name();
+		SUBMOD_BUTTON_BUFFER& get_buffer_button();
+		void set_buffer_button(SUBMOD_BUTTON_BUFFER& buff_button);
 		const std::string& get_submod_name() const;
 		const std::string& get_submod_path() const;
 
@@ -91,11 +107,13 @@ private:
 		uint32_t m_yPos = 0;
 		const std::wstring_view m_className;
 		const SUBMODS_BUTTON_TYPE m_buttonType;
+		std::string m_bkgFileName;
 		//====================================================================
 		// If it is submod button
 		//====================================================================
 		const std::string m_submod_name;
 		const std::string m_submod_path;
+		SUBMOD_BUTTON_BUFFER* m_bufferButton;
 		bool m_checked;
 	};
 	//====================================================================
@@ -109,6 +127,7 @@ private:
 	std::wstring m_className;
 	HWND m_parent;
 	std::list<SUBMODS_WINDOW_BUTTON> m_listButtons;
+	std::vector<SUBMOD_BUTTON_BUFFER> m_submodButtonsBuffer;
 };
 //====================================================================
 void create_submods_modal_buttons(SUBMODS_BUTTONS& submod_window_buttons);
@@ -117,7 +136,7 @@ void draw_submods_btn_background(HWND hWnd, HDC hDC);
 //====================================================================
 void draw_submods_active_btn_background(HWND hWnd, HDC hDC);
 //====================================================================
-void draw_submods_checkbox_btn_background(HWND hWnd, HDC hDC, SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON& button_class);
+void draw_submods_checkbox_btn_background(HWND hWnd, HDC hDC);
 //====================================================================
 void draw_text_unchecked_submod(
 	HWND hWnd, HDC hDC, const std::string& submod_name, LOGFONT& lf, COLORREF& outline, COLORREF& red, RECT& rect

@@ -1,6 +1,7 @@
 #pragma once
 #include <windows.h>
-#include "stdlib.h"
+#include "bitmap.h"
+#include "stdlibs.h"
 
 //====================================================================
 class SUBMODS_MODAL_WINDOW
@@ -20,22 +21,17 @@ public:
 		const char* bkgFileName
 	);
 
+	CUSTOM_BITMAP& get_background();
+	std::string_view get_background_path();
+	HWND getHWnd();
 	void show();
 	void hide();
 
 	~SUBMODS_MODAL_WINDOW();
 
-	HWND getHWnd()
-	{
-		return m_hSubmodsWND;
-	}
-
 	static LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
-	std::string_view get_background_path()
-	{
-		return m_bkgPath;
-	}
+
 
 private:
 	SUBMODS_MODAL_WINDOW();
@@ -46,6 +42,7 @@ private:
 	HWND m_hSubmodsWND;
 	HWND m_hParentWND;
 	std::string m_bkgPath;
+	CUSTOM_BITMAP m_background;
 	static std::string m_bkgFileName;
 };
 //====================================================================

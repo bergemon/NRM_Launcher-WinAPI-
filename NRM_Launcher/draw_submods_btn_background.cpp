@@ -4,49 +4,29 @@
 #include "get_file_path.h"
 
 //====================================================================
-std::map<uint32_t, BUTTON_POSITION> submodsBtnsBkgPaths;
-//====================================================================
 void draw_submods_btn_background(HWND hWnd, HDC hDC)
 {
-	uint32_t* btnType = (uint32_t*)GetProp(hWnd, TEXT("buttonType"));
-	BUTTON_POSITION btnInfo;
+	SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON& button = get_submod_button_prop(hWnd);
 	std::string bkgPath;
-	
-	try
-	{
-		btnInfo = submodsBtnsBkgPaths.at(*btnType);
-		get_submods_btns_bkg_path(bkgPath);
-		bkgPath.append(btnInfo.btnBkgName.c_str());
-	}
-	catch (std::out_of_range& e)
-	{
-		btnInfo.pos_x = 0;
-		btnInfo.pos_y = 0;
-		btnInfo.width = 0;
-		btnInfo.height = 0;
-		bkgPath = "";
-	}
 
 	// Need to translate, y = 0 starts from bottom
-	int32_t translated_yPos = SUBMODS_WINDOW_HEIGHT - btnInfo.pos_y - btnInfo.height;
+	int32_t translated_yPos = SUBMODS_WINDOW_HEIGHT - button.get_yPos() - button.get_height();
 
-	HWND parent = SUBMODS_MODAL_WINDOW::getInstance().getHWnd();
+	// Get submod window background image file path
+	get_submods_btns_bkg_path(bkgPath);
+	bkgPath.append(button.get_background_file_name());
+
+	// Get parent BITMAP background
+	SUBMODS_MODAL_WINDOW& submods_window = SUBMODS_MODAL_WINDOW::getInstance();
+	CUSTOM_BITMAP& submods_window_background = submods_window.get_background();
 
 	StretchDIBits(
-		hDC, 0, 0, btnInfo.width, btnInfo.height,
-		btnInfo.pos_x, translated_yPos, btnInfo.width, btnInfo.height,
-		GetProp(parent, TEXT("BitmapBits")),
-		(BITMAPINFO*)GetProp(parent, TEXT("InfoHeader")),
+		hDC, 0, 0, button.get_width(), button.get_height(),
+		button.get_xPos(), translated_yPos, button.get_width(), button.get_height(),
+		submods_window_background.GetBitmapBits(),
+		(BITMAPINFO*)submods_window_background.GetInfoHeader(),
 		DIB_RGB_COLORS, SRCCOPY
 	);
-
-	LPRECT rect = (RECT*)malloc(sizeof(RECT));
-	if (!rect)
-	{
-		MessageBox(hWnd, TEXT("Can not allocate memory for rectangle"), TEXT("ERROR"), 0);
-		return;
-	}
-	GetClientRect(hWnd, rect);
 
 	CUSTOM_BITMAP background;
 	background.LoadFromFile(bkgPath.c_str());
@@ -57,7 +37,7 @@ void draw_submods_btn_background(HWND hWnd, HDC hDC)
 
 	std::string maskPath;
 	get_submods_btns_mask_path(maskPath);
-	maskPath.append(btnInfo.btnBkgName.c_str());
+	maskPath.append(button.get_background_file_name());
 
 	// First draw mask, then background
 	CUSTOM_BITMAP mask_bkg;
@@ -67,7 +47,7 @@ void draw_submods_btn_background(HWND hWnd, HDC hDC)
 		// Destination x and y
 		0, 0,
 		// Destination width and height
-		rect->right, rect->bottom,
+		button.get_width(), button.get_height(),
 		// Source x and y
 		0, 0,
 		// Source width and height
@@ -80,7 +60,7 @@ void draw_submods_btn_background(HWND hWnd, HDC hDC)
 		// Destination x and y
 		0, 0,
 		// Destination width and height
-		rect->right, rect->bottom,
+		button.get_width(), button.get_height(),
 		// Source x and y
 		0, 0,
 		// Source width and height
@@ -88,54 +68,35 @@ void draw_submods_btn_background(HWND hWnd, HDC hDC)
 		// Raster-operation code
 		SRCINVERT
 	);
-
-	free(rect);
 }
 //====================================================================
 void draw_submods_active_btn_background(HWND hWnd, HDC hDC)
 {
-	uint32_t* btnType = (uint32_t*)GetProp(hWnd, TEXT("buttonType"));
-	BUTTON_POSITION btnInfo;
+	SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON& button = get_submod_button_prop(hWnd);
 	std::string bkgPath;
 
-	try
-	{
-		btnInfo = submodsBtnsBkgPaths.at(*btnType);
-	}
-	catch (std::out_of_range& e)
-	{
-		btnInfo.pos_x = 0;
-		btnInfo.pos_y = 0;
-		btnInfo.width = 0;
-		btnInfo.height = 0;
-		bkgPath = "";
-	}
-
-	LPRECT rect = (RECT*)malloc(sizeof(RECT));
-	if (!rect)
-	{
-		MessageBox(hWnd, TEXT("Can not allocate memory for rectangle"), TEXT("ERROR"), 0);
-		return;
-	}
-	GetClientRect(hWnd, rect);
-
 	HDC hMemDC = CreateCompatibleDC(hDC);
-	HBITMAP hBitmap = CreateCompatibleBitmap(hDC, rect->right, rect->bottom);
+	HBITMAP hBitmap = CreateCompatibleBitmap(hDC, button.get_width(), button.get_height());
 	HBITMAP hOldBitmap = (HBITMAP)SelectObject(hMemDC, hBitmap);
 
 	// Need to translate, y = 0 starts from bottom
-	int32_t translated_yPos = SUBMODS_WINDOW_HEIGHT - btnInfo.pos_y - btnInfo.height;
+	int32_t translated_yPos = SUBMODS_WINDOW_HEIGHT - button.get_yPos() - button.get_height();
+
+	// Get parent BITMAP background
+	SUBMODS_MODAL_WINDOW& submods_window = SUBMODS_MODAL_WINDOW::getInstance();
+	CUSTOM_BITMAP& submods_window_background = submods_window.get_background();
+
 	StretchDIBits(
-		hMemDC, 0, 0, btnInfo.width, btnInfo.height,
-		btnInfo.pos_x, translated_yPos, btnInfo.width, btnInfo.height,
-		GetProp(GetParent(hWnd), TEXT("BitmapBits")),
-		(BITMAPINFO*)GetProp(GetParent(hWnd), TEXT("InfoHeader")),
+		hMemDC, 0, 0, button.get_width(), button.get_height(),
+		button.get_xPos(), translated_yPos, button.get_width(), button.get_height(),
+		submods_window_background.GetBitmapBits(),
+		(BITMAPINFO*)submods_window_background.GetInfoHeader(),
 		DIB_RGB_COLORS, SRCCOPY
 	);
 
 	// Get button active background path
 	get_submods_active_btns_bkg_path(bkgPath);
-	bkgPath.append(btnInfo.btnBkgName.c_str());
+	bkgPath.append(button.get_background_file_name());
 
 	CUSTOM_BITMAP background;
 	background.LoadFromFile(bkgPath.c_str());
@@ -143,7 +104,7 @@ void draw_submods_active_btn_background(HWND hWnd, HDC hDC)
 	// Get button mask background path
 	std::string maskPath;
 	get_submods_btns_mask_path(maskPath);
-	maskPath.append(btnInfo.btnBkgName.c_str());
+	maskPath.append(button.get_background_file_name());
 
 	// First - draw mask, then active button background
 	CUSTOM_BITMAP mask_bkg;
@@ -153,7 +114,7 @@ void draw_submods_active_btn_background(HWND hWnd, HDC hDC)
 		// Destination x and y
 		0, 0,
 		// Destination width and height
-		rect->right, rect->bottom,
+		button.get_width(), button.get_height(),
 		// Source x and y
 		0, 0,
 		// Source width and height
@@ -166,7 +127,7 @@ void draw_submods_active_btn_background(HWND hWnd, HDC hDC)
 		// Destination x and y
 		0, 0,
 		// Destination width and height
-		rect->right, rect->bottom,
+		button.get_width(), button.get_height(),
 		// Source x and y
 		0, 0,
 		// Source width and height
@@ -182,45 +143,42 @@ void draw_submods_active_btn_background(HWND hWnd, HDC hDC)
 	DeleteDC(hMemDC);
 }
 //====================================================================
-void draw_submods_checkbox_btn_background(HWND hWnd, HDC hDC, SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON& button_class)
+void draw_submods_checkbox_btn_background(HWND hWnd, HDC hDC)
 {
+	using SUBMOD_BTN = SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON;
+	SUBMOD_BTN& button = get_submod_button_prop(hWnd);
+
 	std::string bkgPath;
 	std::string background_file_name;
-
-	if (!button_class.is_checked())
+	
+	if (button.get_buffer_button().m_isChecked)
 	{
-		background_file_name = SUBMODS_UNCHECKED_BUTTON_BKG;
+		background_file_name = SUBMODS_CHECKED_BUTTON_BKG;
 		get_submods_checkbox_path(bkgPath);
 		bkgPath.append(background_file_name);
 	}
 	else
 	{
-		background_file_name = SUBMODS_CHECKED_BUTTON_BKG;
+		background_file_name = SUBMODS_UNCHECKED_BUTTON_BKG;
 		get_submods_checkbox_path(bkgPath);
 		bkgPath.append(background_file_name);
 	}
 
 
 	// Need to translate, y = 0 starts from bottom
-	int32_t translated_yPos = SUBMODS_WINDOW_HEIGHT - button_class.get_yPos() - button_class.get_height();
+	int32_t translated_yPos = SUBMODS_WINDOW_HEIGHT - button.get_yPos() - button.get_height();
 
-	HWND parent = SUBMODS_MODAL_WINDOW::getInstance().getHWnd();
+	// Get parent BITMAP background
+	SUBMODS_MODAL_WINDOW& submods_window = SUBMODS_MODAL_WINDOW::getInstance();
+	CUSTOM_BITMAP& submods_window_background = submods_window.get_background();
 
 	StretchDIBits(
-		hDC, 0, 0, button_class.get_width(), button_class.get_height(),
-		button_class.get_xPos(), translated_yPos, button_class.get_width(), button_class.get_height(),
-		GetProp(parent, TEXT("BitmapBits")),
-		(BITMAPINFO*)GetProp(parent, TEXT("InfoHeader")),
+		hDC, 0, 0, button.get_width(), button.get_height(),
+		button.get_xPos(), translated_yPos, button.get_width(), button.get_height(),
+		submods_window_background.GetBitmapBits(),
+		(BITMAPINFO*)submods_window_background.GetInfoHeader(),
 		DIB_RGB_COLORS, SRCCOPY
 	);
-
-	LPRECT rect = (RECT*)malloc(sizeof(RECT));
-	if (!rect)
-	{
-		MessageBox(hWnd, TEXT("Can not allocate memory for rectangle"), TEXT("ERROR"), 0);
-		return;
-	}
-	GetClientRect(hWnd, rect);
 
 	CUSTOM_BITMAP background;
 	background.LoadFromFile(bkgPath.c_str());
@@ -241,7 +199,7 @@ void draw_submods_checkbox_btn_background(HWND hWnd, HDC hDC, SUBMODS_BUTTONS::S
 		// Destination x and y
 		0, 0,
 		// Destination width and height
-		rect->right, rect->bottom,
+		button.get_width(), button.get_height(),
 		// Source x and y
 		0, 0,
 		// Source width and height
@@ -254,7 +212,7 @@ void draw_submods_checkbox_btn_background(HWND hWnd, HDC hDC, SUBMODS_BUTTONS::S
 		// Destination x and y
 		0, 0,
 		// Destination width and height
-		rect->right, rect->bottom,
+		button.get_width(), button.get_height(),
 		// Source x and y
 		0, 0,
 		// Source width and height
@@ -262,7 +220,5 @@ void draw_submods_checkbox_btn_background(HWND hWnd, HDC hDC, SUBMODS_BUTTONS::S
 		// Raster-operation code
 		SRCINVERT
 	);
-
-	free(rect);
 }
 //====================================================================

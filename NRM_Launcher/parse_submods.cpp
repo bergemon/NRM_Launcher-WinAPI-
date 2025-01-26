@@ -62,8 +62,9 @@ void parse_submods() throw (std::exception)
 		PARSED_SUBMOD submod;
 
 		submod.submod_path = "mod/";
-		submod.submod_path.append(file.path().filename().string().c_str());
-		
+		submod.submod_path.append(filepath);
+		fs::path submod_path;
+
 		// Read file line by line
 		while (std::getline(iFile, parsed_line))
 		{
@@ -73,12 +74,18 @@ void parse_submods() throw (std::exception)
 			{
 				break;
 			}
-
 			if (parsed_line.find("name = ") != std::string::npos)
 			{
 				std::string parsed_name = parsed_line.substr(parsed_line.find("=") + 3, parsed_line.length() - parsed_line.find("=") - 3);
 				parsed_name = parsed_name.substr(0, parsed_name.length() - 1);
 				submod.submod_name = parsed_name.c_str();
+			}
+			if (parsed_line.find("path = ") != std::string::npos)
+			{
+				std::string parsed_path = parsed_line.substr(parsed_line.find("=") + 3, parsed_line.length() - parsed_line.find("=") - 3);
+				parsed_path = fs::current_path().string() + std::string("\\game\\") + parsed_path.substr(0, parsed_path.length() - 1);
+				parsed_path.replace(parsed_path.rfind("/"), 1, "\\");
+				submod_path = parsed_path;
 			}
 		}
 
@@ -87,7 +94,10 @@ void parse_submods() throw (std::exception)
 			iFile.close();
 		}
 
-		parsed_submods.emplace_back(submod.submod_name, submod.submod_path);
+		if (fs::exists(submod_path))
+		{
+			parsed_submods.emplace_back(submod.submod_name, submod.submod_path);
+		}
 	}
 }
 //====================================================================

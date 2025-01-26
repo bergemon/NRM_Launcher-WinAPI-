@@ -35,14 +35,9 @@ LRESULT CALLBACK LAUNCHER_BUTTONS::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, 
 	}
 	case WM_LBUTTONUP:
 	{
-		btnType = (uint32_t*)GetProp(hWnd, TEXT("buttonType"));
+		BUTTON& button = *(BUTTON*)GetProp(hWnd, TEXT("buttonClass"));
 
-		if (btnType == nullptr)
-		{
-			break;
-		}
-
-		switch (*btnType)
+		switch (button.get_button_type())
 		{
 		case BUTTON_TYPE::BTN_PLAY:
 		{

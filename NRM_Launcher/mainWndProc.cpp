@@ -6,7 +6,6 @@
 //====================================================================
 LRESULT CALLBACK MainWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	static CUSTOM_BITMAP background;
 	HDC hDC;
 	RECT rect;
 
@@ -16,18 +15,6 @@ LRESULT CALLBACK MainWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM
 	{
 		hDC = GetDC(hWnd);
 
-		std::string bkgPath;
-		get_main_bkg_path(bkgPath);
-
-		MainWindow& main_window = MainWindow::getInstance();
-		bkgPath.append(main_window.get_bkg_filename().data());
-		background.LoadFromFile(bkgPath.c_str());
-
-		// We will get this data when we need to draw main window background on buttons
-		// to make them transparent
-		SetProp(hWnd, TEXT("BitmapBits"), background.GetBitmapBits());
-		SetProp(hWnd, TEXT("InfoHeader"), background.GetInfoHeader());
-
 		ReleaseDC(hWnd, hDC);
 		break;
 	}
@@ -35,6 +22,8 @@ LRESULT CALLBACK MainWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM
 	{
 		PAINTSTRUCT ps;
 		hDC = BeginPaint(hWnd, &ps);
+		MainWindow& main_window = MainWindow::getInstance();
+		CUSTOM_BITMAP& background = main_window.get_background();
 
 		background.Draw(hDC, 0, 0,
 			MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT,
@@ -59,8 +48,6 @@ LRESULT CALLBACK MainWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM
 		DestroyWindow(hWnd);
 		break;
 	case WM_DESTROY:
-		RemoveProp(hWnd, TEXT("BitmapBits"));
-		RemoveProp(hWnd, TEXT("InfoHeader"));
 		PostQuitMessage(0);
 		break;
 	default:

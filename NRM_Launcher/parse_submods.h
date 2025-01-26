@@ -1,9 +1,5 @@
 #pragma once
-#include <fstream>
-#include <string>
-#include <filesystem>
-#include <list>
-#include <vector>
+#include "stdlibs.h"
 
 //====================================================================
 struct PARSED_SUBMOD

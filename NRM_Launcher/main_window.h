@@ -1,6 +1,8 @@
 #pragma once
-#include "stdlib.h"
 #include <windows.h>
+#include "stdlibs.h"
+#include "bitmap.h"
+#include "get_file_path.h"
 
 class MainWindow
 {
@@ -22,15 +24,11 @@ public:
 
 	static LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
-	const HWND getHWnd()
-	{
-		return m_hMainWnd;
-	}
+	const HWND getHWnd();
 
-	const std::string_view get_bkg_filename()
-	{
-		return std::string_view(m_strBkgFileName);
-	};
+	CUSTOM_BITMAP& get_background();
+
+	const std::string_view get_bkg_filename();
 
 private:
 	MainWindow();
@@ -40,4 +38,5 @@ private:
 	HWND m_hMainWnd;
 	bool m_initialized;
 	std::string m_strBkgFileName;
+	CUSTOM_BITMAP m_backrgound;
 };

@@ -2,6 +2,9 @@
 #include "resource.h"
 #include "const.h"
 #include "parse_submods.h"
+#include "submods_utils.h"
+#include "submods_buttons.h"
+#include "get_file_path.h"
 
 //====================================================================
 extern std::list<PARSED_SUBMOD> parsed_submods;
@@ -11,6 +14,21 @@ extern std::list<PARSED_SUBMOD> parsed_submods;
 	static SUBMODS_MODAL_WINDOW submodsModal;
 
 	return submodsModal;
+}
+//====================================================================
+HWND SUBMODS_MODAL_WINDOW::getHWnd()
+{
+	return m_hSubmodsWND;
+}
+//====================================================================
+std::string_view SUBMODS_MODAL_WINDOW::get_background_path()
+{
+	return m_bkgPath;
+}
+//====================================================================
+CUSTOM_BITMAP& SUBMODS_MODAL_WINDOW::get_background()
+{
+	return m_background;
 }
 //====================================================================
 void SUBMODS_MODAL_WINDOW::initialize(
@@ -89,6 +107,12 @@ void SUBMODS_MODAL_WINDOW::initialize(
 	{
 		throw std::exception("Can not create submods modal window");
 	}
+
+	// Initialize submods window background BITMAP
+	std::string bkgPath;
+	get_submods_bkg_path(bkgPath);
+	bkgPath.append(m_bkgPath);
+	m_background.LoadFromFile(bkgPath.c_str());
 
 	m_hParentWND = hParent;
 	m_initialized = true;

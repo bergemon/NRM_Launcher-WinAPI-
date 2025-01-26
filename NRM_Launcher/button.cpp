@@ -3,7 +3,41 @@
 #include "resource.h"
 
 //====================================================================
-extern std::map<uint32_t, BUTTON_POSITION> btnsBkgPaths;
+std::string_view LAUNCHER_BUTTONS::BUTTON::get_background_file_name()
+{
+	return m_bkgFileName;
+}
+//====================================================================
+uint32_t LAUNCHER_BUTTONS::BUTTON::getHeight()
+{
+	return m_height;
+}
+//====================================================================
+uint32_t LAUNCHER_BUTTONS::BUTTON::getWidth()
+{
+	return m_width;
+}
+//====================================================================
+uint32_t LAUNCHER_BUTTONS::BUTTON::get_posX()
+{
+	return m_posX;
+}
+//====================================================================
+uint32_t LAUNCHER_BUTTONS::BUTTON::get_posY()
+{
+	return m_posY;
+}
+//====================================================================
+uint32_t LAUNCHER_BUTTONS::BUTTON::get_button_type()
+{
+	return m_buttonType;
+}
+//====================================================================
+LAUNCHER_BUTTONS& LAUNCHER_BUTTONS::getInstance()
+{
+	static LAUNCHER_BUTTONS btns;
+	return btns;
+}
 //====================================================================
 LAUNCHER_BUTTONS::LAUNCHER_BUTTONS() {}
 //====================================================================
@@ -92,10 +126,13 @@ bool LAUNCHER_BUTTONS::create_button(
 
 	uint32_t width = props.width;
 	uint32_t height = props.height;
-	btnsBkgPaths[btnType] = { bkgFileName, x_coord, y_coord - exPadding, width, height };
 	
 	m_Vbuttons.emplace_back(
-		m_parent, m_className, btnType,
+		m_parent, m_className,
+		// Button type
+		btnType,
+		// Button background file name
+		bkgFileName,
 		// Cmd
 		m_nCmdShow,
 		// X and Y coords
@@ -116,12 +153,14 @@ LAUNCHER_BUTTONS::BUTTON::BUTTON(
 	HWND parent,
 	std::wstring_view className,
 	BUTTON_TYPE btnType,
+	const char* background_file_name,
 	int nCmdShow,
 	uint32_t x,
 	uint32_t y,
 	uint32_t width,
 	uint32_t height
-) : m_className(className), m_width(width), m_height(height), m_buttonType(btnType)
+) : m_className(className), m_width(width), m_height(height), m_posX(x), m_posY(y),
+	m_buttonType(btnType), m_bkgFileName(background_file_name)
 {
 	m_hBtnWnd = CreateWindowEx(
 		// WindowExStyles
@@ -173,7 +212,7 @@ LAUNCHER_BUTTONS::BUTTON::BUTTON(
 	}
 	error.append(L".");
 
-	SetProp(m_hBtnWnd, TEXT("buttonType"), &m_buttonType);
+	SetProp(m_hBtnWnd, TEXT("buttonClass"), this);
 
 	if (!m_hBtnWnd)
 	{
@@ -190,5 +229,10 @@ LAUNCHER_BUTTONS::BUTTON::~BUTTON()
 	RemoveProp(m_hBtnWnd, TEXT("buttonType"));
 	DestroyWindow(m_hBtnWnd);
 	m_hBtnWnd = nullptr;
+}
+//====================================================================
+LAUNCHER_BUTTONS::BUTTON& get_button_prop(HWND hWnd)
+{
+	return *(LAUNCHER_BUTTONS::BUTTON*)GetProp(hWnd, TEXT("ButtonClass"));
 }
 //====================================================================

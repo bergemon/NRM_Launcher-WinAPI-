@@ -1,6 +1,7 @@
-#include "const.h"
 #include <windows.h>
-#include "stdlib.h"
+#include "resource.h"
+#include "const.h"
+#include "stdlibs.h"
 #include "main_window.h"
 #include "button.h"
 #include "submods_modal.h"
@@ -17,7 +18,7 @@ int WINAPI MyWinMain(_In_ HINSTANCE hInstance, _In_ LPSTR lpCmdLine, _In_ int nC
 		MainWindow& main_window = MainWindow::getInstance();
 		main_window.initialize(
 			// Window class name
-			TEXT("MainWindow"),
+			TEXT("NRM_launcher_main_window"),
 			// Titlebar text
 			TEXT("New Realism mod launcher"),
 			// hInstance & Cmd
@@ -36,7 +37,7 @@ int WINAPI MyWinMain(_In_ HINSTANCE hInstance, _In_ LPSTR lpCmdLine, _In_ int nC
 			// Parent handler 
 			main_window.getHWnd(),
 			// Class name
-			TEXT("CUSTOM_BUTTONS_NRM"),
+			TEXT("NRM_launcher_main_window_button"),
 			// Cmd
 			nCmdShow
 		);
@@ -48,7 +49,7 @@ int WINAPI MyWinMain(_In_ HINSTANCE hInstance, _In_ LPSTR lpCmdLine, _In_ int nC
 			// Parent window handle
 			main_window.getHWnd(),
 			// Window class
-			TEXT("SubmodsModal"),
+			TEXT("NRM_launcher_sumbods_modal_window"),
 			// Titlebar text
 			TEXT("Select submods to play"),
 			// hInstance & Cmd
@@ -64,8 +65,10 @@ int WINAPI MyWinMain(_In_ HINSTANCE hInstance, _In_ LPSTR lpCmdLine, _In_ int nC
 		// Submods buttons
 		SUBMODS_BUTTONS& submod_window_buttons = SUBMODS_BUTTONS::getInstance();
 		submod_window_buttons.initiliaze(
+			// Parent
 			submods_modal.getHWnd(),
-			TEXT("SubmodsModalButtons")
+			// Classname
+			TEXT("NRM_launcher_submods_window_button")
 		);
 		create_submods_modal_buttons(submod_window_buttons);
 	}
@@ -75,8 +78,11 @@ int WINAPI MyWinMain(_In_ HINSTANCE hInstance, _In_ LPSTR lpCmdLine, _In_ int nC
 	}
 
 	MSG msg;
-	while (GetMessage(&msg, NULL, 0, 0))
+	BOOL bRet;
+	while (bRet = GetMessage(&msg, NULL, 0, 0))
 	{
+		if (bRet == -1) std::exit(1);
+
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}

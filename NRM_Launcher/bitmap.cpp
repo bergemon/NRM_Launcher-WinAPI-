@@ -1,6 +1,7 @@
 ﻿#include "bitmap.h"
 #include "get_file_path.h"
 
+//====================================================================
 CUSTOM_BITMAP::CUSTOM_BITMAP()
 {
 	m_fileHeadSize = sizeof(BITMAPFILEHEADER);
@@ -27,6 +28,31 @@ CUSTOM_BITMAP::~CUSTOM_BITMAP()
 	{
 		m_outFile.close();
 	}
+}
+//====================================================================
+BYTE* CUSTOM_BITMAP::GetBitmapBits()
+{
+	return m_aBitmapBits;
+}
+//====================================================================
+BITMAPINFOHEADER* CUSTOM_BITMAP::GetInfoHeader()
+{
+	return m_pInfoHead;
+}
+//====================================================================
+int CUSTOM_BITMAP::GetWidth()
+{ 
+	return m_width;
+}
+//====================================================================
+int CUSTOM_BITMAP::GetHeight()
+{
+	return m_height;
+}
+//====================================================================
+const wchar_t* CUSTOM_BITMAP::GetError()
+{
+	return m_error.c_str();
 }
 //====================================================================
 BOOL CUSTOM_BITMAP::CreateDib24(int w, int h, const char* fileName)

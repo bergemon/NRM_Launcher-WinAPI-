@@ -2,8 +2,6 @@
 #include "resource.h"
 
 //====================================================================
-extern std::map<uint32_t, BUTTON_POSITION> submodsBtnsBkgPaths;
-//====================================================================
 [[nodiscard]] SUBMODS_BUTTONS& SUBMODS_BUTTONS::getInstance()
 {
 	static SUBMODS_BUTTONS btns;
@@ -26,6 +24,11 @@ SUBMODS_BUTTONS::~SUBMODS_BUTTONS()
 std::list<SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON>& SUBMODS_BUTTONS::get_submods_buttons()
 {
 	return m_listButtons;
+}
+//====================================================================
+std::vector<SUBMODS_BUTTONS::SUBMOD_BUTTON_BUFFER>& SUBMODS_BUTTONS::get_submods_buttons_buffer()
+{
+	return m_submodButtonsBuffer;
 }
 //====================================================================
 void SUBMODS_BUTTONS::initiliaze(
@@ -92,14 +95,17 @@ bool SUBMODS_BUTTONS::create_submod_button(
 	x_coord = SUBMODS_BUTTONS_X_OFFSET;
 	y_coord = m_submodBtnOffset;
 
-	uint32_t width = props.width;
-	uint32_t height = props.height;
-	submodsBtnsBkgPaths[SUBMODS_BUTTON_TYPE::BTN_SUBMOD] = { "submod.bmp", x_coord, y_coord, width, height };
-
 	m_listButtons.emplace_back(
-		m_parent, m_className, SUBMODS_BUTTON_TYPE::BTN_SUBMOD,
+		m_parent, m_className,
+		// Submod button has no background
+		"",
+		// Button type
+		SUBMODS_BUTTON_TYPE::BTN_SUBMOD,
+		// x and y coords
 		x_coord, y_coord,
-		width, height,
+		// width and height
+		props.width, props.height,
+		// submod name and path
 		submod_name, submod_path
 	);
 
@@ -123,15 +129,24 @@ bool SUBMODS_BUTTONS::create_button(
 		return false;
 	}
 
-	submodsBtnsBkgPaths[btnType] = { bkgFileName, x, y - exPadding, props.width, props.height };
-
 	m_listButtons.emplace_back(
-		m_parent, m_className, btnType,
+		m_parent, m_className,
+		// Button background image file name
+		bkgFileName,
+		// Button type
+		btnType,
+		// x and y pos
 		x, y,
+		// width and height of the button
 		props.width, props.height
 	);
 
 	return true;
+}
+//====================================================================
+HWND SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::get_hWnd()
+{
+	return m_hBtnWnd;
 }
 //====================================================================
 void SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::set_checked(bool is_checked)
@@ -169,6 +184,21 @@ uint32_t SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::get_height()
 	return m_height;
 }
 //====================================================================
+std::string_view SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::get_background_file_name()
+{
+	return m_bkgFileName;
+}
+//====================================================================
+void SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::set_buffer_button(SUBMOD_BUTTON_BUFFER& buff_button)
+{
+	m_bufferButton = &buff_button;
+}
+//====================================================================
+SUBMODS_BUTTONS::SUBMOD_BUTTON_BUFFER& SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::get_buffer_button()
+{
+	return *m_bufferButton;
+}
+//====================================================================
 const std::string& SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::get_submod_name() const
 {
 	return m_submod_name;
@@ -182,6 +212,7 @@ const std::string& SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::get_submod_path() con
 SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::SUBMODS_WINDOW_BUTTON(
 	HWND parent,
 	std::wstring_view className,
+	const char* background_file_name,
 	SUBMODS_BUTTON_TYPE btnType,
 	uint32_t x,
 	uint32_t y,
@@ -191,7 +222,8 @@ SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::SUBMODS_WINDOW_BUTTON(
 	const char* submod_path,
 	bool checked
 ) : m_width(width), m_height(height), m_buttonType(btnType), m_className(className),
-	m_submod_name(submod_name), m_submod_path(submod_path), m_checked(checked), m_xPos(x), m_yPos(y)
+	m_submod_name(submod_name), m_submod_path(submod_path), m_checked(checked), m_xPos(x), m_yPos(y),
+	m_bkgFileName(background_file_name)
 {
 	m_hBtnWnd = CreateWindowEx(
 		// WindowExStyles
@@ -214,32 +246,31 @@ SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::SUBMODS_WINDOW_BUTTON(
 		NULL
 	);
 
-	std::wstring error(TEXT("Can not create"));
-	error.append(TEXT(" button "));
+	std::string error("Can not create");
+	error.append(" button ");
 
 	switch (btnType)
 	{
 	case SUBMODS_BUTTON_TYPE::BTN_SAVE:
-		error.append(TEXT("save"));
+		error.append("save");
 		break;
 	case SUBMODS_BUTTON_TYPE::BTN_CANCEL:
-		error.append(TEXT("cancel"));
+		error.append("cancel");
 		break;
 	case SUBMODS_BUTTON_TYPE::BTN_SUBMOD:
-		error.append(TEXT("submod"));
+		error.append("submod");
 		break;
 	default:
-		error.append(L"\"ERROR - CAN NOT DEFINITE BUTTON\"");
+		error.append("\"ERROR - CAN NOT DEFINITE BUTTON\"");
 		break;
 	}
-	error.append(L".");
+	error.append(".");
 
-	SetProp(m_hBtnWnd, TEXT("buttonType"), (SUBMODS_BUTTON_TYPE* const)&m_buttonType);
-	SetProp(m_hBtnWnd, TEXT("ButtonClass"), this);
+	SetProp(m_hBtnWnd, TEXT("submodButtonClass"), this);
 
 	if (!m_hBtnWnd)
 	{
-		MessageBox(NULL, error.c_str(), TEXT("Error"), MB_OK);
+		throw std::exception(error.c_str());
 		return;
 	}
 
@@ -349,6 +380,6 @@ void draw_text_checked_submod(
 //====================================================================
 SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON& get_submod_button_prop(HWND hWnd)
 {
-	return *(SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON*)GetProp(hWnd, TEXT("ButtonClass"));
+	return *(SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON*)GetProp(hWnd, TEXT("submodButtonClass"));
 }
 //====================================================================
