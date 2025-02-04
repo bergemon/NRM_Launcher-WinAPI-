@@ -12,9 +12,7 @@ LRESULT CALLBACK SUBMODS_MODAL_WINDOW::WndProc(HWND hWnd, UINT uMsg, WPARAM wPar
 	switch (uMsg)
 	{
 	case WM_CREATE:
-	{
 		break;
-	}
 	case WM_PAINT:
 	{
 		PAINTSTRUCT ps;

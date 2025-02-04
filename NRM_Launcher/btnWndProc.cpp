@@ -2,6 +2,8 @@
 #include "clear_cache.h"
 #include "create_process.h"
 #include "submods_modal.h"
+#include "settings_modal.h"
+#include "settings_parser.h"
 
 //====================================================================
 void draw_button_background(HWND hWnd, HDC hDC);
@@ -40,7 +42,6 @@ LRESULT CALLBACK LAUNCHER_BUTTONS::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, 
 		switch (button.get_button_type())
 		{
 		case BUTTON_TYPE::BTN_PLAY:
-		{
 			try
 			{
 				// Clear cache
@@ -53,15 +54,13 @@ LRESULT CALLBACK LAUNCHER_BUTTONS::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, 
 				MessageBoxA(GetParent(hWnd), e.what(), "Play button error", MB_OK);
 			}
 			break;
-		}
 		case BUTTON_TYPE::BTN_DOWNLOAD:
-		{
 			MessageBox(GetParent(hWnd), TEXT("Button has no functionality yet"), TEXT("Work in progress"), MB_OK);
 			break;
-		}
 		case BUTTON_TYPE::BTN_SETTINGS:
 		{
-			MessageBox(GetParent(hWnd), TEXT("Button has no functionality yet"), TEXT("Work in progress"), MB_OK);
+			SETTINGS_MODAL_WINDOW& settings_modal = SETTINGS_MODAL_WINDOW::getInstance();
+			settings_modal.show();
 			break;
 		}
 		case BUTTON_TYPE::BTN_SUBMODS:
@@ -71,16 +70,14 @@ LRESULT CALLBACK LAUNCHER_BUTTONS::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, 
 			break;
 		}
 		case BUTTON_TYPE::BTN_EXIT:
-		{
 			SendMessage(GetParent(hWnd), WM_CLOSE, NULL, NULL);
 			break;
-		}
 		case BUTTON_TYPE::BTN_DISCORD:
-		{
 			try
 			{
-				std::wstring link = settings_find_line(L"discord_link:");
-				if ((int32_t)ShellExecute(NULL, L"open", link.c_str(), NULL, NULL, SW_SHOW) <= 32)
+				LAUNCHER_SETTINGS& settings = LAUNCHER_SETTINGS::getInstance();
+				std::wstring discord_link = settings.get_discord_link().data();
+				if ((int32_t)ShellExecute(NULL, L"open", discord_link.c_str(), NULL, NULL, SW_SHOW) <= 32)
 				{
 					MessageBox(GetParent(hWnd), TEXT("Can not open link"), TEXT("Discord button error"), MB_OK);
 				}
@@ -92,7 +89,7 @@ LRESULT CALLBACK LAUNCHER_BUTTONS::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, 
 
 			break;
 		}
-		}
+
 		btnType = nullptr;
 		break;
 	}

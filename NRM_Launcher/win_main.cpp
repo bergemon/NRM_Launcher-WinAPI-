@@ -6,6 +6,8 @@
 #include "button.h"
 #include "submods_modal.h"
 #include "submods_buttons.h"
+#include "settings_modal.h"
+#include "settings_buttons_group.h"
 
 //====================================================================
 void create_buttons(LAUNCHER_BUTTONS& btns_singleton);
@@ -18,7 +20,7 @@ int WINAPI MyWinMain(_In_ HINSTANCE hInstance, _In_ LPSTR lpCmdLine, _In_ int nC
 		MainWindow& main_window = MainWindow::getInstance();
 		main_window.initialize(
 			// Window class name
-			TEXT("NRM_launcher_main_window"),
+			MAIN_WINDOW_CLASS,
 			// Titlebar text
 			TEXT("New Realism mod launcher"),
 			// hInstance & Cmd
@@ -49,7 +51,7 @@ int WINAPI MyWinMain(_In_ HINSTANCE hInstance, _In_ LPSTR lpCmdLine, _In_ int nC
 			// Parent window handle
 			main_window.getHWnd(),
 			// Window class
-			TEXT("NRM_launcher_sumbods_modal_window"),
+			SUBMODS_WINDOW_CLASS,
 			// Titlebar text
 			TEXT("Select submods to play"),
 			// hInstance & Cmd
@@ -64,13 +66,33 @@ int WINAPI MyWinMain(_In_ HINSTANCE hInstance, _In_ LPSTR lpCmdLine, _In_ int nC
 
 		// Submods buttons
 		SUBMODS_BUTTONS& submod_window_buttons = SUBMODS_BUTTONS::getInstance();
-		submod_window_buttons.initiliaze(
+		submod_window_buttons.initialize(
 			// Parent
 			submods_modal.getHWnd(),
 			// Classname
 			TEXT("NRM_launcher_submods_window_button")
 		);
 		create_submods_modal_buttons(submod_window_buttons);
+
+		// Settings window
+		SETTINGS_MODAL_WINDOW& settings_window = SETTINGS_MODAL_WINDOW::getInstance();
+		settings_window.initialize(
+			// Parent window handle
+			main_window.getHWnd(),
+			// Window class
+			SETTINGS_WINDOW_CLASS,
+			// Titlebar text
+			TEXT("NRM launcher settings"),
+			// hInstance & Cmd
+			hInstance, nCmdShow,
+			// Menu
+			NULL,
+			// Widht & height
+			SETTINGS_WINDOW_WIDTH, SETTINGS_WINDOW_HEIGHT,
+			// Background file name
+			SETTINGS_WINDOW_BACKGROUND
+		);
+		create_settings_buttons_groups(hInstance, settings_window.getHWnd());
 	}
 	catch (std::exception& e)
 	{
@@ -87,5 +109,5 @@ int WINAPI MyWinMain(_In_ HINSTANCE hInstance, _In_ LPSTR lpCmdLine, _In_ int nC
 		DispatchMessage(&msg);
 	}
 
-	return msg.wParam;
+	return (int)msg.wParam;
 }

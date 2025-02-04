@@ -5,14 +5,14 @@
 //====================================================================
 std::list<PARSED_SUBMOD> parsed_submods;
 //====================================================================
-void parse_submods() throw (std::exception)
+void parse_submods() noexcept(false)
 {
 	namespace fs = std::filesystem;
 
 	std::vector<fs::directory_entry> files;
 	files.reserve(10);
 
-	fs::path submods_path("game\\mod");
+	fs::path submods_path(GAME_PATH SLH "mod");
 
 	if (!fs::exists(submods_path))
 	{
@@ -39,7 +39,7 @@ void parse_submods() throw (std::exception)
 
 		if (count <= MAX_SUBMODS_COUNT && is_mod_file)
 		{
-			files.push_back(file);
+			files.emplace_back(file);
 		}
 		else if (count > MAX_SUBMODS_COUNT)
 		{
@@ -51,6 +51,7 @@ void parse_submods() throw (std::exception)
 
 	// Loop to parse .mod files
 	std::ifstream iFile;
+	uint32_t sub_symb_length = std::string(GAME_PATH).length() + std::string(SLH).length();
 	for (const auto& file : files)
 	{
 		std::string filepath = file.path().string().c_str();
@@ -61,9 +62,11 @@ void parse_submods() throw (std::exception)
 
 		PARSED_SUBMOD submod;
 
-		submod.submod_path = "mod/";
-		submod.submod_path.append(filepath);
-		fs::path submod_path;
+		submod.submod_path = filepath.substr(
+			filepath.find(GAME_PATH) + sub_symb_length,
+			filepath.length() - sub_symb_length
+		);
+		fs::path filesystem_submod_path;
 
 		// Read file line by line
 		while (std::getline(iFile, parsed_line))
@@ -83,9 +86,9 @@ void parse_submods() throw (std::exception)
 			if (parsed_line.find("path = ") != std::string::npos)
 			{
 				std::string parsed_path = parsed_line.substr(parsed_line.find("=") + 3, parsed_line.length() - parsed_line.find("=") - 3);
-				parsed_path = fs::current_path().string() + std::string("\\game\\") + parsed_path.substr(0, parsed_path.length() - 1);
-				parsed_path.replace(parsed_path.rfind("/"), 1, "\\");
-				submod_path = parsed_path;
+				parsed_path = fs::current_path().string() + std::string(SLH GAME_PATH SLH) + parsed_path.substr(0, parsed_path.length() - 1);
+				parsed_path.replace(parsed_path.rfind("/"), 1, SLH);
+				filesystem_submod_path = parsed_path;
 			}
 		}
 
@@ -94,7 +97,7 @@ void parse_submods() throw (std::exception)
 			iFile.close();
 		}
 
-		if (fs::exists(submod_path))
+		if (fs::exists(filesystem_submod_path))
 		{
 			parsed_submods.emplace_back(submod.submod_name, submod.submod_path);
 		}

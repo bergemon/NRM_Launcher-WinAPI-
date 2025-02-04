@@ -1,7 +1,7 @@
 #include "clear_cache.h"
 
 // This function can throw en exception!
-void clear_cache()
+void clear_cache() noexcept(false)
 {
 	namespace fs = std::filesystem;
 

@@ -20,7 +20,7 @@ public:
 		uint32_t width = CW_USEDEFAULT,
 		uint32_t height = 0,
 		const char* bkgFileName = nullptr
-	) throw (std::exception);
+	) noexcept(false);
 
 	static LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 

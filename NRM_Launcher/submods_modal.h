@@ -27,14 +27,12 @@ public:
 	void show();
 	void hide();
 
-	~SUBMODS_MODAL_WINDOW();
 
 	static LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
-
-
 private:
 	SUBMODS_MODAL_WINDOW();
+	~SUBMODS_MODAL_WINDOW();
 	SUBMODS_MODAL_WINDOW(const SUBMODS_MODAL_WINDOW&) = delete;
 	SUBMODS_MODAL_WINDOW operator=(const SUBMODS_MODAL_WINDOW&) = delete;
 

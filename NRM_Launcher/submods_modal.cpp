@@ -12,7 +12,6 @@ extern std::list<PARSED_SUBMOD> parsed_submods;
 [[nodiscard]] SUBMODS_MODAL_WINDOW& SUBMODS_MODAL_WINDOW::getInstance()
 {
 	static SUBMODS_MODAL_WINDOW submodsModal;
-
 	return submodsModal;
 }
 //====================================================================

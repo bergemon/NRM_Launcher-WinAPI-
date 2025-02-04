@@ -8,5 +8,5 @@ struct PARSED_SUBMOD
 	std::string submod_path;
 };
 //====================================================================
-void parse_submods() throw (std::exception);
+void parse_submods() noexcept(false);
 //====================================================================

@@ -8,6 +8,8 @@ class CUSTOM_BITMAP
 public:
 	CUSTOM_BITMAP();
 	~CUSTOM_BITMAP();
+
+	static uint32_t GetBitmapWidth(const char* fileName);
 	BOOL CreateDib24(int w, int h, const char* fileName);
 	bool CreateBkgMask(void(*mask_path)(std::string&));
 	void StoreDib24();
@@ -16,9 +18,9 @@ public:
 	int Draw(HDC hdc, int xDst, int yDst, int wDst, int hDst, int xSrc, int ySrc, int wSrc, int hSrc, DWORD rop);
 	BYTE* GetBitmapBits();
 	BITMAPINFOHEADER* GetInfoHeader();
-	int GetWidth();
-	int GetHeight();
-	const wchar_t* GetError();
+	uint32_t GetWidth();
+	uint32_t GetHeight();
+	const char* GetError();
 
 private:
 	int m_width;
@@ -31,7 +33,7 @@ private:
 	int m_fileHeadSize;
 	int m_infoHeadSize;
 	int m_imageSize;
-	std::wstring m_error;
+	std::string m_error;
 	std::ifstream m_inpFile;
 	std::ofstream m_outFile;
 	std::string m_fileName;

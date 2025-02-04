@@ -136,12 +136,19 @@
     <ClCompile Include="create_buttons.cpp" />
     <ClCompile Include="create_process.cpp" />
     <ClCompile Include="draw_btn_bkg.cpp" />
+    <ClCompile Include="draw_settings_buttons_background.cpp" />
     <ClCompile Include="draw_submods_btn_background.cpp" />
     <ClCompile Include="get_file_path.cpp" />
     <ClCompile Include="mainWndProc.cpp" />
     <ClCompile Include="main_window.cpp" />
     <ClCompile Include="main_wrap.cpp" />
     <ClCompile Include="parse_submods.cpp" />
+    <ClCompile Include="settingsRadioBtnWndProc.cpp" />
+    <ClCompile Include="settingsStaticBtnWndProc.cpp" />
+    <ClCompile Include="settingsWndProc.cpp" />
+    <ClCompile Include="settings_buttons_group.cpp" />
+    <ClCompile Include="settings_create_buttons_groups.cpp" />
+    <ClCompile Include="settings_modal.cpp" />
     <ClCompile Include="settings_parser.cpp" />
     <ClCompile Include="submodsBtnWndProc.cpp" />
     <ClCompile Include="submodsWndProc.cpp" />
@@ -154,13 +161,14 @@
   <ItemGroup>
     <ClInclude Include="bitmap.h" />
     <ClInclude Include="button.h" />
+    <ClInclude Include="settings_buttons_group.h" />
     <ClInclude Include="clear_cache.h" />
     <ClInclude Include="const.h" />
     <ClInclude Include="create_process.h" />
-    <ClInclude Include="defines.h" />
     <ClInclude Include="get_file_path.h" />
     <ClInclude Include="main_window.h" />
     <ClInclude Include="parse_submods.h" />
+    <ClInclude Include="settings_modal.h" />
     <ClInclude Include="settings_parser.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdlibs.h" />
@@ -178,7 +186,6 @@
   <ItemGroup>
     <None Include="..\..\..\Games\Victoria 2 NRM v1.30.1\game\gfx\cursors\exploration.CUR" />
     <None Include="..\..\..\Games\Victoria 2 NRM v1.30.1\game\gfx\cursors\normal.cur" />
-    <None Include="..\..\..\Games\Victoria 2 NRM v1.30.1\game\gfx\cursors\objective.cur" />
     <None Include="..\..\..\Games\Victoria 2 NRM v1.30.1\game\gfx\cursors\selected.cur" />
     <None Include="resources\normal.cur" />
     <None Include="resources\selected.cur" />

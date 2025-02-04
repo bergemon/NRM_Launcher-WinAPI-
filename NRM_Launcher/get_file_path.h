@@ -25,3 +25,15 @@ void get_submods_checkbox_path(std::string& str);
 //====================================================================
 void get_submods_checkbox_mask_path(std::string& str);
 //====================================================================
+void get_settings_bkg_path(std::string& str);
+//====================================================================
+void get_settings_button_path(std::string& str);
+//====================================================================
+void get_settings_active_button_path(std::string& str);
+//====================================================================
+void get_settings_button_mask_path(std::string& str);
+//====================================================================
+void get_settings_button_icon_path(std::string& str);
+//====================================================================
+void get_settings_button_icon_mask_path(std::string& str);
+//====================================================================

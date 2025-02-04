@@ -3,7 +3,6 @@
 #include <shellapi.h>
 #include "const.h"
 #include "stdlibs.h"
-#include "settings_parser.h"
 
 //====================================================================
 struct BUTTON_PROPERTIES

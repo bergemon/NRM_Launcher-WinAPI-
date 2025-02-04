@@ -2,7 +2,7 @@
 #include "submods_buttons.h"
 
 // This function can throw an exception!
-void create_process() throw (std::exception)
+void create_process() noexcept(false)
 {
 	namespace fs = std::filesystem;
 
@@ -23,6 +23,14 @@ void create_process() throw (std::exception)
 		{
 			nCmd.append(" -mod=");
 			nCmd.append(button.get_submod_path());
+		}
+	}
+	
+	for (auto it = nCmd.begin(); it != nCmd.end(); ++it)
+	{
+		if (*it == '\\')
+		{
+			*it = '/';
 		}
 	}
 

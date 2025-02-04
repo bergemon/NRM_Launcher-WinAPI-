@@ -2,6 +2,40 @@
 #include "get_file_path.h"
 
 //====================================================================
+uint32_t CUSTOM_BITMAP::GetBitmapWidth(const char* fileName)
+{
+	std::ifstream inpFile;
+
+	inpFile.open(fileName, std::ios::in | std::ios::binary);
+	if (!inpFile)
+	{
+		throw std::exception("Неверное имя файла или каталога");
+	}
+
+	BITMAPFILEHEADER* fileHead = new BITMAPFILEHEADER();
+
+	// BITMAPFILEHEADER
+	inpFile.read((char*)fileHead, sizeof(*fileHead));
+	if (fileHead->bfType != 0x4d42)
+	{
+		throw std::exception("Это не BMP - файл");
+	}
+
+
+	// BITMAPINFOHEADER
+	BITMAPINFOHEADER* infoHead = new BITMAPINFOHEADER();
+	uint32_t infoHeadSize;
+	infoHeadSize = fileHead->bfOffBits - sizeof(*fileHead);
+	inpFile.read((char*)infoHead, infoHeadSize);
+
+	uint32_t bitmap_width = infoHead->biWidth;
+
+	delete fileHead;
+	delete infoHead;
+
+	return bitmap_width;
+}
+//====================================================================
 CUSTOM_BITMAP::CUSTOM_BITMAP()
 {
 	m_fileHeadSize = sizeof(BITMAPFILEHEADER);
@@ -40,17 +74,17 @@ BITMAPINFOHEADER* CUSTOM_BITMAP::GetInfoHeader()
 	return m_pInfoHead;
 }
 //====================================================================
-int CUSTOM_BITMAP::GetWidth()
+uint32_t CUSTOM_BITMAP::GetWidth()
 { 
 	return m_width;
 }
 //====================================================================
-int CUSTOM_BITMAP::GetHeight()
+uint32_t CUSTOM_BITMAP::GetHeight()
 {
 	return m_height;
 }
 //====================================================================
-const wchar_t* CUSTOM_BITMAP::GetError()
+const char* CUSTOM_BITMAP::GetError()
 {
 	return m_error.c_str();
 }
@@ -97,7 +131,7 @@ bool CUSTOM_BITMAP::CreateBkgMask(void(*mask_path)(std::string&))
 	mask_name.append(file_name);
 
 	std::filesystem::path mask_file = mask_name.c_str();
-	
+
 	if (!std::filesystem::exists(mask_file))
 	{
 
@@ -109,7 +143,6 @@ bool CUSTOM_BITMAP::CreateBkgMask(void(*mask_path)(std::string&))
 		BYTE* mask_aBitmapBits = new BYTE[m_imageSize];
 
 		int iter = 0;
-		int color_count = 0;
 		RGB pixel;
 		uint32_t modImageSize = m_imageSize % 3;
 
@@ -122,21 +155,27 @@ bool CUSTOM_BITMAP::CreateBkgMask(void(*mask_path)(std::string&))
 				iter += modBytesPerLine;
 			}
 
-			pixel.red = m_aBitmapBits[iter++];
-			pixel.green = m_aBitmapBits[iter++];
 			pixel.blue = m_aBitmapBits[iter++];
+			pixel.green = m_aBitmapBits[iter++];
+			pixel.red = m_aBitmapBits[iter++];
 
-			if (pixel.red == 0 && pixel.green == 0 && pixel.blue == 0)
+			if (pixel.red == 0x00 && pixel.green == 0x00 && pixel.blue == 0x00)
 			{
-				mask_aBitmapBits[iter - 3] = 255;
-				mask_aBitmapBits[iter - 2] = 255;
-				mask_aBitmapBits[iter - 1] = 255;
+				// red
+				mask_aBitmapBits[iter - 1] = 0xFF;
+				// green
+				mask_aBitmapBits[iter - 2] = 0xFF;
+				// blue
+				mask_aBitmapBits[iter - 3] = 0xFF;
 			}
 			else
 			{
-				mask_aBitmapBits[iter - 3] = 0;
-				mask_aBitmapBits[iter - 2] = 0;
-				mask_aBitmapBits[iter - 1] = 0;
+				// red
+				mask_aBitmapBits[iter - 1] = 0x0;
+				// green
+				mask_aBitmapBits[iter - 2] = 0x0;
+				// blue
+				mask_aBitmapBits[iter - 3] = 0x0;
 			}
 		}
 
@@ -164,7 +203,7 @@ BOOL CUSTOM_BITMAP::LoadFromFile(const char* fileName)
 	m_inpFile.open(fileName, std::ios::in | std::ios::binary);
 	if (!m_inpFile)
 	{
-		m_error = L"Неверное имя файла или каталога.";
+		m_error = "Неверное имя файла или каталога.";
 		return FALSE;
 	}
 
@@ -172,7 +211,7 @@ BOOL CUSTOM_BITMAP::LoadFromFile(const char* fileName)
 	m_inpFile.read((char*)&m_fileHead, m_fileHeadSize);
 	if (m_fileHead.bfType != 0x4d42)
 	{
-		m_error = L"Это не BMP - файл";
+		m_error = "Это не BMP - файл";
 		return FALSE;
 	}
 

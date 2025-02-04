@@ -66,3 +66,39 @@ void get_submods_checkbox_mask_path(std::string& str)
 	str = SUBMODS_BUTTONS_FULL_PATH SLH SUBMODS_MASKS_PATH SLH MASK_PREFIX BTN_PREFIX;
 }
 //====================================================================
+void get_settings_bkg_path(std::string& str)
+{
+	str.clear();
+	str = SETTINGS_FULL_PATH;
+}
+//====================================================================
+void get_settings_button_path(std::string& str)
+{
+	str.clear();
+	str = SETTINGS_FULL_PATH SETTINGS_BUTTONS_PATH SLH BTN_PREFIX;
+}
+//====================================================================
+void get_settings_active_button_path(std::string& str)
+{
+	str.clear();
+	str = SETTINGS_FULL_PATH SETTINGS_BUTTONS_PATH SLH BTN_PREFIX ACTIVE_PREFIX;
+}
+//====================================================================
+void get_settings_button_mask_path(std::string& str)
+{
+	str.clear();
+	str = SETTINGS_FULL_PATH SETTINGS_BUTTONS_PATH SLH SETTINGS_MASKS_PATH SLH MASK_PREFIX BTN_PREFIX;
+}
+//====================================================================
+void get_settings_button_icon_path(std::string& str)
+{
+	str.clear();
+	str = SETTINGS_FULL_PATH SETTINGS_BUTTONS_PATH SLH ICON_PREFIX;
+}
+//====================================================================
+void get_settings_button_icon_mask_path(std::string& str)
+{
+	str.clear();
+	str = SETTINGS_FULL_PATH SETTINGS_BUTTONS_PATH SLH SETTINGS_MASKS_PATH SLH MASK_PREFIX ICON_PREFIX;
+}
+//====================================================================

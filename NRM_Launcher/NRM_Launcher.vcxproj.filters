@@ -13,18 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\main_window">
-      <UniqueIdentifier>{de27468b-0103-46fb-8714-436c56c2f7d3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\constants">
-      <UniqueIdentifier>{80fbba71-fcd5-4e3b-ae6d-feb93219f14e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\buttons">
-      <UniqueIdentifier>{f8662a59-6329-45c3-a99b-5fa47aa2cb95}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\utils">
-      <UniqueIdentifier>{b0d8d601-862d-4e5d-8077-3251d19530fe}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\utils">
       <UniqueIdentifier>{2b255137-4cb8-42cb-8d3b-27f1f4de7557}</UniqueIdentifier>
     </Filter>
@@ -37,20 +25,11 @@
     <Filter Include="Source Files\wrap">
       <UniqueIdentifier>{d7e4d22d-a091-4e2c-82c8-1e672796c5b8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\settings_parser">
-      <UniqueIdentifier>{29f3ed35-eaf8-471e-84f3-b3b42d3fb729}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\settings_parser">
       <UniqueIdentifier>{fede9358-c5b5-49e9-abcb-99711bb827a1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\actions">
-      <UniqueIdentifier>{cd8b48a4-4362-4d2e-9332-249a7628a8a3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\actions">
       <UniqueIdentifier>{a126f9f6-2d3a-4105-9186-dd811f1675c9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\submods_modal">
-      <UniqueIdentifier>{43fe7f78-3f87-49d3-934c-49a2a8ff802f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\submods_modal">
       <UniqueIdentifier>{6ef22cb4-1249-42e8-88ca-e7b4c66e75d8}</UniqueIdentifier>
@@ -61,8 +40,14 @@
     <Filter Include="Source Files\submods_modal\submods_parser">
       <UniqueIdentifier>{53f979b8-31c4-4393-adfd-4267ac22895c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\submods_modal\submods_parser">
-      <UniqueIdentifier>{b4e7cef5-6157-495c-952c-7b8e72fec3fe}</UniqueIdentifier>
+    <Filter Include="Source Files\settings_modal">
+      <UniqueIdentifier>{0eb599dc-665c-4f09-82df-de2521d698b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\settings_modal\buttons_group">
+      <UniqueIdentifier>{18dc19fd-4bd4-4005-8207-6ce0160dd666}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\constants">
+      <UniqueIdentifier>{80fbba71-fcd5-4e3b-ae6d-feb93219f14e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -129,6 +114,27 @@
     <ClCompile Include="submods_uitls.cpp">
       <Filter>Source Files\utils</Filter>
     </ClCompile>
+    <ClCompile Include="settings_modal.cpp">
+      <Filter>Source Files\settings_modal</Filter>
+    </ClCompile>
+    <ClCompile Include="settings_buttons_group.cpp">
+      <Filter>Source Files\settings_modal\buttons_group</Filter>
+    </ClCompile>
+    <ClCompile Include="settingsStaticBtnWndProc.cpp">
+      <Filter>Source Files\settings_modal\buttons_group</Filter>
+    </ClCompile>
+    <ClCompile Include="settingsRadioBtnWndProc.cpp">
+      <Filter>Source Files\settings_modal\buttons_group</Filter>
+    </ClCompile>
+    <ClCompile Include="settingsWndProc.cpp">
+      <Filter>Source Files\settings_modal</Filter>
+    </ClCompile>
+    <ClCompile Include="settings_create_buttons_groups.cpp">
+      <Filter>Source Files\settings_modal\buttons_group</Filter>
+    </ClCompile>
+    <ClCompile Include="draw_settings_buttons_background.cpp">
+      <Filter>Source Files\settings_modal\buttons_group</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdlibs.h">
@@ -137,44 +143,47 @@
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="clear_cache.h">
+      <Filter>Source Files\actions</Filter>
+    </ClInclude>
+    <ClInclude Include="create_process.h">
+      <Filter>Source Files\actions</Filter>
+    </ClInclude>
+    <ClInclude Include="button.h">
+      <Filter>Source Files\buttons</Filter>
+    </ClInclude>
     <ClInclude Include="main_window.h">
-      <Filter>Header Files\main_window</Filter>
+      <Filter>Source Files\main_window</Filter>
+    </ClInclude>
+    <ClInclude Include="settings_modal.h">
+      <Filter>Source Files\settings_modal</Filter>
+    </ClInclude>
+    <ClInclude Include="settings_buttons_group.h">
+      <Filter>Source Files\settings_modal\buttons_group</Filter>
+    </ClInclude>
+    <ClInclude Include="settings_parser.h">
+      <Filter>Source Files\settings_parser</Filter>
+    </ClInclude>
+    <ClInclude Include="submods_buttons.h">
+      <Filter>Source Files\submods_modal\buttons</Filter>
+    </ClInclude>
+    <ClInclude Include="parse_submods.h">
+      <Filter>Source Files\submods_modal\submods_parser</Filter>
+    </ClInclude>
+    <ClInclude Include="submods_modal.h">
+      <Filter>Source Files\submods_modal</Filter>
+    </ClInclude>
+    <ClInclude Include="bitmap.h">
+      <Filter>Source Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="get_file_path.h">
+      <Filter>Source Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="submods_utils.h">
+      <Filter>Source Files\utils</Filter>
     </ClInclude>
     <ClInclude Include="const.h">
       <Filter>Header Files\constants</Filter>
-    </ClInclude>
-    <ClInclude Include="button.h">
-      <Filter>Header Files\buttons</Filter>
-    </ClInclude>
-    <ClInclude Include="bitmap.h">
-      <Filter>Header Files\utils</Filter>
-    </ClInclude>
-    <ClInclude Include="settings_parser.h">
-      <Filter>Header Files\settings_parser</Filter>
-    </ClInclude>
-    <ClInclude Include="defines.h">
-      <Filter>Header Files\constants</Filter>
-    </ClInclude>
-    <ClInclude Include="get_file_path.h">
-      <Filter>Header Files\utils</Filter>
-    </ClInclude>
-    <ClInclude Include="create_process.h">
-      <Filter>Header Files\actions</Filter>
-    </ClInclude>
-    <ClInclude Include="clear_cache.h">
-      <Filter>Header Files\actions</Filter>
-    </ClInclude>
-    <ClInclude Include="submods_modal.h">
-      <Filter>Header Files\submods_modal</Filter>
-    </ClInclude>
-    <ClInclude Include="submods_buttons.h">
-      <Filter>Header Files\submods_modal</Filter>
-    </ClInclude>
-    <ClInclude Include="parse_submods.h">
-      <Filter>Header Files\submods_modal\submods_parser</Filter>
-    </ClInclude>
-    <ClInclude Include="submods_utils.h">
-      <Filter>Header Files\utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -201,9 +210,6 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="resources\selected.cur">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\..\..\Games\Victoria 2 NRM v1.30.1\game\gfx\cursors\objective.cur">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\..\..\Games\Victoria 2 NRM v1.30.1\game\gfx\cursors\exploration.CUR">

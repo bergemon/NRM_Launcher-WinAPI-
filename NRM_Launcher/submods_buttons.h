@@ -28,7 +28,7 @@ public:
 
 	[[nodiscard]] static SUBMODS_BUTTONS& getInstance();
 
-	void initiliaze(
+	void initialize(
 		HWND hParent,
 		LPCWSTR className
 	);
@@ -58,7 +58,7 @@ public:
 	friend void save_checked_from_buffer();
 	friend SUBMODS_WINDOW_BUTTON& get_submod_button_prop(HWND hWnd);
 	friend void clear_buttons_state_in_buffer();
-	friend void create_process() throw (std::exception);
+	friend void create_process() noexcept(false);
 	friend void draw_submods_btn_background(HWND hWnd, HDC hDC);
 	friend void draw_submods_active_btn_background(HWND hWnd, HDC hDC);
 	friend void draw_submods_checkbox_btn_background(HWND hWnd, HDC hDC);

@@ -31,7 +31,7 @@ std::vector<SUBMODS_BUTTONS::SUBMOD_BUTTON_BUFFER>& SUBMODS_BUTTONS::get_submods
 	return m_submodButtonsBuffer;
 }
 //====================================================================
-void SUBMODS_BUTTONS::initiliaze(
+void SUBMODS_BUTTONS::initialize(
 	HWND hParent,
 	LPCWSTR className
 )
