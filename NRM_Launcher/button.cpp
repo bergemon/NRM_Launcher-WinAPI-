@@ -39,6 +39,11 @@ LAUNCHER_BUTTONS& LAUNCHER_BUTTONS::getInstance()
 	return btns;
 }
 //====================================================================
+HWND LAUNCHER_BUTTONS::get_parent() const
+{
+	return m_parent;
+}
+//====================================================================
 LAUNCHER_BUTTONS::LAUNCHER_BUTTONS() {}
 //====================================================================
 LAUNCHER_BUTTONS::~LAUNCHER_BUTTONS()

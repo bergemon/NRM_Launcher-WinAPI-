@@ -90,6 +90,7 @@ public:
 	);
 
 	static LAUNCHER_BUTTONS& getInstance();
+	HWND get_parent() const;
 	friend BUTTON& get_button_prop(HWND hWnd);
 	friend void draw_button_background(HWND hWnd, HDC hDC);
 	friend void draw_active_button_background(HWND hWnd, HDC hDC);

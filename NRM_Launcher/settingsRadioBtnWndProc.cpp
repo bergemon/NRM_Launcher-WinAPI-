@@ -30,6 +30,10 @@ LRESULT CALLBACK SETTINGS_BUTTONS_GROUP::SETTINGS_RADIO_BUTTON::WndProc(HWND hWn
 				}
 				break;
 			case PARAM::CLEAR_CACHE:
+				if (button.get_button_num() == settings.get_clear_cache_state())
+				{
+					button.set_checked(true);
+				}
 				break;
 			}
 		}
@@ -63,6 +67,16 @@ LRESULT CALLBACK SETTINGS_BUTTONS_GROUP::SETTINGS_RADIO_BUTTON::WndProc(HWND hWn
 				}
 				break;
 			case PARAM::CLEAR_CACHE:
+				if (!button.get_checked())
+				{
+					settings.set_param(PARAM::CLEAR_CACHE, std::to_wstring(button.get_button_num()).c_str());
+					settings.rewrite_settings();
+				}
+				for (auto& button : button.get_button_group().get_buttons())
+				{
+					button.set_checked(false);
+					InvalidateRect(button.get_hWnd(), NULL, FALSE);
+				}
 				break;
 			}
 		}

@@ -44,10 +44,23 @@ LRESULT CALLBACK LAUNCHER_BUTTONS::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, 
 		case BUTTON_TYPE::BTN_PLAY:
 			try
 			{
+				LAUNCHER_SETTINGS& settings = LAUNCHER_SETTINGS::getInstance();
+
 				// Clear cache
-				clear_cache();
+				if (settings.get_clear_cache_state())
+				{
+					clear_cache();
+				}
+
 				// Then start a game
 				create_process();
+
+				if (settings.get_on_play_state())
+				{
+					SendMessage(LAUNCHER_BUTTONS::getInstance().get_parent(), WM_CLOSE, NULL, NULL);
+				}
+
+				ShowWindow(LAUNCHER_BUTTONS::getInstance().get_parent(), SW_MINIMIZE);
 			}
 			catch (std::exception& e)
 			{
