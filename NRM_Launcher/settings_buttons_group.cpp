@@ -15,6 +15,11 @@ HWND SETTINGS_BUTTONS_GROUP::m_hParent = nullptr;
 //====================================================================
 uint32_t SETTINGS_BUTTONS_GROUP::m_buttonGroupsCurrentOffset = SETTINGS_WINDOW_BUTTONS_GROUP_START_Y_POS;
 //====================================================================
+bool SETTINGS_BUTTONS_GROUP::is_initialized()
+{
+	return m_initialized;
+}
+//====================================================================
 SETTINGS_BUTTONS_GROUP::SETTINGS_STATIC_BUTTON& SETTINGS_BUTTONS_GROUP::get_static_button_prop(HWND hWnd)
 {
 	return *(SETTINGS_BUTTONS_GROUP::SETTINGS_STATIC_BUTTON*)GetProp(hWnd, TEXT("ButtonClass"));

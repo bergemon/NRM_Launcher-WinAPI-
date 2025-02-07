@@ -7,7 +7,7 @@
 //====================================================================
 // Functions and class forward declaration
 //====================================================================
-class SETTINGS_BUTTONS_GROUP;
+class SETTINGS_MODAL_WINDOW;
 //====================================================================
 void create_settings_buttons_groups(HINSTANCE hInstance, HWND hParent);
 //====================================================================
@@ -19,14 +19,16 @@ void draw_settings_radio_button_background(HWND hWnd, HDC hDC);
 //====================================================================
 class SETTINGS_BUTTONS_GROUP
 {
+	friend class SETTINGS_MODAL_WINDOW;
 	class SETTINGS_STATIC_BUTTON;
 	class SETTINGS_RADIO_BUTTON;
 
 public:
-	static void initialize(
-		HINSTANCE hInstance,
-		HWND hParent
-	) noexcept(false);
+	SETTINGS_BUTTONS_GROUP(
+		const char* background_file_name,
+		LAUNCHER_SETTINGS::SETTINGS_PARAM settings_param
+	);
+	~SETTINGS_BUTTONS_GROUP();
 
 	static SETTINGS_STATIC_BUTTON& get_static_button_prop(HWND hWnd);
 	static SETTINGS_RADIO_BUTTON& get_radio_button_prop(HWND hWnd);
@@ -40,13 +42,14 @@ public:
 	uint32_t get_static_button_y_pos();
 	void create_radio_button(const char* background_file_name) noexcept(false);
 
-	SETTINGS_BUTTONS_GROUP(
-		const char* background_file_name,
-		LAUNCHER_SETTINGS::SETTINGS_PARAM settings_param
-	);
-	~SETTINGS_BUTTONS_GROUP();
-
 private:
+
+	static bool is_initialized();
+	static void initialize(
+		HINSTANCE hInstance,
+		HWND hParent
+	) noexcept(false);
+
 	static HWND get_parent();
 
 	friend void draw_settings_static_button_background(HWND hWnd, HDC hDC);

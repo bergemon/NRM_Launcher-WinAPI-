@@ -1,4 +1,5 @@
 #include "settings_buttons_group.h"
+#include "settings_modal.h"
 #include "bitmap.h"
 
 //====================================================================
@@ -39,7 +40,8 @@ LRESULT CALLBACK SETTINGS_BUTTONS_GROUP::SETTINGS_RADIO_BUTTON::WndProc(HWND hWn
 		}
 		catch (std::exception& e)
 		{
-			MessageBoxA(NULL, e.what(), "Error", MB_OK);
+			SETTINGS_MODAL_WINDOW& settings_modal = SETTINGS_MODAL_WINDOW::getInstance();
+			MessageBoxA(settings_modal.getHWnd(), e.what(), "Error", MB_OK);
 		}
 
 		draw_settings_radio_button_background(hWnd, hDC);
@@ -82,7 +84,8 @@ LRESULT CALLBACK SETTINGS_BUTTONS_GROUP::SETTINGS_RADIO_BUTTON::WndProc(HWND hWn
 		}
 		catch (std::exception& e)
 		{
-			MessageBoxA(NULL, e.what(), "Error", MB_OK);
+			SETTINGS_MODAL_WINDOW& settings_modal = SETTINGS_MODAL_WINDOW::getInstance();
+			MessageBoxA(settings_modal.getHWnd(), e.what(), "Error", MB_OK);
 		}
 		break;
 	case WM_CLOSE:

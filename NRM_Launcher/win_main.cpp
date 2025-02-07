@@ -10,10 +10,6 @@
 #include "settings_buttons_group.h"
 
 //====================================================================
-extern SETTINGS_BUTTONS_GROUP* settings_on_play;
-//====================================================================
-extern SETTINGS_BUTTONS_GROUP* settings_clear_cache;
-//====================================================================
 void create_buttons(LAUNCHER_BUTTONS& btns_singleton);
 //====================================================================
 int WINAPI MyWinMain(_In_ HINSTANCE hInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
@@ -112,9 +108,6 @@ int WINAPI MyWinMain(_In_ HINSTANCE hInstance, _In_ LPSTR lpCmdLine, _In_ int nC
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
-
-	delete settings_on_play;
-	delete settings_clear_cache;
 
 	return (int)msg.wParam;
 }

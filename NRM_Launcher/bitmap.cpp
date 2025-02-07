@@ -142,40 +142,55 @@ bool CUSTOM_BITMAP::CreateBkgMask(void(*mask_path)(std::string&))
 		}
 		BYTE* mask_aBitmapBits = new BYTE[m_imageSize];
 
-		int iter = 0;
+		uint32_t iter = 0, line = 1;
 		RGB pixel;
 		uint32_t modImageSize = m_imageSize % 3;
+		uint32_t modBytesPerLine = m_bytesPerLine % 3;
 
 		while (iter < m_imageSize - modImageSize)
 		{
 			// Bytes alignment
-			uint32_t modBytesPerLine = m_bytesPerLine % 3;
-			if (iter == (m_bytesPerLine - modBytesPerLine))
+			if (modBytesPerLine && iter == m_bytesPerLine * line - modBytesPerLine)
 			{
 				iter += modBytesPerLine;
+				++line;
+				continue;
 			}
-
-			pixel.blue = m_aBitmapBits[iter++];
-			pixel.green = m_aBitmapBits[iter++];
 			pixel.red = m_aBitmapBits[iter++];
+			// Bytes alignment
+			if (modBytesPerLine && iter == m_bytesPerLine * line - modBytesPerLine)
+			{
+				iter += modBytesPerLine;
+				++line;
+				continue;
+			}
+			pixel.green = m_aBitmapBits[iter++];
+			// Bytes alignment
+			if (modBytesPerLine && iter == m_bytesPerLine * line - modBytesPerLine)
+			{
+				iter += modBytesPerLine;
+				++line;
+				continue;
+			}
+			pixel.blue = m_aBitmapBits[iter++];
 
-			if (pixel.red == 0x00 && pixel.green == 0x00 && pixel.blue == 0x00)
+			if (pixel.red == 0 && pixel.green == 0 && pixel.blue == 0)
 			{
 				// red
-				mask_aBitmapBits[iter - 1] = 0xFF;
+				mask_aBitmapBits[iter - 3] = 255;
 				// green
-				mask_aBitmapBits[iter - 2] = 0xFF;
+				mask_aBitmapBits[iter - 2] = 255;
 				// blue
-				mask_aBitmapBits[iter - 3] = 0xFF;
+				mask_aBitmapBits[iter - 1] = 255;
 			}
 			else
 			{
 				// red
-				mask_aBitmapBits[iter - 1] = 0x0;
+				mask_aBitmapBits[iter - 3] = 0;
 				// green
-				mask_aBitmapBits[iter - 2] = 0x0;
+				mask_aBitmapBits[iter - 2] = 0;
 				// blue
-				mask_aBitmapBits[iter - 3] = 0x0;
+				mask_aBitmapBits[iter - 1] = 0;
 			}
 		}
 
@@ -218,12 +233,20 @@ BOOL CUSTOM_BITMAP::LoadFromFile(const char* fileName)
 	// BITMAPINFOHEADER
 	m_infoHeadSize = m_fileHead.bfOffBits - m_fileHeadSize;
 	int fileSize = m_fileHead.bfSize;
-	m_imageSize = fileSize - (m_fileHeadSize + m_infoHeadSize);
 	m_pInfoHead = (BITMAPINFOHEADER*)(new BYTE[m_infoHeadSize]);
 	m_inpFile.read((char*)m_pInfoHead, m_infoHeadSize);
+	if (m_pInfoHead->biSizeImage)
+	{
+		m_imageSize = m_pInfoHead->biSizeImage;
+	}
+	else
+	{
+		m_imageSize = fileSize - (m_fileHeadSize + m_infoHeadSize);
+	}
 	m_width = m_pInfoHead->biWidth;
 	m_height = m_pInfoHead->biHeight;
 	m_aBitmapBits = new BYTE[m_imageSize];
+	m_bytesPerLine = ((m_width * 24 + 31) / 32) * 4;
 
 	m_inpFile.read((char*)m_aBitmapBits, m_imageSize);
 	return true;

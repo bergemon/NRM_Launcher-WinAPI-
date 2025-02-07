@@ -8,6 +8,27 @@
 	return settings_window;
 }
 //====================================================================
+SETTINGS_BUTTONS_GROUP& SETTINGS_MODAL_WINDOW::create_buttons_group(
+	const char* background_file_name,
+	LAUNCHER_SETTINGS::SETTINGS_PARAM settings_param
+)
+{
+	if (!SETTINGS_BUTTONS_GROUP::is_initialized())
+	{
+		SETTINGS_BUTTONS_GROUP::initialize(
+			GetModuleHandle(NULL),
+			getHWnd()
+		);
+	}
+
+	m_buttonsGroups.emplace_back(
+		background_file_name,
+		settings_param
+	);
+
+	return m_buttonsGroups.back();
+}
+//====================================================================
 CUSTOM_BITMAP& SETTINGS_MODAL_WINDOW::get_background()
 {
 	return m_background;

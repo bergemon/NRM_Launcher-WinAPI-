@@ -1,9 +1,6 @@
 #include "settings_buttons_group.h"
+#include "settings_modal.h"
 
-//====================================================================
-SETTINGS_BUTTONS_GROUP* settings_on_play;
-//====================================================================
-SETTINGS_BUTTONS_GROUP* settings_clear_cache;
 //====================================================================
 void create_settings_buttons_groups(HINSTANCE hInstance, HWND hParent)
 {
@@ -11,16 +8,21 @@ void create_settings_buttons_groups(HINSTANCE hInstance, HWND hParent)
 
 	try
 	{
-		SETTINGS_BUTTONS_GROUP::initialize(hInstance, hParent);
+		SETTINGS_MODAL_WINDOW& settings_window = SETTINGS_MODAL_WINDOW::getInstance();
 
-		settings_on_play = new SETTINGS_BUTTONS_GROUP("onPlay.bmp", PARAM::ON_PLAY);
-		settings_on_play->create_radio_button("minimize.bmp");
-		settings_on_play->create_radio_button("close.bmp");
+		SETTINGS_BUTTONS_GROUP& settings_on_play = settings_window.create_buttons_group(
+			"onPlay.bmp",
+			PARAM::ON_PLAY
+		);
+		settings_on_play.create_radio_button("minimize.bmp");
+		settings_on_play.create_radio_button("close.bmp");
 
-
-		settings_clear_cache = new SETTINGS_BUTTONS_GROUP("clearCache.bmp", PARAM::CLEAR_CACHE);
-		settings_clear_cache->create_radio_button("clearCacheNo.bmp");
-		settings_clear_cache->create_radio_button("clearCacheYes.bmp");
+		SETTINGS_BUTTONS_GROUP& settings_clear_cache = settings_window.create_buttons_group(
+			"clearCache.bmp",
+			PARAM::CLEAR_CACHE
+		);
+		settings_clear_cache.create_radio_button("clearCacheNo.bmp");
+		settings_clear_cache.create_radio_button("clearCacheYes.bmp");
 	}
 	catch (std::exception& e)
 	{
