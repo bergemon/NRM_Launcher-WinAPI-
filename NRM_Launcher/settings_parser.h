@@ -14,7 +14,10 @@ public:
 	{
 		DISCORD,
 		ON_PLAY,
-		CLEAR_CACHE
+		CLEAR_CACHE,
+		VERSION,
+		CHECKSUM,
+		THREADS_TO_UNZIP
 	};
 
 	[[nodiscard]] const std::wstring_view get_discord_link() const;
@@ -52,6 +55,6 @@ private:
 
 	// other stuff
 	bool m_settingsParsed = false;
-	uint32_t m_countOfLines = 3;
+	uint32_t m_countOfLines = 6;
 };
 //====================================================================

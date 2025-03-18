@@ -59,14 +59,14 @@ void create_process() noexcept(false)
 		&processInfo
 	);
 
+	if (!result)
+	{
+		throw std::exception("Can not create victoria 2 process");
+	}
+
 	// Then return original program path
 	fs::current_path(originalPath);
 
 	CloseHandle(processInfo.hProcess);
 	CloseHandle(processInfo.hThread);
-
-	if (!result)
-	{
-		throw std::exception("Can not create victoria 2 process");
-	}
 }

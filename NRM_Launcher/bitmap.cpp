@@ -149,13 +149,6 @@ bool CUSTOM_BITMAP::CreateBkgMask(void(*mask_path)(std::string&))
 
 		while (iter < m_imageSize - modImageSize)
 		{
-			// Bytes alignment
-			if (modBytesPerLine && iter == m_bytesPerLine * line - modBytesPerLine)
-			{
-				iter += modBytesPerLine;
-				++line;
-				continue;
-			}
 			pixel.red = m_aBitmapBits[iter++];
 			// Bytes alignment
 			if (modBytesPerLine && iter == m_bytesPerLine * line - modBytesPerLine)
@@ -165,13 +158,6 @@ bool CUSTOM_BITMAP::CreateBkgMask(void(*mask_path)(std::string&))
 				continue;
 			}
 			pixel.green = m_aBitmapBits[iter++];
-			// Bytes alignment
-			if (modBytesPerLine && iter == m_bytesPerLine * line - modBytesPerLine)
-			{
-				iter += modBytesPerLine;
-				++line;
-				continue;
-			}
 			pixel.blue = m_aBitmapBits[iter++];
 
 			if (pixel.red == 0 && pixel.green == 0 && pixel.blue == 0)

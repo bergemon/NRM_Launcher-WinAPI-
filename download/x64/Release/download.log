@@ -1,0 +1,11 @@
+﻿  download.cpp
+  net_handler.cpp
+D:\CPP\NRM_Launcher\download\net_handler.cpp(88,20): warning C4244: 'argument': conversion from 'SOCKET' to 'int', possible loss of data
+D:\CPP\NRM_Launcher\download\net_handler.cpp(121,66): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+     Creating library D:\CPP\NRM_Launcher\x64\Release\download.lib and object D:\CPP\NRM_Launcher\x64\Release\download.exp
+  Generating code
+  7 of 717 functions ( 1.0%) were compiled, the rest were copied from previous compilation.
+    4 functions were new in current compilation
+    31 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  download.vcxproj -> D:\CPP\NRM_Launcher\x64\Release\download.dll

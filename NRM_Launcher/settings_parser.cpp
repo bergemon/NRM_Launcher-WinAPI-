@@ -43,6 +43,9 @@ void LAUNCHER_SETTINGS::initialize() noexcept(false)
 	m_params.emplace_back(SETTINGS_PARAM::DISCORD, TO_W_STRING("discord_link"), TO_W_STRING("0"));
 	m_params.emplace_back(SETTINGS_PARAM::ON_PLAY, TO_W_STRING("on_play"), TO_W_STRING("0"));
 	m_params.emplace_back(SETTINGS_PARAM::CLEAR_CACHE, TO_W_STRING("clear_cache"), TO_W_STRING("0"));
+	m_params.emplace_back(SETTINGS_PARAM::VERSION, TO_W_STRING("ver"), TO_W_STRING("0"));
+	m_params.emplace_back(SETTINGS_PARAM::CHECKSUM, TO_W_STRING("checksum"), TO_W_STRING("0"));
+	m_params.emplace_back(SETTINGS_PARAM::THREADS_TO_UNZIP, TO_W_STRING("threads_to_unzip"), TO_W_STRING("0"));
 
 	parse_settings();
 
