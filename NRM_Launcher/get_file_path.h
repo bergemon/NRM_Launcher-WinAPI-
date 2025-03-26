@@ -37,3 +37,9 @@ void get_settings_button_icon_path(std::string& str);
 //====================================================================
 void get_settings_button_icon_mask_path(std::string& str);
 //====================================================================
+void get_download_bkg_path(std::string& str);
+//====================================================================
+void get_download_btns_bkg_path(std::string& str);
+//====================================================================
+void get_download_btns_mask_path(std::string& str);
+//====================================================================

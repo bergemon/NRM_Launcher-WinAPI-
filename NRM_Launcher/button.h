@@ -5,6 +5,8 @@
 #include "stdlibs.h"
 
 //====================================================================
+void create_buttons(int nCmdShow);
+//====================================================================
 struct BUTTON_PROPERTIES
 {
 	uint32_t width = CW_USEDEFAULT;

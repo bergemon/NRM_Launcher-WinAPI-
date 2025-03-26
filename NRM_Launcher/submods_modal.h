@@ -23,7 +23,7 @@ public:
 
 	CUSTOM_BITMAP& get_background();
 	std::string_view get_background_path();
-	HWND getHWnd();
+	HWND getHWnd() const;
 	void show();
 	void hide();
 

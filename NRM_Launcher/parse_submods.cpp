@@ -51,7 +51,8 @@ void parse_submods() noexcept(false)
 
 	// Loop to parse .mod files
 	std::ifstream iFile;
-	uint32_t sub_symb_length = std::string(GAME_PATH).length() + std::string(SLH).length();
+	size_t sub_symb_length = std::string(GAME_PATH).length() + std::string(SLH).length();
+
 	for (const auto& file : files)
 	{
 		std::string filepath = file.path().string().c_str();

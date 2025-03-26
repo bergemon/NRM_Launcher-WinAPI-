@@ -40,6 +40,7 @@ void LAUNCHER_SETTINGS::initialize() noexcept(false)
 		throw std::exception("Settings file does not exist");
 	}
 
+	m_params.reserve(SETTINGS_DATA_FIELDS);
 	m_params.emplace_back(SETTINGS_PARAM::DISCORD, TO_W_STRING("discord_link"), TO_W_STRING("0"));
 	m_params.emplace_back(SETTINGS_PARAM::ON_PLAY, TO_W_STRING("on_play"), TO_W_STRING("0"));
 	m_params.emplace_back(SETTINGS_PARAM::CLEAR_CACHE, TO_W_STRING("clear_cache"), TO_W_STRING("0"));
@@ -72,9 +73,62 @@ uint32_t LAUNCHER_SETTINGS::get_clear_cache_state() const
 	return num;
 }
 //====================================================================
-[[nodiscard]] uint32_t LAUNCHER_SETTINGS::get_lines_count() const
+[[nodiscard]] uint32_t LAUNCHER_SETTINGS::get_fields_count() const
 {
-	return m_countOfLines;
+	return m_count_of_fields;
+}
+//====================================================================
+int32_t LAUNCHER_SETTINGS::get_game_version() const
+{
+	if (
+		m_params[SETTINGS_PARAM::VERSION].value.length() == 1
+		&& m_params[SETTINGS_PARAM::VERSION].value[0] == '0'
+	)
+	{
+		return 0;
+	}
+	else if (m_params[SETTINGS_PARAM::VERSION].value.length() != 4)
+	{
+		throw std::runtime_error("Game version has wrong number of digits, must be 4");
+	}
+
+	// Cut UTF-16 LE char to 1 byte
+	char* version_buffer = new char[5];
+	for (int i = 0; i < 4; ++i)
+	{
+		version_buffer[i] = (char)m_params[SETTINGS_PARAM::VERSION].value[i];
+	}
+	version_buffer[4] = '\0';
+
+	int32_t num = std::atoi(version_buffer);
+
+	delete[] version_buffer;
+
+	return num;
+}
+//====================================================================
+[[nodiscard]] const std::wstring LAUNCHER_SETTINGS::get_game_checksum() const
+{
+	return m_params[SETTINGS_PARAM::CHECKSUM].value;
+}
+//====================================================================
+[[nodiscard]] char* LAUNCHER_SETTINGS::get_game_checksum_ascii()
+{
+	size_t length = get_game_checksum().length();
+
+	char* checksum_truncated = nullptr;
+
+	if (!checksum_truncated)
+	{
+		checksum_truncated = new char[length + 1];
+	}
+
+	for (int i = 0; i <= length; ++i)
+	{
+		checksum_truncated[i] = (char)*(get_game_checksum().data() + i);
+	}
+
+	return checksum_truncated;
 }
 //====================================================================
 void LAUNCHER_SETTINGS::set_param(SETTINGS_PARAM param, const wchar_t* value_param) noexcept(false)
@@ -204,14 +258,16 @@ void LAUNCHER_SETTINGS::parse_settings()
 	wchar_t buffer[2];
 	// Zero terminated C string
 	buffer[1] = L'\0';
+	// String to compare
+	std::wstring check = TO_W_STRING(SETTINGS_HEAD);
 	// String buffer to accumulate read data
-	std::wstring line;
+	std::wstring field;
 	// Check BOM first
 	bool checked_bom = false;
 	// Skip first line
-	bool first_line = true;
-	// Lines counter to check then if file has too many lines
-	size_t lines_count = 0;
+	bool first_field = true;
+	// Fields counter to check then if file has too many fields
+	size_t fields_count = 0;
 	uint32_t param_to_get = 0;
 
 	settings_file.open(APP_DIR SLH SETTINGS);
@@ -225,30 +281,37 @@ void LAUNCHER_SETTINGS::parse_settings()
 		// Skip BOM, we've checked it before
 		if (!checked_bom)
 		{
-			lines_count++;
+			if (HIBYTE(buffer[0]) != (wchar_t)0xfe || LOBYTE(buffer[0]) != (wchar_t)0xff)
+			{
+				throw std::exception("Invalid codepage, must be UTF-16 LE");
+			}
 			checked_bom = true;
 		}
 		else
 		{
 			// Check line for max permitted length
-			if (line.size() > SETTINGS_LINE_MAX_LENGTH)
+			if (field.size() > SETTINGS_FIELD_MAX_LENGTH)
 			{
 				throw std::exception("Read line has too many characters");
 			}
 
 			// If we found line feed character
-			if (buffer[0] == 0x000A)
+			if (buffer[0] == 0x000A || buffer[1] == 0x000A)
 			{
-				// Check for max permitted lines
-				if (lines_count++ > SETTINGS_DATA_LINES)
+				// Check for max permitted fields
+				if (fields_count++ > SETTINGS_DATA_FIELDS)
 				{
-					throw std::exception("Settings file has too many lines");
+					throw std::exception("Settings file has too many fields");
 				}
-				// Skip first line
-				if (first_line)
+				// Skip first field
+				if (first_field)
 				{
-					first_line = false;
-					line.clear();
+					if (field.find(check.c_str()) == std::wstring::npos)
+					{
+						throw std::exception("Wrong settings header");
+					}
+					first_field = false;
+					field.clear();
 				}
 				else
 				{
@@ -260,29 +323,29 @@ void LAUNCHER_SETTINGS::parse_settings()
 
 					// Every settings line except first must be ended by ";" symbol
 					if (
-						line.rfind(TO_W_STRING(SETTINGS_LINE_TERMINATE))
-						!= line.size() - std::wstring(TO_W_STRING(SETTINGS_LINE_TERMINATE)).size() - 1
+						field.rfind(TO_W_STRING(SETTINGS_LINE_TERMINATE))
+						!= field.size() - std::wstring(TO_W_STRING(SETTINGS_LINE_TERMINATE)).size() - 1
 						)
 					{
 						throw std::exception("Invalid settings data");
 					}
 					// Find substring in read line
-					if (line.find(param_s.description) != std::wstring::npos)
+					if (field.find(param_s.description) != std::wstring::npos)
 					{
-						std::wstring parsed_param = line.substr(
+						std::wstring parsed_param = field.substr(
 							// Start pos
-							line.find(TO_W_STRING(SETTINGS_PARAM_DELIMETER)) + 1,
+							field.find(TO_W_STRING(SETTINGS_PARAM_DELIMETER)) + 1,
 							// Count of characters
-							line.length() - line.find(TO_W_STRING(SETTINGS_PARAM_DELIMETER))
+							field.length() - field.find(TO_W_STRING(SETTINGS_PARAM_DELIMETER))
 							- std::wstring(TO_W_STRING(SETTINGS_PARAM_DELIMETER)).length() - 2
 						);
 						param_s.set_value(parsed_param.c_str());
 					}
 					// Clear line buffer
-					line.clear();
+					field.clear();
 				}
 			}
-			line.append(buffer);
+			field.append(buffer);
 		}
 	}
 }

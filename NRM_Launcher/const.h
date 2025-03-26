@@ -3,6 +3,9 @@
 #include <string>
 
 //====================================================================
+// Download lib constants
+#define DEFAULT_ZIP_PATH "temp.zip"
+//====================================================================
 // Main window properties
 #define MAIN_WINDOW_WIDTH 600
 #define MAIN_WINDOW_HEIGHT 600
@@ -14,6 +17,7 @@
 #define BTN_BIG_HEIGHT 50
 #define BTNS_STD_PADDING 0
 #define BTN_PLAY_EXTRA_PADDING 30
+#define MAIN_BUTTONS_CLASS TEXT("NRM_launcher_main_window_button")
 #define BTNS_X_COORD_INVERT ((MAIN_WINDOW_WIDTH - BTN_STD_WIDTH) / 2)
 //====================================================================
 // Discord button (special)
@@ -53,8 +57,8 @@
 #define SETTINGS_HEAD "NRM_LAUNCHER_SETTINGS"
 #define SETTINGS_LINE_TERMINATE ";"
 #define SETTINGS_PARAM_DELIMETER ":"
-#define SETTINGS_DATA_LINES 4
-#define SETTINGS_LINE_MAX_LENGTH 200
+#define SETTINGS_DATA_FIELDS 6
+#define SETTINGS_FIELD_MAX_LENGTH 200
 //====================================================================
 // Utility
 #define TO_W_STRING(quote) __to_wide_str(quote)
@@ -71,7 +75,7 @@
 #define SUBMODS_WINDOW_CLASS TEXT("NRM_launcher_sumbods_modal_window")
 #define SUBMODS_WINDOW_STD_BUTTONS_X_OFFSET 45
 #define SUBMODS_BUTTONS_X_OFFSET 20
-#define SUBMOD_BUTTONS_Y_START 10
+#define SUBMOD_BUTTONS_Y_START 40
 #define SUBMOD_BUTTONS_Y_PADDING 10
 #define SUBMODS_STD_BUTTON_WIDTH 150
 #define SUBMODS_STD_BUTTON_HEIGHT 30
@@ -115,3 +119,27 @@
 #define SETTINGS_RADIO_BUTTON_CION_PATH SETTINGS_FULL_PATH SLH SETTINGS_BUTTONS_PATH SLH ICON_PREFIX
 #define SETTINGS_RADIO_BUTTON_CHECKED_FILENAME "radioChecked.bmp"
 #define SETTINGS_RADIO_BUTTON_UNCHECKED_FILENAME "radioUnchecked.bmp"
+//====================================================================
+// Download window
+#define DOWNLOAD_WINDOW_WIDTH 400
+#define DOWNLOAD_WINDOW_HEIGHT 500
+#define DOWNLOAD_WINDOW_CLASS TEXT("NRM_launcher_download_window")
+#define DOWNLOAD_WINDOW_BACKGROUND "download_backgrond.bmp"
+#define DOWNLOAD_WINDOW_PATH "download_window"
+#define DOWNLOAD_FULL_PATH APP_DIR SLH DOWNLOAD_WINDOW_PATH SLH
+#define DOWNLOAD_PROGRESSBARS_PATH "progressBars"
+#define DOWNLOAD_BUTTONS_PATH "buttons"
+#define DOWNLOAD_MASKS_PATH "masks"
+#define DOWNLOAD_WINDOW_X_OFFSET (MAIN_WINDOW_WIDTH - DOWNLOAD_WINDOW_WIDTH) / 2
+#define DOWNLOAD_WINDOW_Y_OFFSET (MAIN_WINDOW_HEIGHT - DOWNLOAD_WINDOW_HEIGHT) / 2
+#define DOWNLOAD_STATIC_BUTTON_CLASS TEXT("NRM_launcher_download_static_button")
+#define DOWNLOAD_BUTTONS_Y_START 50
+#define DOWNLOAD_BUTTONS_Y_SPACE_BETWEEN 50
+#define DOWNLOAD_BUTTONS_PROGRESSBAR_TOP_MARGIN 20
+#define DOWNLOAD_BUTTONS_WIDTH 300
+#define DOWNLOAD_BUTTONS_HEIGHT 50
+#define DOWNLOAD_PROGRESSBAR_WIDTH 200
+#define DOWNLOAD_PROGRESSBAR_HEIGHT 40
+#define DOWNLOAD_BUTTONS_X_OFFSET (DOWNLOAD_WINDOW_WIDTH - DOWNLOAD_BUTTONS_WIDTH) / 2
+#define DOWNLOAD_PROGRESSBAR_X_OFFSET (DOWNLOAD_WINDOW_WIDTH - DOWNLOAD_PROGRESSBAR_WIDTH) / 2
+//====================================================================

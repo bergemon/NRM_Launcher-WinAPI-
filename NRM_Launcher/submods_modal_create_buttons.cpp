@@ -1,14 +1,24 @@
 #include "submods_buttons.h"
+#include "submods_modal.h"
 #include "parse_submods.h"
 #include "submods_utils.h"
 
 //====================================================================
 extern std::list<PARSED_SUBMOD> parsed_submods;
 //====================================================================
-void create_submods_modal_buttons(SUBMODS_BUTTONS& submod_window_buttons)
+void create_submods_modal_buttons()
 {
+	SUBMODS_BUTTONS& submod_window_buttons = SUBMODS_BUTTONS::getInstance();
+
 	try
 	{
+		submod_window_buttons.initialize(
+			// Parent
+			SUBMODS_MODAL_WINDOW::getInstance().getHWnd(),
+			// Classname
+			TEXT("NRM_launcher_submods_window_button")
+		);
+
 		submod_window_buttons.create_button(
 			SUBMODS_BUTTON_TYPE::BTN_SAVE,
 			// width & height

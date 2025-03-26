@@ -102,10 +102,12 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <StructMemberAlignment>8Bytes</StructMemberAlignment>
+      <AdditionalIncludeDirectories>D:\CPP\NRM_Launcher\download;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <UndefineAllPreprocessorDefinitions>false</UndefineAllPreprocessorDefinitions>
+      <PreprocessorDefinitions>_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING;_WIN32;_UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -118,10 +120,12 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <StructMemberAlignment>8Bytes</StructMemberAlignment>
+      <AdditionalIncludeDirectories>D:\CPP\NRM_Launcher\download;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <UndefineAllPreprocessorDefinitions>false</UndefineAllPreprocessorDefinitions>
+      <PreprocessorDefinitions>_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING;_WIN32;_UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -136,8 +140,14 @@
     <ClCompile Include="button.cpp" />
     <ClCompile Include="clear_cache.cpp" />
     <ClCompile Include="create_buttons.cpp" />
+    <ClCompile Include="create_download_buttons.cpp" />
     <ClCompile Include="create_process.cpp" />
+    <ClCompile Include="downloadBtnWndProc.cpp" />
+    <ClCompile Include="downloadWndProc.cpp" />
+    <ClCompile Include="download_buttons.cpp" />
+    <ClCompile Include="download_modal.cpp" />
     <ClCompile Include="draw_btn_bkg.cpp" />
+    <ClCompile Include="draw_download_btn_background.cpp" />
     <ClCompile Include="draw_settings_buttons_background.cpp" />
     <ClCompile Include="draw_submods_btn_background.cpp" />
     <ClCompile Include="get_file_path.cpp" />
@@ -163,6 +173,8 @@
   <ItemGroup>
     <ClInclude Include="bitmap.h" />
     <ClInclude Include="button.h" />
+    <ClInclude Include="download_buttons.h" />
+    <ClInclude Include="download_modal.h" />
     <ClInclude Include="settings_buttons_group.h" />
     <ClInclude Include="clear_cache.h" />
     <ClInclude Include="const.h" />

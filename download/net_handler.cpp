@@ -118,7 +118,7 @@ NET_HANDLER& NET_HANDLER::send_message(MESSAGE_TYPE msg_type) noexcept(false)
 	m_current_msg_type = msg_type;
 	std::string header = get_header_msg();
 
-	uint32_t iResult = SSL_write(m_ssl, header.data(), header.length());
+	size_t iResult = SSL_write(m_ssl, header.data(), header.length());
 
 	if (iResult < header.length())
 	{
@@ -132,19 +132,18 @@ NET_HANDLER& NET_HANDLER::recieve_message() noexcept(false)
 {
 	m_header_parsed = false;
 
-	std::ofstream of;
+	std::ofstream of_clean_file, of;
 	uint64_t downloaded = 0;
 	if (m_current_msg_type == MESSAGE_GET_FILE)
 	{
+		const std::string zip_path = has_custom_zip_path() ? get_zip_path() : DEFAULT_ZIP_PATH;
+
 		namespace fs = std::filesystem;
-		fs::path archive_path("D:\\game.zip");
+		fs::path archive_path(zip_path);
 
-		if (fs::exists(archive_path))
-		{
-			fs::remove(archive_path);
-		}
-
-		of.open("D:\\game.zip", std::ios::out | std::ios::binary | std::ios::app);
+		of_clean_file.open(zip_path, std::ios::out | std::ios::binary);
+		of_clean_file.close();
+		of.open(zip_path, std::ios::out | std::ios::binary | std::ios::app);
 	}
 
 	int iResult = 0;
@@ -157,6 +156,10 @@ NET_HANDLER& NET_HANDLER::recieve_message() noexcept(false)
 
 	while (true)
 	{
+		if (m_current_msg_type == MESSAGE_GET_FILE)
+		{
+			m_game_ver->progress = ((long double)downloaded / get_content_length()) * 100;
+		}
 		DWORD result = WaitForSingleObject(sock_event, timeout);
 		if (result == WAIT_TIMEOUT)
 		{
@@ -228,12 +231,13 @@ NET_HANDLER& NET_HANDLER::recieve_message() noexcept(false)
 		{
 			of.write(recv_buff, iResult);
 			downloaded += iResult;
+			set_body_size(downloaded);
 		}
 		if (
 			is_header_parsed()
 			&& m_current_msg_type != MESSAGE_GET_FILE
 			&& get_body_size() >= get_content_length()
-			)
+		)
 		{
 			break;
 		}
@@ -241,7 +245,7 @@ NET_HANDLER& NET_HANDLER::recieve_message() noexcept(false)
 			is_header_parsed()
 			&& m_current_msg_type == MESSAGE_GET_FILE
 			&& downloaded >= get_content_length()
-			)
+		)
 		{
 			break;
 		}
@@ -257,12 +261,35 @@ NET_HANDLER& NET_HANDLER::recieve_message() noexcept(false)
 	return *this;
 }
 //====================================================================
+NET_HANDLER& NET_HANDLER::set_custom_zip_path(const char* path) noexcept(true)
+{
+	m_zip_temp_path.clear();
+	m_zip_temp_path = path;
+
+	return *this;
+}
+//====================================================================
+bool NET_HANDLER::has_custom_zip_path() noexcept(true)
+{
+	return m_zip_temp_path.length();
+}
+//====================================================================
+std::string NET_HANDLER::get_zip_path() noexcept(true)
+{
+	return m_zip_temp_path;
+}
+//====================================================================
 unsigned char* NET_HANDLER::get_body() noexcept(true)
 {
 	return m_body;
 }
 //====================================================================
-uint64_t NET_HANDLER::get_body_size() noexcept(true)
+void NET_HANDLER::set_body_size(uint64_t size) noexcept(true)
+{
+	m_body_size = size;
+}
+//====================================================================
+uint64_t NET_HANDLER::get_body_size() const noexcept(true)
 {
 	return m_body_size;
 }
@@ -389,7 +416,7 @@ unsigned char* NET_HANDLER::malloc_body(uint64_t size) noexcept(false)
 	return m_body;
 }
 //====================================================================
-bool NET_HANDLER::free_body() noexcept(false)
+bool NET_HANDLER::free_body() const noexcept(false)
 {
 	if (!m_is_body_pointer_is_null)
 	{
@@ -421,9 +448,16 @@ bool NET_HANDLER::is_header_parsed() const noexcept(true)
 	return m_header_parsed;
 }
 //====================================================================
-bool NET_HANDLER::ver_parse_n_compare(GAME_VERSION& ver)
+NET_HANDLER& NET_HANDLER::set_info_to_handler(GAME_VERSION* ver) noexcept(true)
 {
-	bool is_version_last = true;
+	m_game_ver = ver;
+
+	return *this;
+}
+//====================================================================
+uint8_t NET_HANDLER::ver_parse_n_compare()
+{
+	int8_t is_version_last = 1;
 	std::string v_txt((char*)m_body, m_body_size);
 	size_t pos;
 	std::string line;
@@ -439,33 +473,33 @@ bool NET_HANDLER::ver_parse_n_compare(GAME_VERSION& ver)
 		case 0:
 			// version:
 			value = line.substr(line.find(":") + 1, 4);
-			if (std::atoi(value.c_str()) != ver.version)
+			if (std::atoi(value.c_str()) != m_game_ver->version)
 			{
-				is_version_last = false;
+				is_version_last = 0;
 			}
-			ver.version = std::atoi(value.c_str());
+			m_game_ver->version = std::atoi(value.c_str());
 			break;
 		case 1:
 			// checksum:
 			value = line.substr(line.find(":") + 1, 4);
-			if (value != std::string(ver.checksum))
+			if (value != std::string(m_game_ver->checksum))
 			{
-				is_version_last = false;
+				is_version_last = 0;
 			}
 			for (int i = 0; i < value.length(); ++i)
 			{
-				ver.checksum[i] = value[i];
+				m_game_ver->checksum[i] = value[i];
 			}
-			ver.checksum[value.length()] = '\0';
+			m_game_ver->checksum[value.length()] = '\0';
 			break;
 		case 2:
 			// id:
 			value = line.substr(line.find(":") + 1, line.find(";") - 3);
 			for (int i = 0; i < value.length(); ++i)
 			{
-				ver.file_id[i] = value[i];
+				m_game_ver->new_file_id[i] = value[i];
 			}
-			ver.file_id[value.length()] = '\0';
+			m_game_ver->new_file_id[value.length()] = '\0';
 			break;
 		}
 		++iter;
@@ -543,7 +577,7 @@ bool MESSAGE_QUERIES::parse_uuid(char* src, uint64_t length)
 	return true;
 }
 //====================================================================
-bool MESSAGE_QUERIES::is_uuid_parsed()
+bool MESSAGE_QUERIES::is_uuid_parsed() const noexcept(true)
 {
 	return m_uuid_parsed;
 }

@@ -16,17 +16,11 @@
     <Filter Include="Source Files\utils">
       <UniqueIdentifier>{2b255137-4cb8-42cb-8d3b-27f1f4de7557}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\buttons">
-      <UniqueIdentifier>{741d1a3e-25d2-482a-83f4-885f933a162f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\main_window">
       <UniqueIdentifier>{f7ba8195-cb14-479f-9b4c-15ff6769c05d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\wrap">
       <UniqueIdentifier>{d7e4d22d-a091-4e2c-82c8-1e672796c5b8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\settings_parser">
-      <UniqueIdentifier>{fede9358-c5b5-49e9-abcb-99711bb827a1}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\actions">
       <UniqueIdentifier>{a126f9f6-2d3a-4105-9186-dd811f1675c9}</UniqueIdentifier>
@@ -49,16 +43,34 @@
     <Filter Include="Header Files\constants">
       <UniqueIdentifier>{80fbba71-fcd5-4e3b-ae6d-feb93219f14e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\main_window\buttons">
+      <UniqueIdentifier>{741d1a3e-25d2-482a-83f4-885f933a162f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\utils\settings_parser">
+      <UniqueIdentifier>{fede9358-c5b5-49e9-abcb-99711bb827a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\utils\bitmap_handler">
+      <UniqueIdentifier>{0b421fa2-5fb9-4550-91b8-2f29a75cc4ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\utils\get_file_path">
+      <UniqueIdentifier>{3d48dee5-0e16-4097-9942-e34a09a13c1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\submods_modal\submods_utils">
+      <UniqueIdentifier>{2ab03eaa-2830-488f-8274-eefb2cc83413}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\download_modal">
+      <UniqueIdentifier>{77dc5713-b9b8-4866-b9cd-80a4bef2f170}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\download_modal\buttons">
+      <UniqueIdentifier>{6648c6d7-7df0-4b50-98c3-b6fb494473a4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="win_main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="bitmap.cpp">
-      <Filter>Source Files\utils</Filter>
-    </ClCompile>
     <ClCompile Include="button.cpp">
-      <Filter>Source Files\buttons</Filter>
+      <Filter>Source Files\main_window\buttons</Filter>
     </ClCompile>
     <ClCompile Include="main_window.cpp">
       <Filter>Source Files\main_window</Filter>
@@ -70,19 +82,16 @@
       <Filter>Source Files\main_window</Filter>
     </ClCompile>
     <ClCompile Include="draw_btn_bkg.cpp">
-      <Filter>Source Files\buttons</Filter>
+      <Filter>Source Files\main_window\buttons</Filter>
     </ClCompile>
     <ClCompile Include="btnWndProc.cpp">
-      <Filter>Source Files\buttons</Filter>
+      <Filter>Source Files\main_window\buttons</Filter>
     </ClCompile>
     <ClCompile Include="create_buttons.cpp">
-      <Filter>Source Files\buttons</Filter>
+      <Filter>Source Files\main_window\buttons</Filter>
     </ClCompile>
     <ClCompile Include="settings_parser.cpp">
-      <Filter>Source Files\settings_parser</Filter>
-    </ClCompile>
-    <ClCompile Include="get_file_path.cpp">
-      <Filter>Source Files\utils</Filter>
+      <Filter>Source Files\utils\settings_parser</Filter>
     </ClCompile>
     <ClCompile Include="create_process.cpp">
       <Filter>Source Files\actions</Filter>
@@ -111,9 +120,6 @@
     <ClCompile Include="parse_submods.cpp">
       <Filter>Source Files\submods_modal\submods_parser</Filter>
     </ClCompile>
-    <ClCompile Include="submods_uitls.cpp">
-      <Filter>Source Files\utils</Filter>
-    </ClCompile>
     <ClCompile Include="settings_modal.cpp">
       <Filter>Source Files\settings_modal</Filter>
     </ClCompile>
@@ -135,6 +141,33 @@
     <ClCompile Include="draw_settings_buttons_background.cpp">
       <Filter>Source Files\settings_modal\buttons_group</Filter>
     </ClCompile>
+    <ClCompile Include="bitmap.cpp">
+      <Filter>Source Files\utils\bitmap_handler</Filter>
+    </ClCompile>
+    <ClCompile Include="get_file_path.cpp">
+      <Filter>Source Files\utils\get_file_path</Filter>
+    </ClCompile>
+    <ClCompile Include="submods_uitls.cpp">
+      <Filter>Source Files\submods_modal\submods_utils</Filter>
+    </ClCompile>
+    <ClCompile Include="download_modal.cpp">
+      <Filter>Source Files\download_modal</Filter>
+    </ClCompile>
+    <ClCompile Include="downloadWndProc.cpp">
+      <Filter>Source Files\download_modal</Filter>
+    </ClCompile>
+    <ClCompile Include="download_buttons.cpp">
+      <Filter>Source Files\download_modal\buttons</Filter>
+    </ClCompile>
+    <ClCompile Include="downloadBtnWndProc.cpp">
+      <Filter>Source Files\download_modal\buttons</Filter>
+    </ClCompile>
+    <ClCompile Include="draw_download_btn_background.cpp">
+      <Filter>Source Files\download_modal\buttons</Filter>
+    </ClCompile>
+    <ClCompile Include="create_download_buttons.cpp">
+      <Filter>Source Files\download_modal\buttons</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdlibs.h">
@@ -150,7 +183,7 @@
       <Filter>Source Files\actions</Filter>
     </ClInclude>
     <ClInclude Include="button.h">
-      <Filter>Source Files\buttons</Filter>
+      <Filter>Source Files\main_window\buttons</Filter>
     </ClInclude>
     <ClInclude Include="main_window.h">
       <Filter>Source Files\main_window</Filter>
@@ -162,7 +195,7 @@
       <Filter>Source Files\settings_modal\buttons_group</Filter>
     </ClInclude>
     <ClInclude Include="settings_parser.h">
-      <Filter>Source Files\settings_parser</Filter>
+      <Filter>Source Files\utils\settings_parser</Filter>
     </ClInclude>
     <ClInclude Include="submods_buttons.h">
       <Filter>Source Files\submods_modal\buttons</Filter>
@@ -173,17 +206,23 @@
     <ClInclude Include="submods_modal.h">
       <Filter>Source Files\submods_modal</Filter>
     </ClInclude>
-    <ClInclude Include="bitmap.h">
-      <Filter>Source Files\utils</Filter>
-    </ClInclude>
-    <ClInclude Include="get_file_path.h">
-      <Filter>Source Files\utils</Filter>
-    </ClInclude>
-    <ClInclude Include="submods_utils.h">
-      <Filter>Source Files\utils</Filter>
-    </ClInclude>
     <ClInclude Include="const.h">
       <Filter>Header Files\constants</Filter>
+    </ClInclude>
+    <ClInclude Include="bitmap.h">
+      <Filter>Source Files\utils\bitmap_handler</Filter>
+    </ClInclude>
+    <ClInclude Include="get_file_path.h">
+      <Filter>Source Files\utils\get_file_path</Filter>
+    </ClInclude>
+    <ClInclude Include="submods_utils.h">
+      <Filter>Source Files\submods_modal\submods_utils</Filter>
+    </ClInclude>
+    <ClInclude Include="download_modal.h">
+      <Filter>Source Files\download_modal</Filter>
+    </ClInclude>
+    <ClInclude Include="download_buttons.h">
+      <Filter>Source Files\download_modal\buttons</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

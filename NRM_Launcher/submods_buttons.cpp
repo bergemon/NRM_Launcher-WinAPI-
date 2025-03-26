@@ -8,12 +8,12 @@
 	return btns;
 }
 //====================================================================
-[[nodiscard]] HWND SUBMODS_BUTTONS::getParent()
+[[nodiscard]] HWND SUBMODS_BUTTONS::getParent() const
 {
 	return m_parent;
 }
 //====================================================================
-SUBMODS_BUTTONS::SUBMODS_BUTTONS()
+SUBMODS_BUTTONS::SUBMODS_BUTTONS() : m_initialized(false), m_parent(nullptr)
 {
 }
 //====================================================================
@@ -31,23 +31,19 @@ std::vector<SUBMODS_BUTTONS::SUBMOD_BUTTON_BUFFER>& SUBMODS_BUTTONS::get_submods
 	return m_submodButtonsBuffer;
 }
 //====================================================================
-void SUBMODS_BUTTONS::initialize(
-	HWND hParent,
-	LPCWSTR className
-)
+void SUBMODS_BUTTONS::initialize(HWND hParent, LPCWSTR className) noexcept(false)
 {
 	if (m_initialized)
 	{
-		MessageBox(NULL, TEXT("Button class is already initialized"), TEXT("Error"), MB_OK);
-		return;
+		throw std::runtime_error("Submods buttons class is already initialized");
 	}
 
 	WNDCLASSEX* window_class = (WNDCLASSEX*)malloc(sizeof(WNDCLASSEX));
 
 	if (window_class == NULL)
 	{
-		MessageBox(NULL, TEXT("Cannot allocate memory for WNDCLASSEX structure"), TEXT("Error"), MB_OK);
-		std::exit(1);
+		throw std::runtime_error("Cannot allocate memory for WNDCLASSEX structure");
+		ExitProcess(1);
 	}
 
 	m_className = className;
@@ -68,15 +64,15 @@ void SUBMODS_BUTTONS::initialize(
 
 	if (!RegisterClassEx(window_class))
 	{
-		MessageBox(NULL, TEXT("Cannot register window class"), TEXT("Error"), MB_OK);
-		std::exit(1);
+		throw std::runtime_error("Cannot register window class");
+		ExitProcess(1);
 	}
 
 	free(window_class);
 	m_initialized = true;
 }
 //====================================================================
-bool SUBMODS_BUTTONS::create_submod_button(
+void SUBMODS_BUTTONS::create_submod_button(
 	BUTTON_PROPERTIES props,
 	const char* submod_name,
 	const char* submod_path,
@@ -85,8 +81,7 @@ bool SUBMODS_BUTTONS::create_submod_button(
 {
 	if (!m_initialized)
 	{
-		MessageBox(NULL, TEXT("Submods buttons window class not initialized!"), TEXT("Need to initialize buttons window class"), MB_OK);
-		return false;
+		throw std::runtime_error("Submods buttons window class not initialized!");
 	}
 
 	uint32_t x_coord;
@@ -110,11 +105,9 @@ bool SUBMODS_BUTTONS::create_submod_button(
 	);
 
 	m_submodBtnOffset += props.height + SUBMOD_BUTTONS_Y_PADDING + exPadding;
-
-	return true;
 }
 //====================================================================
-bool SUBMODS_BUTTONS::create_button(
+void SUBMODS_BUTTONS::create_button(
 	SUBMODS_BUTTON_TYPE btnType,
 	BUTTON_PROPERTIES props,
 	const char* bkgFileName,
@@ -125,8 +118,7 @@ bool SUBMODS_BUTTONS::create_button(
 {
 	if (!m_initialized)
 	{
-		MessageBox(NULL, TEXT("Submods buttons window class not initialized!"), TEXT("Need to initialize buttons window class"), MB_OK);
-		return false;
+		throw std::runtime_error("Submods buttons window class not initialized!");
 	}
 
 	m_listButtons.emplace_back(
@@ -140,11 +132,9 @@ bool SUBMODS_BUTTONS::create_button(
 		// width and height of the button
 		props.width, props.height
 	);
-
-	return true;
 }
 //====================================================================
-HWND SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::get_hWnd()
+HWND SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::get_hWnd() const
 {
 	return m_hBtnWnd;
 }
@@ -154,32 +144,32 @@ void SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::set_checked(bool is_checked)
 	m_checked = is_checked;
 }
 //====================================================================
-SUBMODS_BUTTON_TYPE SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::get_button_type()
+SUBMODS_BUTTON_TYPE SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::get_button_type() const
 {
 	return m_buttonType;
 }
 //====================================================================
-bool SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::is_checked()
+bool SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::is_checked() const
 {
 	return m_checked;
 }
 //====================================================================
-uint32_t SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::get_xPos()
+uint32_t SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::get_xPos() const
 {
 	return m_xPos;
 }
 //====================================================================
-uint32_t SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::get_yPos()
+uint32_t SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::get_yPos() const
 {
 	return m_yPos;
 }
 //====================================================================
-uint32_t SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::get_width()
+uint32_t SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::get_width() const
 {
 	return m_width;
 }
 //====================================================================
-uint32_t SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::get_height()
+uint32_t SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::get_height() const
 {
 	return m_height;
 }
@@ -223,7 +213,7 @@ SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::SUBMODS_WINDOW_BUTTON(
 	bool checked
 ) : m_width(width), m_height(height), m_buttonType(btnType), m_className(className),
 	m_submod_name(submod_name), m_submod_path(submod_path), m_checked(checked), m_xPos(x), m_yPos(y),
-	m_bkgFileName(background_file_name)
+	m_bkgFileName(background_file_name), m_bufferButton(nullptr)
 {
 	m_hBtnWnd = CreateWindowEx(
 		// WindowExStyles
@@ -271,7 +261,6 @@ SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::SUBMODS_WINDOW_BUTTON(
 	if (!m_hBtnWnd)
 	{
 		throw std::exception(error.c_str());
-		return;
 	}
 
 	//ShowWindow(m_hMainWnd, SW_SHOWDEFAULT);

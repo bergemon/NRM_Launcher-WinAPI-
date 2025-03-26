@@ -55,7 +55,7 @@ public:
 		std::pair<std::string, std::string>& get_uuid();
 
 		bool parse_uuid(char* src, uint64_t length);
-		bool is_uuid_parsed();
+		bool is_uuid_parsed() const noexcept(true);
 
 	private:
 		bool m_uuid_parsed;
@@ -79,14 +79,24 @@ public:
 	/* This method can throw an exception! */
 	NET_HANDLER& recieve_message() noexcept(false);
 
+	/* You can set custom path for the temporary zip file,
+		that will live until extraction begins */
+	NET_HANDLER& set_custom_zip_path(const char* path) noexcept(true);
+
 	unsigned char* get_body() noexcept(true);
-	uint64_t get_body_size() noexcept(true);
+	void set_body_size(uint64_t size) noexcept(true);
+	uint64_t get_body_size() const noexcept(true);
 	MESSAGE_QUERIES& get_message_queries() noexcept(true);
 
 	/* This method can throw an exception! */
-	bool ver_parse_n_compare(GAME_VERSION& ver) noexcept(false);
+	uint8_t ver_parse_n_compare() noexcept(false);
+
+	NET_HANDLER& set_info_to_handler(GAME_VERSION* ver) noexcept(true);
 
 private:
+	bool has_custom_zip_path() noexcept(true);
+	std::string get_zip_path() noexcept(true);
+
 	std::string get_header_msg() noexcept(true);
 
 	/* This method can throw an exception! */
@@ -103,7 +113,7 @@ private:
 	unsigned char* malloc_body(uint64_t size) noexcept(false);
 
 	/* This method can throw an exception! */
-	bool free_body() noexcept(false);
+	bool free_body() const noexcept(false);
 
 	void write_body(char* src, uint64_t length) noexcept(true);
 
@@ -128,7 +138,9 @@ private:
 	MESSAGE_INFO m_msg_info;
 	MESSAGE_QUERIES m_query;
 	std::string m_host;
+	std::string m_zip_temp_path;
 	MESSAGE_TYPE m_current_msg_type;
+	GAME_VERSION* m_game_ver;
 };
 
 #else

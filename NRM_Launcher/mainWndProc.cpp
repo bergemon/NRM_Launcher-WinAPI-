@@ -7,7 +7,6 @@
 LRESULT CALLBACK MainWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	HDC hDC;
-	RECT rect;
 
 	switch (uMsg)
 	{

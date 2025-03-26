@@ -9,7 +9,7 @@
 //====================================================================
 class SETTINGS_MODAL_WINDOW;
 //====================================================================
-void create_settings_buttons_groups(HINSTANCE hInstance, HWND hParent);
+void create_settings_buttons_groups(HWND hParent);
 //====================================================================
 void draw_settings_static_button_background(HWND hWnd, HDC hDC);
 //====================================================================

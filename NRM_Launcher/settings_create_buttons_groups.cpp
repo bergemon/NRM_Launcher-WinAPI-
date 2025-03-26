@@ -2,7 +2,7 @@
 #include "settings_modal.h"
 
 //====================================================================
-void create_settings_buttons_groups(HINSTANCE hInstance, HWND hParent)
+void create_settings_buttons_groups(HWND hParent)
 {
 	using PARAM = LAUNCHER_SETTINGS::SETTINGS_PARAM;
 

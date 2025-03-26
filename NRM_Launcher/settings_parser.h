@@ -24,7 +24,10 @@ public:
 	[[nodiscard]] uint32_t get_on_play_state() const;
 	[[nodiscard]] uint32_t get_clear_cache_state() const;
 	[[nodiscard]] bool is_settings_exist() const noexcept(false);
-	[[nodiscard]] uint32_t get_lines_count() const;
+	[[nodiscard]] uint32_t get_fields_count() const;
+	[[nodiscard]] int32_t get_game_version() const;
+	[[nodiscard]] const std::wstring get_game_checksum() const;
+	[[nodiscard]] char* get_game_checksum_ascii();
 	void set_param(SETTINGS_PARAM param, const wchar_t* value_param) noexcept(false);
 	void rewrite_settings() const;
 
@@ -55,6 +58,6 @@ private:
 
 	// other stuff
 	bool m_settingsParsed = false;
-	uint32_t m_countOfLines = 6;
+	uint32_t m_count_of_fields = SETTINGS_DATA_FIELDS;
 };
 //====================================================================

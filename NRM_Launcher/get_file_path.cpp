@@ -102,3 +102,21 @@ void get_settings_button_icon_mask_path(std::string& str)
 	str = SETTINGS_FULL_PATH SETTINGS_BUTTONS_PATH SLH SETTINGS_MASKS_PATH SLH MASK_PREFIX ICON_PREFIX;
 }
 //====================================================================
+void get_download_bkg_path(std::string& str)
+{
+	str.clear();
+	str = DOWNLOAD_FULL_PATH;
+}
+//====================================================================
+void get_download_btns_bkg_path(std::string& str)
+{
+	str.clear();
+	str = DOWNLOAD_FULL_PATH SLH DOWNLOAD_BUTTONS_PATH SLH BTN_PREFIX;
+}
+//====================================================================
+void get_download_btns_mask_path(std::string& str)
+{
+	str.clear();
+	str = DOWNLOAD_FULL_PATH SLH DOWNLOAD_BUTTONS_PATH SLH DOWNLOAD_MASKS_PATH SLH MASK_PREFIX;
+}
+//====================================================================

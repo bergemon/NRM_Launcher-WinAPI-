@@ -6,7 +6,6 @@
 LRESULT CALLBACK SETTINGS_BUTTONS_GROUP::SETTINGS_RADIO_BUTTON::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	HDC hDC;
-	RECT rect;
 
 	switch (uMsg)
 	{

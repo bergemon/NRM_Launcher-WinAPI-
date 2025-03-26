@@ -4,6 +4,7 @@
 #include "submods_modal.h"
 #include "settings_modal.h"
 #include "settings_parser.h"
+#include "download_modal.h"
 
 //====================================================================
 void draw_button_background(HWND hWnd, HDC hDC);
@@ -68,8 +69,14 @@ LRESULT CALLBACK LAUNCHER_BUTTONS::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, 
 			}
 			break;
 		case BUTTON_TYPE::BTN_DOWNLOAD:
-			MessageBox(GetParent(hWnd), TEXT("Button has no functionality yet"), TEXT("Work in progress"), MB_OK);
+		{
+			DOWNLOAD_MODAL_WINDOW& download_modal = DOWNLOAD_MODAL_WINDOW::getInstance();
+			download_modal.show();
+
+			SendMessage(download_modal.getHWnd(), WM_USER + 1, NULL, NULL);
+
 			break;
+		}
 		case BUTTON_TYPE::BTN_SETTINGS:
 		{
 			SETTINGS_MODAL_WINDOW& settings_modal = SETTINGS_MODAL_WINDOW::getInstance();
@@ -90,7 +97,7 @@ LRESULT CALLBACK LAUNCHER_BUTTONS::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, 
 			{
 				LAUNCHER_SETTINGS& settings = LAUNCHER_SETTINGS::getInstance();
 				std::wstring discord_link = settings.get_discord_link().data();
-				if ((int32_t)ShellExecute(NULL, L"open", discord_link.c_str(), NULL, NULL, SW_SHOW) <= 32)
+				if ((int64_t)ShellExecute(NULL, TEXT("open"), discord_link.c_str(), NULL, NULL, SW_SHOW) <= 32)
 				{
 					MessageBox(GetParent(hWnd), TEXT("Can not open link"), TEXT("Discord button error"), MB_OK);
 				}

@@ -28,11 +28,18 @@ struct GAME_VERSION
 {
 	int32_t version = 0;
 	/* Must be null terminated C string */
-	char* checksum;
+	char* checksum = nullptr;
 	/* Must be null terminated C string */
-	char* host;
+	char* host = nullptr;
 	/* Must be null terminated C string */
-	char* file_id;
+	char* file_id = nullptr;
+	/* Must be null terminated C string */
+	char* zip_file_name = nullptr;
+	/* Must be null terminated C string */
+	char* new_file_id = nullptr;
+	/* 0% - 100% */
+	int8_t progress = 0;
+	uint8_t has_custom_zip_name = 0;
 	int8_t compare_result = 0;
 	int8_t is_ended = 0;
 	int8_t status = 1;
@@ -46,7 +53,8 @@ enum UNZIP_STATUS_CODES
 	STATUS_ERR_GETTING_FILE_INFO,
 	STATUS_CANT_OPEN_ARCHIVE_FILE,
 	STATUS_CANT_OPEN_OUTFILE,
-	STATUS_PATH_TOO_LONG
+	STATUS_PATH_TOO_LONG,
+	STATUS_UNKNOWN_ERROR
 };
 //====================================================================
 struct ZIP_INFO
@@ -69,8 +77,8 @@ struct UNZIP_INFO
 	/* 0% - 100% */
 	int8_t progress = 0;
 	int8_t status = 1;
-	int8_t is_ended = 0;
 	int32_t status_code = STATUS_OK;
+	CRITICAL_SECTION* critical_section;
 };
 //====================================================================
 

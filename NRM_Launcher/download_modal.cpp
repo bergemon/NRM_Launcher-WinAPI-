@@ -1,36 +1,40 @@
-#include "submods_modal.h"
-#include "resource.h"
-#include "const.h"
-#include "parse_submods.h"
-#include "submods_utils.h"
-#include "submods_buttons.h"
-#include "get_file_path.h"
+#include "download_modal.h"
 
 //====================================================================
-extern std::list<PARSED_SUBMOD> parsed_submods;
-//====================================================================
-[[nodiscard]] SUBMODS_MODAL_WINDOW& SUBMODS_MODAL_WINDOW::getInstance()
+DOWNLOAD_MODAL_WINDOW::DOWNLOAD_MODAL_WINDOW()
+	: m_initialized(false), m_hParentWND(nullptr), m_hDownloadWnd(nullptr)
 {
-	static SUBMODS_MODAL_WINDOW submodsModal;
-	return submodsModal;
+
 }
 //====================================================================
-HWND SUBMODS_MODAL_WINDOW::getHWnd() const
+DOWNLOAD_MODAL_WINDOW::~DOWNLOAD_MODAL_WINDOW()
 {
-	return m_hSubmodsWND;
+
 }
 //====================================================================
-std::string_view SUBMODS_MODAL_WINDOW::get_background_path()
+DOWNLOAD_MODAL_WINDOW& DOWNLOAD_MODAL_WINDOW::getInstance()
 {
-	return m_bkgPath;
+	static DOWNLOAD_MODAL_WINDOW download_window;
+
+	return download_window;
 }
 //====================================================================
-CUSTOM_BITMAP& SUBMODS_MODAL_WINDOW::get_background()
+CUSTOM_BITMAP& DOWNLOAD_MODAL_WINDOW::get_background()
 {
 	return m_background;
 }
 //====================================================================
-void SUBMODS_MODAL_WINDOW::initialize(
+std::string_view DOWNLOAD_MODAL_WINDOW::get_background_path()
+{
+	return m_bkgFileName;
+}
+//====================================================================
+HWND DOWNLOAD_MODAL_WINDOW::getHWnd() const
+{
+	return m_hDownloadWnd;
+}
+//====================================================================
+void DOWNLOAD_MODAL_WINDOW::initialize(
 	HWND hParent,
 	LPCWSTR className,
 	LPCWSTR windowTitle,
@@ -69,13 +73,13 @@ void SUBMODS_MODAL_WINDOW::initialize(
 
 	if (!RegisterClassEx(window_class))
 	{
-		throw std::exception("Can not register submods window class");
+		throw std::exception("Can not register download window class");
 	}
 
 	// Set background path before creating window
-	m_bkgPath = bkgFileName;
+	m_bkgFileName = bkgFileName;
 
-	m_hSubmodsWND = CreateWindowEx(
+	m_hDownloadWnd = CreateWindowEx(
 		// WindowExStyles
 		WS_EX_TRANSPARENT,
 		// UTF-16 name of the creating class
@@ -102,32 +106,24 @@ void SUBMODS_MODAL_WINDOW::initialize(
 	DestroyIcon(hIcon);
 	free(window_class);
 
-	if (!m_hSubmodsWND)
+	if (!m_hDownloadWnd)
 	{
-		throw std::exception("Can not create submods modal window");
+		throw std::exception("Can not create settings modal window");
 	}
 
-	// Initialize submods window background BITMAP
+	// Initialize settings window background BITMAP
 	std::string bkgPath;
-	get_submods_bkg_path(bkgPath);
-	bkgPath.append(m_bkgPath);
+	get_download_bkg_path(bkgPath);
+	bkgPath.append(m_bkgFileName);
 	m_background.LoadFromFile(bkgPath.c_str());
 
 	m_hParentWND = hParent;
 	m_initialized = true;
-
-	try
-	{
-		parse_submods();
-	}
-	catch (std::exception& e)
-	{
-		MessageBoxA(hParent, e.what(), "Error", MB_OK);
-	}
 }
 //====================================================================
-void SUBMODS_MODAL_WINDOW::show()
+void DOWNLOAD_MODAL_WINDOW::show()
 {
+
 	if (m_initialized)
 	{
 		LPRECT rect = (RECT*)malloc(sizeof(RECT));
@@ -138,8 +134,8 @@ void SUBMODS_MODAL_WINDOW::show()
 			std::exit(1);
 		}
 
-		// Get submods window rect
-		GetWindowRect(m_hSubmodsWND, rect);
+		// Get settings window rect
+		GetWindowRect(m_hDownloadWnd, rect);
 		uint32_t x_pos = rect->left;
 		uint32_t y_pos = rect->top;
 
@@ -150,43 +146,35 @@ void SUBMODS_MODAL_WINDOW::show()
 		{
 			MoveWindow(
 				// Window handle
-				m_hSubmodsWND,
+				m_hDownloadWnd,
 				// X pos
-				rect->left + SUBMODS_WINDOW_X_OFFSET,
+				rect->left + DOWNLOAD_WINDOW_X_OFFSET,
 				// Y pos
-				rect->top + SUBMODS_WINDOW_Y_OFFSET,
+				rect->top + DOWNLOAD_WINDOW_Y_OFFSET,
 				// Width & height
-				SUBMODS_WINDOW_WIDTH, SUBMODS_WINDOW_HEIGHT,
+				DOWNLOAD_WINDOW_WIDTH, DOWNLOAD_WINDOW_HEIGHT,
 				// Redraw
 				FALSE
 			);
 		}
 
-		ShowWindow(m_hSubmodsWND, SW_SHOW);
+		ShowWindow(m_hDownloadWnd, SW_SHOW);
 		EnableWindow(m_hParentWND, FALSE);
-		SetFocus(m_hSubmodsWND);
+		SetFocus(m_hDownloadWnd);
 
 		free(rect);
 	}
 }
 //====================================================================
-void SUBMODS_MODAL_WINDOW::hide()
+void DOWNLOAD_MODAL_WINDOW::hide()
 {
 	if (m_initialized)
 	{
-		ShowWindow(m_hSubmodsWND, SW_HIDE);
+		ShowWindow(m_hDownloadWnd, SW_HIDE);
 		EnableWindow(m_hParentWND, TRUE);
 		SetActiveWindow(m_hParentWND);
 		SetFocus(m_hParentWND);
 		BringWindowToTop(m_hParentWND);
 	}
-}
-//====================================================================
-SUBMODS_MODAL_WINDOW::SUBMODS_MODAL_WINDOW()
-{
-}
-//====================================================================
-SUBMODS_MODAL_WINDOW::~SUBMODS_MODAL_WINDOW()
-{
 }
 //====================================================================

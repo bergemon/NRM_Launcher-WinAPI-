@@ -7,7 +7,6 @@
 LRESULT CALLBACK SUBMODS_MODAL_WINDOW::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	HDC hDC;
-	RECT rect;
 
 	switch (uMsg)
 	{

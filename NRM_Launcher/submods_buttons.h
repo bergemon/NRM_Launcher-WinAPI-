@@ -28,28 +28,25 @@ public:
 
 	[[nodiscard]] static SUBMODS_BUTTONS& getInstance();
 
-	void initialize(
-		HWND hParent,
-		LPCWSTR className
-	);
+	void initialize(HWND hParent, LPCWSTR className) noexcept(false);
 
-	[[nodiscard]] HWND getParent();
+	[[nodiscard]] HWND getParent() const;
 
-	bool create_button(
+	void create_button(
 		SUBMODS_BUTTON_TYPE btnType,
 		BUTTON_PROPERTIES props,
 		const char* bkgFileName = nullptr,
 		uint32_t exPadding = 0,
 		uint32_t x = 0,
 		uint32_t y = 0
-	);
+	) noexcept(false);
 
-	bool create_submod_button(
+	void create_submod_button(
 		BUTTON_PROPERTIES props,
 		const char* submod_name,
 		const char* submod_path,
 		uint32_t exPadding = 0
-	);
+	) noexcept(false);
 
 	std::list<SUBMODS_WINDOW_BUTTON>& get_submods_buttons();
 	std::vector<SUBMOD_BUTTON_BUFFER>& get_submods_buttons_buffer();
@@ -85,14 +82,14 @@ private:
 		);
 		~SUBMODS_WINDOW_BUTTON();
 
-		HWND get_hWnd();
+		HWND get_hWnd() const;
 		void set_checked(bool is_checked);
-		bool is_checked();
-		SUBMODS_BUTTON_TYPE get_button_type();
-		uint32_t get_xPos();
-		uint32_t get_yPos();
-		uint32_t get_width();
-		uint32_t get_height();
+		bool is_checked() const;
+		SUBMODS_BUTTON_TYPE get_button_type() const;
+		uint32_t get_xPos() const;
+		uint32_t get_yPos() const;
+		uint32_t get_width() const;
+		uint32_t get_height() const;
 		std::string_view get_background_file_name();
 		SUBMOD_BUTTON_BUFFER& get_buffer_button();
 		void set_buffer_button(SUBMOD_BUTTON_BUFFER& buff_button);
@@ -130,7 +127,7 @@ private:
 	std::vector<SUBMOD_BUTTON_BUFFER> m_submodButtonsBuffer;
 };
 //====================================================================
-void create_submods_modal_buttons(SUBMODS_BUTTONS& submod_window_buttons);
+void create_submods_modal_buttons();
 //====================================================================
 void draw_submods_btn_background(HWND hWnd, HDC hDC);
 //====================================================================
