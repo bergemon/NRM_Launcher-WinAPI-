@@ -131,7 +131,24 @@ int32_t LAUNCHER_SETTINGS::get_game_version() const
 	return checksum_truncated;
 }
 //====================================================================
-void LAUNCHER_SETTINGS::set_param(SETTINGS_PARAM param, const wchar_t* value_param) noexcept(false)
+[[nodiscard]] const int32_t LAUNCHER_SETTINGS::get_num_of_threads() const
+	noexcept(true)
+{
+	std::wstring threads = m_params[SETTINGS_PARAM::THREADS_TO_UNZIP].value;
+
+	char* threads_truncated = new char[threads.length() + 1];
+
+	for (int32_t i = 0; i < threads.length(); ++i)
+	{
+		threads_truncated[i] = (char)threads[i];
+	}
+	threads_truncated[threads.length()] = '\0';
+
+	return std::atoi(threads_truncated);
+}
+//====================================================================
+void LAUNCHER_SETTINGS::set_param(SETTINGS_PARAM param, const wchar_t* value_param)
+	noexcept(false)
 {
 	if ((size_t)param >= m_params.size())
 	{

@@ -155,6 +155,7 @@
     <ClCompile Include="main_window.cpp" />
     <ClCompile Include="main_wrap.cpp" />
     <ClCompile Include="parse_submods.cpp" />
+    <ClCompile Include="remove_all_thread.cpp" />
     <ClCompile Include="settingsRadioBtnWndProc.cpp" />
     <ClCompile Include="settingsStaticBtnWndProc.cpp" />
     <ClCompile Include="settingsWndProc.cpp" />
@@ -175,6 +176,7 @@
     <ClInclude Include="button.h" />
     <ClInclude Include="download_buttons.h" />
     <ClInclude Include="download_modal.h" />
+    <ClInclude Include="remove_all_thread.h" />
     <ClInclude Include="settings_buttons_group.h" />
     <ClInclude Include="clear_cache.h" />
     <ClInclude Include="const.h" />

@@ -168,6 +168,9 @@
     <ClCompile Include="create_download_buttons.cpp">
       <Filter>Source Files\download_modal\buttons</Filter>
     </ClCompile>
+    <ClCompile Include="remove_all_thread.cpp">
+      <Filter>Source Files\download_modal\buttons</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdlibs.h">
@@ -222,6 +225,9 @@
       <Filter>Source Files\download_modal</Filter>
     </ClInclude>
     <ClInclude Include="download_buttons.h">
+      <Filter>Source Files\download_modal\buttons</Filter>
+    </ClInclude>
+    <ClInclude Include="remove_all_thread.h">
       <Filter>Source Files\download_modal\buttons</Filter>
     </ClInclude>
   </ItemGroup>

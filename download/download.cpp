@@ -92,6 +92,9 @@ extern "C" DWORD WINAPI get_zip_info(_In_ LPVOID lpParameter)
 	// Get number of files in archive
 	info->num_of_entries = zip_get_num_entries(zip, 0);
 
+	// Close zip file
+	zip_close(zip);
+
 	return 0;
 }
 //====================================================================

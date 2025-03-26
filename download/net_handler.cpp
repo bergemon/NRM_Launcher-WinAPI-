@@ -251,6 +251,7 @@ NET_HANDLER& NET_HANDLER::recieve_message() noexcept(false)
 		}
 	}
 	delete[] recv_buff;
+	of.close();
 	WSACloseEvent(sock_event);
 
 	if (m_current_msg_type == MESSAGE_TRY_GET_FILE)

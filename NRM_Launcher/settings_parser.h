@@ -28,6 +28,7 @@ public:
 	[[nodiscard]] int32_t get_game_version() const;
 	[[nodiscard]] const std::wstring get_game_checksum() const;
 	[[nodiscard]] char* get_game_checksum_ascii();
+	[[nodiscard]] const int32_t get_num_of_threads() const noexcept(true);
 	void set_param(SETTINGS_PARAM param, const wchar_t* value_param) noexcept(false);
 	void rewrite_settings() const;
 

@@ -23,6 +23,15 @@ void create_settings_buttons_groups(HWND hParent)
 		);
 		settings_clear_cache.create_radio_button("clearCacheNo.bmp");
 		settings_clear_cache.create_radio_button("clearCacheYes.bmp");
+
+
+		SETTINGS_BUTTONS_GROUP& settings_threads_to_unzip = settings_window.create_buttons_group(
+			"threadsToUnzip.bmp",
+			PARAM::THREADS_TO_UNZIP
+		);
+		settings_threads_to_unzip.create_radio_button("threads4.bmp");
+		settings_threads_to_unzip.create_radio_button("threads8.bmp");
+		settings_threads_to_unzip.create_radio_button("threads16.bmp");
 	}
 	catch (std::exception& e)
 	{

@@ -1,5 +1,6 @@
 #pragma once
 #include <windows.h>
+#include <cmath>
 #include "resource.h"
 #include "settings_parser.h"
 #include "bitmap.h"

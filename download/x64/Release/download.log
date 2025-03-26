@@ -1,10 +1,10 @@
 ﻿  download.cpp
-D:\CPP\NRM_Launcher\download\download.cpp(137,83): warning C4244: '=': conversion from 'long double' to 'int8_t', possible loss of data
-D:\CPP\NRM_Launcher\download\download.cpp(241,30): warning C4244: 'argument': conversion from 'zip_int64_t' to 'DWORD', possible loss of data
+D:\CPP\NRM_Launcher\download\download.cpp(140,83): warning C4244: '=': conversion from 'long double' to 'int8_t', possible loss of data
+D:\CPP\NRM_Launcher\download\download.cpp(244,30): warning C4244: 'argument': conversion from 'zip_int64_t' to 'DWORD', possible loss of data
      Creating library D:\CPP\NRM_Launcher\x64\Release\download.lib and object D:\CPP\NRM_Launcher\x64\Release\download.exp
   Generating code
-  77 of 672 functions (11.5%) were compiled, the rest were copied from previous compilation.
+  1 of 672 functions ( 0.1%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    88 functions had inline decision re-evaluated but remain unchanged
+    0 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   download.vcxproj -> D:\CPP\NRM_Launcher\x64\Release\download.dll
