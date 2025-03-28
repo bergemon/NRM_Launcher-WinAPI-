@@ -228,7 +228,7 @@ void unzip_after_output_dir_created(
 		MessageBeep(MB_OK);
 		MessageBox(
 			hWnd,
-			TEXT("Последняя версия игры была скачена и разархивирована. Приятной игры!"),
+			TEXT("Последняя версия игры была скачана и разархивирована. Приятной игры!"),
 			TEXT("Готово"),
 			MB_OK
 		);
