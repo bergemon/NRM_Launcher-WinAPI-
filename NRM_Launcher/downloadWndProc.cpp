@@ -1,6 +1,9 @@
 #include "download_modal.h"
 #include "bitmap.h"
 #include "remove_all_thread.h"
+#include "main_window.h"
+#include "get_main_titlebar_text.h"
+#include "download_operations.h"
 
 //====================================================================
 typedef DWORD(WINAPI *NRM_LIB_PROC)(_In_ LPVOID lpParameter);
@@ -18,10 +21,9 @@ LRESULT CALLBACK DOWNLOAD_MODAL_WINDOW::WndProc(HWND hWnd, UINT uMsg, WPARAM wPa
 	static HANDLE check_ver_thread;
 	static HANDLE download_game_thread;
 	static HANDLE create_out_path_thread;
-	static HANDLE unzip_file_thread;
+	static std::vector<HANDLE> unzip_threads;
 	static UINT_PTR timer_id;
 	static std::vector<UNZIP_INFO> unzip_info_vector;
-	static std::vector<HANDLE> threads;
 	static bool output_path_created;
 	static int32_t num_of_threads = 0;
 
@@ -61,6 +63,9 @@ LRESULT CALLBACK DOWNLOAD_MODAL_WINDOW::WndProc(HWND hWnd, UINT uMsg, WPARAM wPa
 	}
 	case WM_USER + 1:
 	{
+		// Operation is only starting (we do not need to properly close threads)
+		operation = CURRENT_OPERATION::OPERATION_START;
+
 		DOWNLOAD_WINDOW_BUTTONS& download_buttons = DOWNLOAD_WINDOW_BUTTONS::getInstance();
 		auto& btns = download_buttons.get_download_buttons();
 		btns[0].show();
@@ -74,7 +79,8 @@ LRESULT CALLBACK DOWNLOAD_MODAL_WINDOW::WndProc(HWND hWnd, UINT uMsg, WPARAM wPa
 		library = LoadLibrary(TEXT(DOWNLOAD_HANDLER_LIB_NAME));
 		if (!library)
 		{
-			MessageBox(NULL, TEXT("Can not load \"download.dll\" library"), TEXT("Error"), MB_OK);
+			MessageBox(hWnd, TEXT("Can not load \"download.dll\" library"), TEXT("Error"), MB_OK);
+			PostMessage(hWnd, WM_CLOSE, NULL, NULL);
 			break;
 		}
 
@@ -88,6 +94,7 @@ LRESULT CALLBACK DOWNLOAD_MODAL_WINDOW::WndProc(HWND hWnd, UINT uMsg, WPARAM wPa
 		// Check version in new thread
 		check_ver_thread = CreateThread(NULL, NULL, check_ver, &ver, NULL, NULL);
 
+		// Set timer to handle operation using progress bar
 		timer_id = SetTimer(hWnd, 1, 200, NULL);
 
 		break;
@@ -101,7 +108,7 @@ LRESULT CALLBACK DOWNLOAD_MODAL_WINDOW::WndProc(HWND hWnd, UINT uMsg, WPARAM wPa
 
 		if (!library)
 		{
-			MessageBox(NULL, TEXT("Library \"download.dll\" is not loaded"), TEXT("Error"), MB_OK);
+			MessageBox(hWnd, TEXT("Library \"download.dll\" is not loaded"), TEXT("Error"), MB_OK);
 			break;
 		}
 
@@ -116,6 +123,7 @@ LRESULT CALLBACK DOWNLOAD_MODAL_WINDOW::WndProc(HWND hWnd, UINT uMsg, WPARAM wPa
 			operation = CURRENT_OPERATION::OPERATION_DOWNLOAD_GAME;
 			// Check version in new thread
 			download_game_thread = CreateThread(NULL, NULL, download_game, &ver, NULL, NULL);
+			// Set timer to handle operation using progress bar
 			timer_id = SetTimer(hWnd, 1, 200, NULL);
 		}
 		else
@@ -127,14 +135,15 @@ LRESULT CALLBACK DOWNLOAD_MODAL_WINDOW::WndProc(HWND hWnd, UINT uMsg, WPARAM wPa
 				TEXT("Информация"), MB_YESNO
 			);
 
+			// warning! goto command, but it is correctly used here
 			if (answer == IDYES) goto agreed_to_download;
 
 			// Hide window and all its buttons
+			DOWNLOAD_MODAL_WINDOW::getInstance().hide();
 			for (auto& elem : DOWNLOAD_WINDOW_BUTTONS::getInstance().get_download_buttons())
 			{
 				elem.hide();
 			}
-			DOWNLOAD_MODAL_WINDOW::getInstance().hide();
 			FreeLibrary(library);
 		}
 
@@ -165,6 +174,7 @@ LRESULT CALLBACK DOWNLOAD_MODAL_WINDOW::WndProc(HWND hWnd, UINT uMsg, WPARAM wPa
 		out_info.is_ended = false;
 		create_out_path_thread = CreateThread(NULL, NULL, create_out_path, &out_info, NULL, NULL);
 
+		// Set timer to handle operation using progress bar
 		timer_id = SetTimer(hWnd, 1, 200, NULL);
 
 		break;
@@ -175,189 +185,118 @@ LRESULT CALLBACK DOWNLOAD_MODAL_WINDOW::WndProc(HWND hWnd, UINT uMsg, WPARAM wPa
 		{
 		case CURRENT_OPERATION::OPERATION_CHECK_VERSION:
 		{
-			KillTimer(hWnd, timer_id);
-
-			if (!ver.is_ended)
-			{
-				timer_id = SetTimer(hWnd, 1, 200, NULL);
-			}
-			else
-			{
-				PostMessage(hWnd, WM_USER + 2, NULL, NULL);
-				ver.is_ended = 0;
-			}
+			timer_check_version(
+				// Download window handle
+				hWnd,
+				/* GAME_VERSION struct, need to provide to newly
+					created thread to track the download operation */
+				ver,
+				// WIN32 timer identifier
+				timer_id,
+				// Check version operation thread handle
+				check_ver_thread
+			);
 			break;
 		}
 		case CURRENT_OPERATION::OPERATION_DOWNLOAD_GAME:
 		{
-			KillTimer(hWnd, timer_id);
-			DOWNLOAD_WINDOW_BUTTONS& download_buttons = DOWNLOAD_WINDOW_BUTTONS::getInstance();
-			HWND progress_bar_hWnd = download_buttons.get_download_buttons()[2].get_hWnd();
-
-			if (ver.status)
-			{
-				SendMessage(progress_bar_hWnd, PBM_SETPOS, ver.progress, NULL);
-				timer_id = SetTimer(hWnd, 1, 200, NULL);
-			}
-			else
-			{
-				SendMessage(progress_bar_hWnd, PBM_SETPOS, 100, NULL);
-				PostMessage(hWnd, WM_USER + 3, NULL, NULL);
-				ver.status = 1;
-				ver.progress = 0;
-				delete[] ver.new_file_id;
-			}
+			timer_download_game(
+				// Download window handle
+				hWnd,
+				/* GAME_VERSION struct, need to provide to newly
+					created thread to track the download operation */
+				ver,
+				// WIN32 timer identifier
+				timer_id,
+				// Download game operation thread handle
+				download_game_thread
+			);
 			break;
 		}
 		case CURRENT_OPERATION::OPERATION_UNZIP_FILE:
 		{
-			KillTimer(hWnd, timer_id);
-			int32_t is_ended = 0;
-
-			/* If creating output directory still in progress */
-			if (!out_info.is_ended)
-			{
-				timer_id = SetTimer(hWnd, 1, 200, NULL);
-			}
-			else if (out_info.is_ended && !output_path_created)
-			{
-				output_path_created = true;
-
-				InitializeCriticalSection(&cs);
-
-				NRM_LIB_PROC unzip_proc;
-				unzip_proc = (NRM_LIB_PROC)GetProcAddress(library, "unzip_file");
-
-				// Initialize static variable with number of threads from settings
-				if (!num_of_threads)
-				{
-					num_of_threads = LAUNCHER_SETTINGS::getInstance().get_num_of_threads();
-				}
-				size_t entries_per_thread = zip_info.num_of_entries / num_of_threads;
-				size_t entries_module = zip_info.num_of_entries % num_of_threads;
-				size_t last_index = 0;
-
-				unzip_info_vector.reserve(num_of_threads);
-				threads.reserve(num_of_threads);
-				for (int i = 0; i < num_of_threads; ++i)
-				{
-					unzip_info_vector.push_back(UNZIP_INFO());
-					unzip_info_vector[i].critical_section = &cs;
-					unzip_info_vector[i].src_path = zip_file_name.data();
-					unzip_info_vector[i].out_path = zip_out_path.data();
-					unzip_info_vector[i].start_index = last_index;
-
-					if (i == (num_of_threads - 1))
-					{
-						unzip_info_vector[i].end_index = (entries_per_thread * (i + 1) + entries_module);
-					}
-					else
-					{
-						unzip_info_vector[i].end_index = (entries_per_thread * (i + 1));
-					}
-
-					last_index = unzip_info_vector[i].end_index;
-
-					threads.push_back(CreateThread(NULL, NULL, unzip_proc, &unzip_info_vector[i], NULL, NULL));
-				}
-
-				timer_id = SetTimer(hWnd, 1, 200, NULL);
-			}
-			/* If we successfully created output directory */
-			else if (out_info.is_ended && output_path_created)
-			{
-				DOWNLOAD_WINDOW_BUTTONS& download_buttons = DOWNLOAD_WINDOW_BUTTONS::getInstance();
-				HWND progress_bar_hWnd = download_buttons.get_download_buttons()[4].get_hWnd();
-
-				int32_t global_progress = 0;
-				int32_t index = 0;
-
-				// Get each thread end of routine flag
-				for (auto& elem : unzip_info_vector)
-				{
-					if (elem.status)
-					{
-						is_ended = is_ended | (elem.status << index++);
-					}
-
-					global_progress += elem.progress;
-				}
-
-				// Unzip work in progress
-				if (is_ended | 0)
-				{
-					SendMessage(progress_bar_hWnd, PBM_SETPOS, global_progress / num_of_threads, NULL);
-					timer_id = SetTimer(hWnd, 1, 200, NULL);
-				}
-				// If all threads are ended with unziping file
-				else
-				{
-					SendMessage(progress_bar_hWnd, PBM_SETPOS, 100, NULL);
-					DeleteCriticalSection(&cs);
-
-					MessageBeep(MB_OK);
-					MessageBox(
-						NULL,
-						TEXT("Последняя версия игры была скачена и разархивирована. Приятной игры!"),
-						TEXT("Готово"),
-						MB_OK
-					);
-
-					// Hide window and all its buttons
-					for (auto& elem : DOWNLOAD_WINDOW_BUTTONS::getInstance().get_download_buttons())
-					{
-						elem.hide();
-					}
-					DOWNLOAD_MODAL_WINDOW::getInstance().hide();
-					FreeLibrary(library);
-
-					// Set new version and checksum
-					LAUNCHER_SETTINGS& settings = LAUNCHER_SETTINGS::getInstance();
-					settings.set_param(LAUNCHER_SETTINGS::SETTINGS_PARAM::VERSION, std::to_wstring(ver.version).c_str());
-					wchar_t* w_checksum = new wchar_t[strlen(ver.checksum) + 1];
-					for (int i = 0; i < strlen(ver.checksum); ++i)
-					{
-						w_checksum[i] = (wchar_t)ver.checksum[i];
-					}
-					w_checksum[strlen(ver.checksum)] = (short)0;
-					settings.set_param(LAUNCHER_SETTINGS::SETTINGS_PARAM::CHECKSUM, w_checksum);
-					delete[] w_checksum;
-					settings.rewrite_settings();
-
-					// Clear vector for unzip info structures
-					unzip_info_vector.clear();
-
-					// Delete temp archive
-					if (std::filesystem::exists(zip_file_name))
-					{
-						std::string current_path = std::filesystem::current_path().string();
-						current_path.append("\\");
-						current_path.append(zip_file_name);
-						DeleteFileA(current_path.c_str());
-					}
-
-					// Set progress bars position to 0
-					SendMessage(download_buttons.get_download_buttons()[4].get_hWnd(), PBM_SETPOS, 0, NULL);
-					SendMessage(download_buttons.get_download_buttons()[2].get_hWnd(), PBM_SETPOS, 0, NULL);
-				}
-			}
-
+			timer_unzip(
+				// Download window handle
+				hWnd,
+				// WIN32 timer identifier
+				timer_id,
+				// Create output path info structure
+				out_info,
+				// is output path created flag
+				output_path_created,
+				// number of threads
+				num_of_threads,
+				// download.dll hmodule, need to release it
+				library,
+				// Vectors of threads and unzip_info structures
+				unzip_threads, unzip_info_vector,
+				// GAME_VERSION structure
+				ver,
+				// ZIP_INFO structure to get num of entries in archive
+				zip_info,
+				// Strings
+				zip_file_name, zip_out_path,
+				// Create out path thread handle
+				create_out_path_thread,
+				// Current operation (need to set that download operation is ended)
+				operation,
+				// Critical section (to uninitialize it)
+				cs
+			);
 			break;
 		}
 		}
-
 		break;
 	}
 	case WM_KEYUP:
 		if (wParam == VK_ESCAPE)
 		{
-			DOWNLOAD_MODAL_WINDOW& download_window = DOWNLOAD_MODAL_WINDOW::getInstance();
-			download_window.hide();
+			PostMessage(hWnd, WM_CLOSE, NULL, NULL);
 		}
 		break;
 	case WM_CLOSE:
-		DOWNLOAD_MODAL_WINDOW::getInstance().hide();
-		return WM_USER;
+	{
+		// Close download window if we could not load download shared library
+		if (operation == CURRENT_OPERATION::OPERATION_START)
+		{
+			// Download operation is done
+			operation = CURRENT_OPERATION::OPERATION_DONE;
+
+			// Hide window and all its buttons
+			DOWNLOAD_MODAL_WINDOW::getInstance().hide();
+			for (auto& elem : DOWNLOAD_WINDOW_BUTTONS::getInstance().get_download_buttons())
+			{
+				elem.hide();
+			}
+
+			return WM_USER;
+		}
+
+		return stop_downloading_operation(
+			// Download window handle
+			hWnd,
+			// Number of threads (reference)
+			num_of_threads,
+			// Operations threads handles (to wait and correctly close them)
+			check_ver_thread, download_game_thread, create_out_path_thread,
+			// is output path created flag
+			output_path_created,
+			// Vectors of threads and unzip_info structures
+			unzip_threads, unzip_info_vector,
+			// GAME_VERSION structure to stop download thread
+			ver,
+			// Name of the zip file to delete
+			zip_file_name,
+			// WIN32 timer identifier
+			timer_id,
+			// Current operation (need to set that download operation is ended)
+			operation,
+			// download.dll hmodule, need to release it
+			library,
+			// Critical section (to uninitialize it)
+			cs
+		);
+	}
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;

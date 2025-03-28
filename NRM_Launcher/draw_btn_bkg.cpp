@@ -13,7 +13,7 @@ void draw_button_background(HWND hWnd, HDC hDC)
 	int32_t translated_yPos = MAIN_WINDOW_HEIGHT - button.get_posY() - button.getHeight();
 	
 	// Main window bakground
-	MainWindow& main_window = MainWindow::getInstance();
+	MAIN_WINDOW& main_window = MAIN_WINDOW::getInstance();
 	CUSTOM_BITMAP& main_window_background = main_window.get_background();
 	StretchDIBits(
 		hDC, 0, 0, button.getWidth(), button.getHeight(),
@@ -100,7 +100,7 @@ void draw_active_button_background(HWND hWnd, HDC hDC)
 	int32_t translated_yPos = MAIN_WINDOW_HEIGHT - button.get_posY() - button.getHeight();
 
 	// Main window bakground
-	MainWindow& main_window = MainWindow::getInstance();
+	MAIN_WINDOW& main_window = MAIN_WINDOW::getInstance();
 	CUSTOM_BITMAP& main_window_background = main_window.get_background();
 	StretchDIBits(
 		hMemDC, 0, 0, button.getWidth(), button.getHeight(),

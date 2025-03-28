@@ -3,8 +3,6 @@
 #include "submods_utils.h"
 
 //====================================================================
-extern std::list<PARSED_SUBMOD> parsed_submods;
-//====================================================================
 LRESULT CALLBACK SUBMODS_BUTTONS::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	HDC hDC;
@@ -37,13 +35,13 @@ LRESULT CALLBACK SUBMODS_BUTTONS::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 		hDC = BeginPaint(hWnd, &ps);
 		GetClientRect(hWnd, &rect);
 
-		SUBMODS_WINDOW_BUTTON& button_class = get_submod_button_prop(hWnd);
-		btnType = button_class.get_button_type();
+		SUBMODS_WINDOW_BUTTON& button = get_submod_button_prop(hWnd);
+		btnType = button.get_button_type();
 
 		if (btnType == SUBMODS_BUTTON_TYPE::BTN_SUBMOD)
 		{
-			const std::string& submod_name = button_class.get_submod_name();
-			bool checked = button_class.get_buffer_button().m_isChecked;
+			const std::string& submod_name = button.get_submod_name();
+			bool checked = button.get_buffer_button().m_isChecked;
 
 			GetClientRect(hWnd, &rect);
 
@@ -161,7 +159,7 @@ LRESULT CALLBACK SUBMODS_BUTTONS::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 	}
 	case WM_CLOSE:
 	{
-		DestroyWindow(hWnd);
+		return DefWindowProc(hWnd, uMsg, wParam, lParam);
 		break;
 	}
 	case WM_DESTROY:

@@ -156,6 +156,15 @@ NET_HANDLER& NET_HANDLER::recieve_message() noexcept(false)
 
 	while (true)
 	{
+		// Exit procedure
+		if (m_game_ver->terminate)
+		{
+			of.close();
+			delete[] recv_buff;
+			WSACloseEvent(sock_event);
+			throw NET_STATUS_CODES::NET_STATUS_TERMINATED;
+		}
+
 		if (m_current_msg_type == MESSAGE_GET_FILE)
 		{
 			m_game_ver->progress = ((long double)downloaded / get_content_length()) * 100;
@@ -467,6 +476,12 @@ uint8_t NET_HANDLER::ver_parse_n_compare()
 
 	while ((pos = v_txt.find("\r\n")) != std::string::npos)
 	{
+		// Exit procedure
+		if (m_game_ver->terminate)
+		{
+			throw NET_STATUS_CODES::NET_STATUS_TERMINATED;
+		}
+
 		line = v_txt.substr(0, pos);
 
 		switch (iter)

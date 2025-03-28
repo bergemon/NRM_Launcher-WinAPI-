@@ -4,12 +4,12 @@
 #include "bitmap.h"
 #include "get_file_path.h"
 
-class MainWindow
+class MAIN_WINDOW
 {
 public:
-	~MainWindow();
+	~MAIN_WINDOW();
 
-	static MainWindow& getInstance();
+	static MAIN_WINDOW& getInstance();
 
 	void initialize(
 		LPCWSTR className,
@@ -24,18 +24,19 @@ public:
 
 	static LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
-	const HWND getHWnd();
+	HWND getHWnd();
+	void setHWnd(HWND hWnd);
 
 	CUSTOM_BITMAP& get_background();
 
 	const std::string_view get_bkg_filename();
 
 private:
-	MainWindow();
-	MainWindow(const MainWindow&) = delete;
-	MainWindow operator=(const MainWindow) = delete;
+	MAIN_WINDOW();
+	MAIN_WINDOW(const MAIN_WINDOW&) = delete;
+	MAIN_WINDOW operator=(const MAIN_WINDOW) = delete;
 
-	HWND m_hMainWnd;
+	HWND m_hWnd;
 	bool m_initialized;
 	std::string m_strBkgFileName;
 	CUSTOM_BITMAP m_backrgound;

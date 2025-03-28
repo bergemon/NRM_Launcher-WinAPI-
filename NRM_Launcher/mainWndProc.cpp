@@ -4,7 +4,7 @@
 #include "get_file_path.h"
 
 //====================================================================
-LRESULT CALLBACK MainWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK MAIN_WINDOW::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	HDC hDC;
 
@@ -14,6 +14,8 @@ LRESULT CALLBACK MainWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM
 	{
 		hDC = GetDC(hWnd);
 
+		MAIN_WINDOW::getInstance().setHWnd(hWnd);
+
 		ReleaseDC(hWnd, hDC);
 		break;
 	}
@@ -21,7 +23,7 @@ LRESULT CALLBACK MainWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM
 	{
 		PAINTSTRUCT ps;
 		hDC = BeginPaint(hWnd, &ps);
-		MainWindow& main_window = MainWindow::getInstance();
+		MAIN_WINDOW& main_window = MAIN_WINDOW::getInstance();
 		CUSTOM_BITMAP& background = main_window.get_background();
 
 		background.Draw(

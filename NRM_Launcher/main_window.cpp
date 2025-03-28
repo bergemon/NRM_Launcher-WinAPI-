@@ -3,17 +3,17 @@
 #include "button.h"
 
 //====================================================================
-MainWindow& MainWindow::getInstance()
+MAIN_WINDOW& MAIN_WINDOW::getInstance()
 {
-	static MainWindow main_window;
+	static MAIN_WINDOW main_window;
 	return main_window;
 }
 //====================================================================
-MainWindow::MainWindow()
+MAIN_WINDOW::MAIN_WINDOW()
 {
 }
 //====================================================================
-void MainWindow::initialize(
+void MAIN_WINDOW::initialize(
 	LPCWSTR className,
 	LPCWSTR windowTitle,
 	HINSTANCE hInstance,
@@ -44,7 +44,8 @@ void MainWindow::initialize(
 	}
 
 	HICON hIcon = LoadIconW(hInstance, MAKEINTRESOURCE(IDI_NRMICON));
-	if (!hIcon) {
+	if (!hIcon)
+	{
 		throw std::exception("Can not load icon");
 	}
 
@@ -81,7 +82,7 @@ void MainWindow::initialize(
 		return;
 	}
 
-	m_hMainWnd = CreateWindowEx(
+	m_hWnd = CreateWindowEx(
 		// WindowExStyles
 		WS_EX_TRANSPARENT,
 		// UTF-16 name of the creating class
@@ -110,32 +111,41 @@ void MainWindow::initialize(
 	free(window_class);
 	free(desktopRect);
 
-	if (!m_hMainWnd)
+	if (!m_hWnd)
 	{
 		throw std::exception("Can not create main window");
-		return;
 	}
 
 	m_initialized = true;
 
 	//ShowWindow(m_hMainWnd, SW_SHOWDEFAULT);
-	UpdateWindow(m_hMainWnd);
+	UpdateWindow(m_hWnd);
 }
-MainWindow::~MainWindow()
+MAIN_WINDOW::~MAIN_WINDOW()
 {
 }
 //====================================================================
-const HWND MainWindow::getHWnd()
+void MAIN_WINDOW::setHWnd(HWND hWnd)
 {
-	return m_hMainWnd;
+	m_hWnd = hWnd;
 }
 //====================================================================
-CUSTOM_BITMAP& MainWindow::get_background()
+HWND MAIN_WINDOW::getHWnd()
+{
+	if (!IsWindow(m_hWnd))
+	{
+		MessageBox(NULL, TEXT("Main window handle is not valid"), TEXT("ERROR"), MB_OK);
+	}
+
+	return m_hWnd;
+}
+//====================================================================
+CUSTOM_BITMAP& MAIN_WINDOW::get_background()
 {
 	return m_backrgound;
 }
 //====================================================================
-const std::string_view MainWindow::get_bkg_filename()
+const std::string_view MAIN_WINDOW::get_bkg_filename()
 {
 	return std::string_view(m_strBkgFileName);
 }

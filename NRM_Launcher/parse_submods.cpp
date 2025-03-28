@@ -1,6 +1,7 @@
 #include "parse_submods.h"
 #include "const.h"
 #include "windows.h"
+#include "settings_parser.h"
 
 //====================================================================
 std::list<PARSED_SUBMOD> parsed_submods;
@@ -9,14 +10,21 @@ void parse_submods() noexcept(false)
 {
 	namespace fs = std::filesystem;
 
+	parsed_submods.clear();
 	std::vector<fs::directory_entry> files;
 	files.reserve(10);
 
 	fs::path submods_path(GAME_PATH SLH "mod");
 
-	if (!fs::exists(submods_path))
+	LAUNCHER_SETTINGS& settings = LAUNCHER_SETTINGS::getInstance();
+
+	if (!fs::exists(submods_path) && fs::exists(GAME_PATH))
 	{
 		throw std::exception("Submods directory does not exist");
+	}
+	else if (!fs::exists(submods_path) && !fs::exists(GAME_PATH))
+	{
+		return;
 	}
 
 	// Loop for directory iterator

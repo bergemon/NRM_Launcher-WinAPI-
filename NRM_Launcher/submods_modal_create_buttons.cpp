@@ -68,3 +68,42 @@ void create_submods_modal_buttons()
 	}
 }
 //====================================================================
+void create_submods_buttons_again()
+{
+	SUBMODS_BUTTONS& submod_window_buttons = SUBMODS_BUTTONS::getInstance();
+
+	try
+	{
+		if (submod_window_buttons.is_initialized())
+		{
+			submod_window_buttons.clear_submod_buttons();
+			parse_submods();
+
+			for (const auto& submod : parsed_submods)
+			{
+				submod_window_buttons.create_submod_button(
+					{ SUBMODS_CHECKBOX_BUTTON_WIDTH, SUBMODS_CHECKBOX_BUTTON_HEIGHT },
+					submod.submod_name.c_str(),
+					submod.submod_path.c_str()
+				);
+
+				if (&submod == &parsed_submods.back())
+				{
+					// Fill buffer for submod buttons
+					fill_submods_buffer();
+				}
+			}
+		}
+		else
+		{
+			throw std::runtime_error(
+				"Need to initialize submods window buttons before"
+				"using \"create_submods_buttons_again\" procedure"
+			);
+		}
+	}
+	catch (std::exception& e)
+	{
+		MessageBoxA(submod_window_buttons.getParent(), e.what(), "Error", MB_OK);
+	}
+}

@@ -112,22 +112,8 @@ extern "C" DWORD WINAPI unzip_file(_In_ LPVOID lpParameter)
 	{
 		info->status = 0;
 		info->status_code = STATUS_CANT_OPEN_ARCHIVE;
-		ExitThread(1);
+		return 0;
 	}
-
-	/*EnterCriticalSection(info->critical_section);
-	// Create directory
-	namespace fs = std::filesystem;
-	fs::path fs_output_path(info->out_path);
-	if (!fs::exists(fs_output_path))
-	{
-		fs::create_directory(fs_output_path);
-	}
-	else
-	{
-		fs::remove_all(fs_output_path);
-	}
-	LeaveCriticalSection(info->critical_section);*/
 
 	// Allocate memory for buffer
 	uint32_t buffer_size = 1'000'000;
@@ -136,6 +122,16 @@ extern "C" DWORD WINAPI unzip_file(_In_ LPVOID lpParameter)
 	// Read files by indexes
 	for (zip_int64_t i = info->start_index; i < info->end_index; ++i)
 	{
+		// Exit procedure
+		if (info->terminate)
+		{
+			zip_close(zip);
+			delete[] buffer;
+			info->status = 0;
+			info->status_code = STATUS_TERMINATED;
+			return 0;
+		}
+
 		info->progress = 
 			((i - info->start_index) / (long double)(info->end_index - info->start_index)) * 100;
 
@@ -147,22 +143,11 @@ extern "C" DWORD WINAPI unzip_file(_In_ LPVOID lpParameter)
 			info->status = 0;
 			info->status_code = STATUS_UNKNOWN_ERROR;
 			delete[] buffer;
-			ExitThread(1);
+			return 0;
 		}
 
 		// Full name of the file (including path)
 		const char* file_name = file_info.name;
-
-		// Creating full path to decompress file
-		/*std::string full_path;
-		full_path.append(info->out_path).append("\\").append(file_name);
-		if (full_path.length() > MAX_PATH)
-		{
-			info->status = 0;
-			info->status_code = STATUS_PATH_TOO_LONG;
-			zip_close(zip);
-			ExitThread(1);
-		}*/
 
 		// If it is a directory - create it
 		if (file_name[strlen(file_name) - 1] == '/')
@@ -186,7 +171,7 @@ extern "C" DWORD WINAPI unzip_file(_In_ LPVOID lpParameter)
 			info->status_code = STATUS_CANT_OPEN_ARCHIVE_FILE;
 			zip_close(zip);
 			delete[] buffer;
-			ExitThread(1);
+			return 0;
 		}
 
 		// Create directory if it is not exist yes
@@ -229,12 +214,12 @@ extern "C" DWORD WINAPI unzip_file(_In_ LPVOID lpParameter)
 			zip_fclose(file);
 			zip_close(zip);
 			delete[] buffer;
-			ExitThread(1);
+			return 0;
 		}
 
 		// Reading file from archive and write data to disk
-		zip_int64_t bytes_read;
-		int32_t bytes_written;
+		zip_int64_t bytes_read = 0;
+		int32_t bytes_written = 0;
 		do
 		{
 			bytes_read = zip_fread(file, buffer, buffer_size);

@@ -3,8 +3,8 @@
 #include <filesystem>
 #include <string>
 #include "stdlibs.h"
+#include <windows.h>
 #include "const.h"
-#include "windows.h"
 
 //====================================================================
 class LAUNCHER_SETTINGS

@@ -10,6 +10,7 @@
 #include "settings_buttons_group.h"
 #include "download_modal.h"
 #include "download_buttons.h"
+#include "get_main_titlebar_text.h"
 
 // Modern styles for Windows common controls
 #pragma comment(linker, "\"/manifestdependency:type='win32' \
@@ -21,13 +22,15 @@ int WINAPI MyWinMain(_In_ HINSTANCE hInstance, _In_ LPSTR lpCmdLine, _In_ int nC
 {
 	try
 	{
+		std::wstring& main_titlebar_text = get_main_titlebar_text();
+
 		// Main window
-		MainWindow& main_window = MainWindow::getInstance();
+		MAIN_WINDOW& main_window = MAIN_WINDOW::getInstance();
 		main_window.initialize(
 			// Window class name
 			MAIN_WINDOW_CLASS,
 			// Titlebar text
-			MAIN_WINDOW_CLASS,
+			main_titlebar_text.c_str(),
 			// hInstance & Cmd
 			hInstance, nCmdShow,
 			// Menu (optional)
@@ -61,8 +64,8 @@ int WINAPI MyWinMain(_In_ HINSTANCE hInstance, _In_ LPSTR lpCmdLine, _In_ int nC
 		// Submods buttons
 		create_submods_modal_buttons();
 
-		// Settings window
 		SETTINGS_MODAL_WINDOW& settings_window = SETTINGS_MODAL_WINDOW::getInstance();
+		// Settings window
 		settings_window.initialize(
 			// Parent window handle
 			main_window.getHWnd(),

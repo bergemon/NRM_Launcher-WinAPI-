@@ -9,9 +9,11 @@
 //====================================================================
 enum CURRENT_OPERATION
 {
+	OPERATION_START,
 	OPERATION_CHECK_VERSION,
 	OPERATION_DOWNLOAD_GAME,
-	OPERATION_UNZIP_FILE
+	OPERATION_UNZIP_FILE,
+	OPERATION_DONE
 };
 //====================================================================
 class DOWNLOAD_WINDOW_BUTTONS

@@ -8,7 +8,7 @@ void create_buttons(int nCmdShow)
 	LAUNCHER_BUTTONS& main_buttons = LAUNCHER_BUTTONS::getInstance();
 	main_buttons.initialize(
 		// Parent handler 
-		MainWindow::getInstance().getHWnd(),
+		MAIN_WINDOW::getInstance().getHWnd(),
 		// Class name
 		MAIN_BUTTONS_CLASS,
 		// Cmd

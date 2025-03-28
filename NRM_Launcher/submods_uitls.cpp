@@ -8,6 +8,7 @@ void fill_submods_buffer()
 	std::list<SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON>& buttons = SUBMODS_BUTTONS::getInstance().get_submods_buttons();
 	std::vector<SUBMODS_BUTTONS::SUBMOD_BUTTON_BUFFER>& buffer = SUBMODS_BUTTONS::getInstance().get_submods_buttons_buffer();
 
+	buffer.clear();
 	buffer.reserve(buttons.size());
 
 	for (auto& button : buttons)
@@ -24,9 +25,9 @@ void save_checked_from_buffer()
 	// Get buttons buffer
 	std::vector<SUBMODS_BUTTONS::SUBMOD_BUTTON_BUFFER>& buffer = SUBMODS_BUTTONS::getInstance().get_submods_buttons_buffer();
 
-	for (SUBMODS_BUTTONS::SUBMOD_BUTTON_BUFFER& buf_button : buffer)
+	for (SUBMODS_BUTTONS::SUBMOD_BUTTON_BUFFER& buff_button : buffer)
 	{
-		buf_button.m_button.set_checked(buf_button.m_isChecked);
+		buff_button.m_button.set_checked(buff_button.m_isChecked);
 	}
 }
 //====================================================================

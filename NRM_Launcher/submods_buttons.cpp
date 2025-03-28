@@ -31,6 +31,22 @@ std::vector<SUBMODS_BUTTONS::SUBMOD_BUTTON_BUFFER>& SUBMODS_BUTTONS::get_submods
 	return m_submodButtonsBuffer;
 }
 //====================================================================
+void SUBMODS_BUTTONS::clear_submod_buttons()
+{
+	m_listButtons.remove_if(
+		[&] (SUBMODS_WINDOW_BUTTON& btn)
+		{
+			if (btn.get_button_type() == SUBMODS_BUTTON_TYPE::BTN_SUBMOD)
+			{
+				lower_y_offset(btn.get_height(), btn.get_exPadding());
+				ShowWindow(btn.get_hWnd(), SW_HIDE);
+				return true;
+			}
+			return false;
+		}
+	);
+}
+//====================================================================
 void SUBMODS_BUTTONS::initialize(HWND hParent, LPCWSTR className) noexcept(false)
 {
 	if (m_initialized)
@@ -72,6 +88,11 @@ void SUBMODS_BUTTONS::initialize(HWND hParent, LPCWSTR className) noexcept(false
 	m_initialized = true;
 }
 //====================================================================
+bool SUBMODS_BUTTONS::is_initialized() const noexcept(true)
+{
+	return m_initialized;
+}
+//====================================================================
 void SUBMODS_BUTTONS::create_submod_button(
 	BUTTON_PROPERTIES props,
 	const char* submod_name,
@@ -101,7 +122,9 @@ void SUBMODS_BUTTONS::create_submod_button(
 		// width and height
 		props.width, props.height,
 		// submod name and path
-		submod_name, submod_path
+		submod_name, submod_path,
+		// button exPadding
+		exPadding
 	);
 
 	m_submodBtnOffset += props.height + SUBMOD_BUTTONS_Y_PADDING + exPadding;
@@ -174,6 +197,11 @@ uint32_t SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::get_height() const
 	return m_height;
 }
 //====================================================================
+uint32_t SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::get_exPadding() const
+{
+	return m_exPadding;
+}
+//====================================================================
 std::string_view SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::get_background_file_name()
 {
 	return m_bkgFileName;
@@ -199,6 +227,11 @@ const std::string& SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::get_submod_path() con
 	return m_submod_path;
 }
 //====================================================================
+void SUBMODS_BUTTONS::lower_y_offset(int32_t height, uint32_t exPadding) 
+{
+	m_submodBtnOffset -= (height + SUBMOD_BUTTONS_Y_PADDING + exPadding);
+}
+//====================================================================
 SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::SUBMODS_WINDOW_BUTTON(
 	HWND parent,
 	std::wstring_view className,
@@ -210,10 +243,11 @@ SUBMODS_BUTTONS::SUBMODS_WINDOW_BUTTON::SUBMODS_WINDOW_BUTTON(
 	uint32_t height,
 	const char* submod_name,
 	const char* submod_path,
-	bool checked
+	bool checked,
+	uint32_t exPadding
 ) : m_width(width), m_height(height), m_buttonType(btnType), m_className(className),
 	m_submod_name(submod_name), m_submod_path(submod_path), m_checked(checked), m_xPos(x), m_yPos(y),
-	m_bkgFileName(background_file_name), m_bufferButton(nullptr)
+	m_bkgFileName(background_file_name), m_bufferButton(nullptr), m_exPadding(exPadding)
 {
 	m_hBtnWnd = CreateWindowEx(
 		// WindowExStyles

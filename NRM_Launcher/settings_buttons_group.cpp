@@ -119,7 +119,7 @@ void SETTINGS_BUTTONS_GROUP::create_radio_button(const char* background_file_nam
 		{
 			width = each_button_has_space;
 			MessageBox(
-				MainWindow::getInstance().getHWnd(),
+				MAIN_WINDOW::getInstance().getHWnd(),
 				TEXT("Radio button width is longer than each radio button can have in a group"),
 				TEXT("Error"),
 				MB_OK

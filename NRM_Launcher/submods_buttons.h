@@ -17,7 +17,7 @@ class SUBMODS_BUTTONS
 {
 private:
 	class SUBMODS_WINDOW_BUTTON;
-
+	
 	struct SUBMOD_BUTTON_BUFFER
 	{
 		SUBMODS_WINDOW_BUTTON& m_button;
@@ -29,6 +29,8 @@ public:
 	[[nodiscard]] static SUBMODS_BUTTONS& getInstance();
 
 	void initialize(HWND hParent, LPCWSTR className) noexcept(false);
+
+	bool is_initialized() const noexcept(true);
 
 	[[nodiscard]] HWND getParent() const;
 
@@ -47,6 +49,7 @@ public:
 		const char* submod_path,
 		uint32_t exPadding = 0
 	) noexcept(false);
+	void clear_submod_buttons();
 
 	std::list<SUBMODS_WINDOW_BUTTON>& get_submods_buttons();
 	std::vector<SUBMOD_BUTTON_BUFFER>& get_submods_buttons_buffer();
@@ -78,7 +81,8 @@ private:
 			uint32_t height = 0,
 			const char* submod_name = "",
 			const char* submod_path = "",
-			bool checked = false
+			bool checked = false,
+			uint32_t exPadding = 0
 		);
 		~SUBMODS_WINDOW_BUTTON();
 
@@ -90,6 +94,7 @@ private:
 		uint32_t get_yPos() const;
 		uint32_t get_width() const;
 		uint32_t get_height() const;
+		uint32_t get_exPadding() const;
 		std::string_view get_background_file_name();
 		SUBMOD_BUTTON_BUFFER& get_buffer_button();
 		void set_buffer_button(SUBMOD_BUTTON_BUFFER& buff_button);
@@ -102,6 +107,7 @@ private:
 		uint32_t m_height = 0;
 		uint32_t m_xPos = 0;
 		uint32_t m_yPos = 0;
+		uint32_t m_exPadding = 0;
 		const std::wstring_view m_className;
 		const SUBMODS_BUTTON_TYPE m_buttonType;
 		std::string m_bkgFileName;
@@ -118,6 +124,7 @@ private:
 	SUBMODS_BUTTONS();
 	SUBMODS_BUTTONS(const SUBMODS_BUTTONS&) = delete;
 	SUBMODS_BUTTONS operator=(const SUBMODS_BUTTONS&) = delete;
+	void lower_y_offset(int32_t height, uint32_t exPadding);
 
 	bool m_initialized;
 	uint32_t m_submodBtnOffset = SUBMOD_BUTTONS_Y_START;
@@ -128,6 +135,8 @@ private:
 };
 //====================================================================
 void create_submods_modal_buttons();
+//====================================================================
+void create_submods_buttons_again();
 //====================================================================
 void draw_submods_btn_background(HWND hWnd, HDC hDC);
 //====================================================================

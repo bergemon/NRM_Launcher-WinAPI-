@@ -64,6 +64,15 @@
     <Filter Include="Source Files\download_modal\buttons">
       <UniqueIdentifier>{6648c6d7-7df0-4b50-98c3-b6fb494473a4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\utils\main_titlebar_text">
+      <UniqueIdentifier>{e4f8e007-5d2a-44ed-add4-f73f11841b26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\download_modal\buttons\remove_all_thread_proc">
+      <UniqueIdentifier>{13f655b2-3271-4b36-a0d5-c48d4bca9f7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\download_modal\buttons\download_operations">
+      <UniqueIdentifier>{17826117-1e25-4765-8a8b-20d0bf61f6de}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="win_main.cpp">
@@ -168,8 +177,14 @@
     <ClCompile Include="create_download_buttons.cpp">
       <Filter>Source Files\download_modal\buttons</Filter>
     </ClCompile>
+    <ClCompile Include="get_main_titlebar_text.cpp">
+      <Filter>Source Files\utils\main_titlebar_text</Filter>
+    </ClCompile>
     <ClCompile Include="remove_all_thread.cpp">
-      <Filter>Source Files\download_modal\buttons</Filter>
+      <Filter>Source Files\download_modal\buttons\remove_all_thread_proc</Filter>
+    </ClCompile>
+    <ClCompile Include="download_operations.cpp">
+      <Filter>Source Files\download_modal\buttons\download_operations</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -227,8 +242,14 @@
     <ClInclude Include="download_buttons.h">
       <Filter>Source Files\download_modal\buttons</Filter>
     </ClInclude>
+    <ClInclude Include="get_main_titlebar_text.h">
+      <Filter>Source Files\utils\main_titlebar_text</Filter>
+    </ClInclude>
     <ClInclude Include="remove_all_thread.h">
-      <Filter>Source Files\download_modal\buttons</Filter>
+      <Filter>Source Files\download_modal\buttons\remove_all_thread_proc</Filter>
+    </ClInclude>
+    <ClInclude Include="download_operations.h">
+      <Filter>Source Files\download_modal\buttons\download_operations</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
