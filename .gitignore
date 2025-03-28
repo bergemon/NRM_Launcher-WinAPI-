@@ -22,6 +22,7 @@
 
 # Directories
 **/NRM_Launcher/x64
+**/download/x64
 /x64
 /.git
 /.vs
