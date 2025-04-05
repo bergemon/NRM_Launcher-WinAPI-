@@ -108,6 +108,7 @@ NET_HANDLER::~NET_HANDLER()
 
 	closesocket(m_socket);
 	SSL_shutdown(m_ssl);
+	SSL_CTX_free(m_ssl_ctx);
 	SSL_free(m_ssl);
 	freeaddrinfo(m_addr);
 	WSACleanup();

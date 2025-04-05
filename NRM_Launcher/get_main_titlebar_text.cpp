@@ -21,7 +21,7 @@ std::wstring& get_main_titlebar_text()
 	}
 	else
 	{
-		wss << L" <Игра не скачена>";
+		wss << L" <Игра не скачана>";
 	}
 
 	static std::wstring wstr;
