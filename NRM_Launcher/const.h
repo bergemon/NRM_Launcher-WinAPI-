@@ -31,6 +31,13 @@
 #define BTN_DISCORD_X_COORD 40
 #define BTN_DISCORD_Y_COORD 400
 //====================================================================
+// Download music submod button (special)
+#define BTN_DOWNLOAD_MUSIC_WIDTH 100
+#define BTN_DOWNLOAD_MUSIC_HEIGHT 80
+#define BTN_DOWNLOAD_MUSIC_EXTRA_PADDING 0
+#define BTN_DOWNLOAD_MUSIC_X_COORD 40
+#define BTN_DOWNLOAD_MUSIC_Y_COORD 300
+//====================================================================
 // Play button
 #define VIC_EXE_NAME "vic2.exe"
 //====================================================================
@@ -55,6 +62,7 @@
 #define BKG_BUTTON_SETTINGS "settings.bmp"
 #define BKG_BUTTON_DOWNLOAD "download.bmp"
 #define BKG_BUTTON_DISCORD "discord.bmp"
+#define BKG_BUTTON_DOWNLOAD_MUSIC "downloadMusic.bmp"
 //====================================================================
 // Settings file
 #define SETTINGS "settings"
@@ -114,7 +122,7 @@
 #define SETTINGS_RADIO_BUTTON_HEIGHT 30
 #define SETTINGS_GROUP_BUTTONS_VERTICAL_SPACE 5
 #define SETTINGS_GROUPS_SPACE_BETWEEN 30
-#define SETTINGS_NEXT_GROUP_POSITION_ADD_COORD SETTINGS_STATIC_BUTTON_HEIGHT + SETTINGS_RADIO_BUTTON_HEIGHT + SETTINGS_GROUP_BUTTONS_SPACE + SETTINGS_GROUPS_SPACE_BETWEEN
+#define SETTINGS_NEXT_GROUP_POSITION_ADD_COORD SETTINGS_STATIC_BUTTON_HEIGHT + SETTINGS_RADIO_BUTTON_HEIGHT + SETTINGS_GROUPS_SPACE_BETWEEN
 #define SETTINGS_WINDOW_BUTTONS_GROUP_START_Y_POS 10
 #define SETTINGS_STATIC_BUTTON_WIDTH 350
 #define SETTINGS_WINDOW_STATIC_BUTTON_OFFSET ((SETTINGS_WINDOW_WIDTH - SETTINGS_STATIC_BUTTON_WIDTH - BORDER_CONST) / 2)

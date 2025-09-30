@@ -5,7 +5,7 @@
 void create_process() noexcept(false)
 {
 	namespace fs = std::filesystem;
-
+	
 	STARTUPINFOA startUpInfo{ 0 };
 	startUpInfo.cb = sizeof(STARTUPINFOA);
 	PROCESS_INFORMATION processInfo;

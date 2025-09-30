@@ -18,4 +18,6 @@ DWORD WINAPI create_out_path(_In_ LPVOID lpParameter)
 	}
 
 	info->is_ended = true;
+
+	return 0;
 }

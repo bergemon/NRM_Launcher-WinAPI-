@@ -50,5 +50,14 @@ void create_buttons(int nCmdShow)
 		// x and y coords (if needed)
 		BTN_DISCORD_X_COORD, BTN_DISCORD_Y_COORD
 	);
+	main_buttons.create_button(
+		BUTTON_TYPE::BTN_DOWNLOAD_MUSIC,
+		BUTTON_PROPERTIES{ BTN_DOWNLOAD_MUSIC_WIDTH, BTN_DOWNLOAD_MUSIC_HEIGHT },
+		BKG_BUTTON_DOWNLOAD_MUSIC,
+		// Extra padding
+		BTN_DOWNLOAD_MUSIC_EXTRA_PADDING,
+		// x and y coords (if needed)
+		BTN_DOWNLOAD_MUSIC_X_COORD, BTN_DOWNLOAD_MUSIC_Y_COORD
+	);
 }
 //====================================================================

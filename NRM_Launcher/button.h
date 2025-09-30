@@ -29,7 +29,8 @@ enum BUTTON_TYPE
 	BTN_SUBMODS,
 	BTN_SETTINGS,
 	BTN_DOWNLOAD,
-	BTN_DISCORD
+	BTN_DISCORD,
+	BTN_DOWNLOAD_MUSIC
 };
 //====================================================================
 class LAUNCHER_BUTTONS
