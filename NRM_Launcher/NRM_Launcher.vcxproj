@@ -171,6 +171,7 @@
     <ClCompile Include="submods_modal.cpp" />
     <ClCompile Include="submods_modal_create_buttons.cpp" />
     <ClCompile Include="submods_uitls.cpp" />
+    <ClCompile Include="wchar_to_utf8.cpp" />
     <ClCompile Include="win_main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -195,6 +196,7 @@
     <ClInclude Include="submods_buttons.h" />
     <ClInclude Include="submods_modal.h" />
     <ClInclude Include="submods_utils.h" />
+    <ClInclude Include="wchar_to_utf8.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc" />

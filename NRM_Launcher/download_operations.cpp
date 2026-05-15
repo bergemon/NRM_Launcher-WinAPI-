@@ -30,7 +30,7 @@ void timer_check_version(HWND hWnd, GAME_VERSION& ver, UINT_PTR timer_id, HANDLE
 		// Exit if download thread returned error
 		if (ver.status_code != NET_STATUS_CODES::NET_STAT_OK) return;
 
-		PostMessage(hWnd, WM_USER + 2, NULL, NULL);
+		PostMessage(hWnd, DOWNLOAD_WND_MESSAGE::MSG_DOWNLOAD_GAME, NULL, NULL);
 		ver.is_ended = 0;
 
 		// Close thread handle
@@ -56,7 +56,7 @@ void timer_download_game(HWND hWnd, GAME_VERSION& ver, UINT_PTR timer_id, HANDLE
 		if (ver.status_code != NET_STATUS_CODES::NET_STAT_OK) return;
 
 		PostMessage(progress_bar_hWnd, PBM_SETPOS, 100, NULL);
-		PostMessage(hWnd, WM_USER + 3, NULL, NULL);
+		PostMessage(hWnd, DOWNLOAD_WND_MESSAGE::MSG_UNZIP_FILE, NULL, NULL);
 		ver.status = 1;
 		ver.progress = 0;
 		delete[] ver.new_file_id;
@@ -85,14 +85,14 @@ void timer_unzip(
 )
 {
 	KillTimer(hWnd, timer_id);
-	int32_t is_ended = 0;
+	int32_t is_unzip_ended = 0;
 
 	/* If creating output directory still in progress, create timer again then */
 	if (!out_info.is_ended)
 	{
 		timer_id = SetTimer(hWnd, 1, 200, NULL);
 	}
-	/* If we sucessfully created output directory */
+	/* If output directory not created yet*/
 	else if (out_info.is_ended && !output_path_created)
 	{
 		output_path_created = true;
@@ -160,7 +160,7 @@ void timer_unzip(
 				(need to get version and checksum from there) */
 			ver,
 			// Is unzip work is done or not
-			is_ended,
+			is_unzip_ended,
 			// Id of the WIN32 timer
 			timer_id,
 			// Name of the zip file to delete after extraction
@@ -218,7 +218,14 @@ void unzip_after_output_dir_created(
 		// Exit if one of the threads was terminated or returned error
 		for (auto& elem : unzip_info_vector)
 		{
-			if (elem.status_code != UNZIP_STATUS_CODES::STATUS_OK) break;
+			if (elem.status_code != UNZIP_STATUS_CODES::STATUS_OK)
+				MessageBoxA(
+					hWnd,
+					("Ошибка распаковки архива. Код ошибки: " + std::to_string(elem.status_code)).c_str(),
+					"Ошибка",
+					MB_OK
+				);
+			break;
 		}
 
 		// Set progress to 100 in progress bar
@@ -308,129 +315,104 @@ LRESULT stop_downloading_operation(
 	CRITICAL_SECTION& cs
 )
 {
-	if (operation != CURRENT_OPERATION::OPERATION_DONE)
+	MessageBeep(MB_OK);
+	DWORD answer = MessageBox(
+		hWnd,
+		TEXT("В данный момент идёт загрузка/распаковка. Остановить?"),
+		TEXT("Остановка загрузки/распаковки"),
+		MB_YESNO
+	);
+
+	if (answer == IDNO)
 	{
-		MessageBeep(MB_OK);
-		DWORD answer = MessageBox(
-			hWnd,
-			TEXT("В данный момент идёт загрузка/распаковка. Остановить?"),
-			TEXT("Остановка загрузки/распаковки"),
-			MB_YESNO
-		);
+		return WM_USER;
+	}
 
-		if (answer == IDNO)
+	// Kill the timer
+	KillTimer(hWnd, timer_id);
+
+	switch (operation)
+	{
+	case CURRENT_OPERATION::OPERATION_CHECK_VERSION:
+	{
+		// Exit download thread
+		ver.terminate = 1;
+
+		// Wait for download thread signaling and delete temp zip file
+		DWORD wait = WaitForSingleObject(check_ver_thread, INFINITE);
+
+		CloseHandle(check_ver_thread);
+		ver.is_ended = 0;
+		ver.terminate = 0;
+		ver.status = 1;
+		ver.status_code = NET_STATUS_CODES::NET_STAT_OK;
+
+		break;
+	}
+	case CURRENT_OPERATION::OPERATION_DOWNLOAD_GAME:
+	{
+		// Exit download thread
+		ver.terminate = 1;
+
+		// Wait for download thread signaling and delete temp zip file
+		DWORD wait = WaitForSingleObject(download_game_thread, INFINITE);
+
+		CloseHandle(download_game_thread);
+		ver.status = 1;
+		ver.terminate = 0;
+		ver.progress = 0;
+		ver.status_code = NET_STATUS_CODES::NET_STAT_OK;
+		delete[] ver.new_file_id;
+
+		if (wait == WAIT_OBJECT_0 && std::filesystem::exists(zip_file_name.c_str()))
 		{
-			return WM_USER;
+			std::filesystem::remove(zip_file_name.c_str());
 		}
-
-		// Kill the timer
-		KillTimer(hWnd, timer_id);
-
-		switch (operation)
+		break;
+	}
+	case CURRENT_OPERATION::OPERATION_UNZIP_FILE:
+		if (output_path_created)
 		{
-		case CURRENT_OPERATION::OPERATION_CHECK_VERSION:
-		{
-			// Exit download thread
-			ver.terminate = 1;
+			// Exit unzip threads
+			for (auto& elem : unzip_info_vector)
+			{
+				elem.terminate = 1;
+			}
 
-			// Wait for download thread signaling and delete temp zip file
-			DWORD wait = WaitForSingleObject(check_ver_thread, INFINITE);
+			// Wait untill all unzip threads become signaling
+			DWORD wait = WaitForMultipleObjects(num_of_threads, unzip_threads.data(), TRUE, INFINITE);
 
-			CloseHandle(check_ver_thread);
-			ver.is_ended = 0;
-			ver.terminate = 0;
-			ver.status = 1;
-			ver.status_code = NET_STATUS_CODES::NET_STAT_OK;
+			if (wait == WAIT_OBJECT_0)
+			{
+				for (HANDLE thread : unzip_threads)
+				{
+					CloseHandle(thread);
+				}
+				unzip_threads.clear();
+				unzip_info_vector.clear();
+			}
 
-			break;
-		}
-		case CURRENT_OPERATION::OPERATION_DOWNLOAD_GAME:
-		{
-			// Exit download thread
-			ver.terminate = 1;
-
-			// Wait for download thread signaling and delete temp zip file
-			DWORD wait = WaitForSingleObject(download_game_thread, INFINITE);
-
-			CloseHandle(download_game_thread);
-			ver.status = 1;
-			ver.terminate = 0;
-			ver.progress = 0;
-			ver.status_code = NET_STATUS_CODES::NET_STAT_OK;
-			delete[] ver.new_file_id;
-
-			// Clear progress bar
-			PostMessage(
-				DOWNLOAD_WINDOW_BUTTONS::getInstance().get_download_buttons()[2].get_hWnd(),
-				PBM_SETPOS, 0, NULL
-			);
-
-			if (wait == WAIT_OBJECT_0 && std::filesystem::exists(zip_file_name.c_str()))
+			// Delete temp zip file
+			if (std::filesystem::exists(zip_file_name.c_str()))
 			{
 				std::filesystem::remove(zip_file_name.c_str());
 			}
-			break;
+			DeleteCriticalSection(&cs);
 		}
-		case CURRENT_OPERATION::OPERATION_UNZIP_FILE:
-			if (output_path_created)
+		else
+		{
+			// Wait for download thread signaling and delete temp zip file
+			DWORD wait = WaitForSingleObject(create_out_path_thread, INFINITE);
+
+			CloseHandle(create_out_path_thread);
+
+			// Delete temp zip file
+			if (std::filesystem::exists(zip_file_name.c_str()))
 			{
-				// Exit unzip threads
-				for (auto& elem : unzip_info_vector)
-				{
-					elem.terminate = 1;
-				}
-
-				// Wait untill all unzip threads become signaling
-				DWORD wait = WaitForMultipleObjects(num_of_threads, unzip_threads.data(), TRUE, INFINITE);
-
-				if (wait == WAIT_OBJECT_0)
-				{
-					unzip_info_vector.clear();
-					for (HANDLE thread : unzip_threads)
-					{
-						CloseHandle(thread);
-					}
-					unzip_threads.clear();
-				}
-
-				// Clear progress bar
-				PostMessage(
-					DOWNLOAD_WINDOW_BUTTONS::getInstance().get_download_buttons()[2].get_hWnd(),
-					PBM_SETPOS, 0, NULL
-				);
-				PostMessage(
-					DOWNLOAD_WINDOW_BUTTONS::getInstance().get_download_buttons()[4].get_hWnd(),
-					PBM_SETPOS, 0, NULL
-				);
-
-				// Delete temp zip file
-				if (std::filesystem::exists(zip_file_name.c_str()))
-				{
-					std::filesystem::remove(zip_file_name.c_str());
-				}
-				DeleteCriticalSection(&cs);
+				std::filesystem::remove(zip_file_name.c_str());
 			}
-			else
-			{
-				// Wait for download thread signaling and delete temp zip file
-				DWORD wait = WaitForSingleObject(create_out_path_thread, INFINITE);
-
-				CloseHandle(create_out_path_thread);
-
-				// Clear progress bar
-				PostMessage(
-					DOWNLOAD_WINDOW_BUTTONS::getInstance().get_download_buttons()[2].get_hWnd(),
-					PBM_SETPOS, 0, NULL
-				);
-
-				// Delete temp zip file
-				if (std::filesystem::exists(zip_file_name.c_str()))
-				{
-					std::filesystem::remove(zip_file_name.c_str());
-				}
-			}
-			break;
 		}
+		break;
 	}
 
 	// Download operation is done
@@ -440,6 +422,11 @@ LRESULT stop_downloading_operation(
 	DOWNLOAD_MODAL_WINDOW::getInstance().hide();
 	for (auto& elem : DOWNLOAD_WINDOW_BUTTONS::getInstance().get_download_buttons())
 	{
+		// Clear progress bar
+		if (elem.get_button_type() == DOWNLOAD_WINDOW_BUTTONS::DOWNLOAD_BUTTON_TYPE::DOWNLOAD_PROGRESS_BAR)
+		{
+			PostMessage(elem.get_hWnd(), PBM_SETPOS, 0, NULL);
+		}
 		elem.hide();
 	}
 	FreeLibrary(library);

@@ -4,6 +4,8 @@
 #include "main_window.h"
 #include "get_main_titlebar_text.h"
 #include "download_operations.h"
+#include "settings_parser.h"
+#include "wchar_to_utf8.h"
 
 //====================================================================
 typedef DWORD(WINAPI *NRM_LIB_PROC)(_In_ LPVOID lpParameter);
@@ -33,7 +35,10 @@ LRESULT CALLBACK DOWNLOAD_MODAL_WINDOW::WndProc(HWND hWnd, UINT uMsg, WPARAM wPa
 	static std::string zip_out_path(DEFAULT_OUT_PATH);
 
 	static std::string host(GOOGLE_DRIVE_HOST);
-	static std::string file_id(GOOGLE_VERSION_FILE_ID);
+	LAUNCHER_SETTINGS& settings = LAUNCHER_SETTINGS::getInstance();
+	std::wstring ver_file_id_wstr = settings.get_ver_file_id().data();
+	std::string ver_file_id_str = wchar_to_utf8(ver_file_id_wstr);
+	static std::string file_id(ver_file_id_str);
 
 	if (!ver.file_id) ver.file_id = file_id.data();
 	if (!ver.host) ver.host = host.data();
@@ -61,7 +66,7 @@ LRESULT CALLBACK DOWNLOAD_MODAL_WINDOW::WndProc(HWND hWnd, UINT uMsg, WPARAM wPa
 		EndPaint(hWnd, &ps);
 		break;
 	}
-	case WM_USER + 1:
+	case DOWNLOAD_WND_MESSAGE::MSG_CHECK_VERSION:
 	{
 		// Operation is only starting (we do not need to properly close threads)
 		operation = CURRENT_OPERATION::OPERATION_START;
@@ -99,7 +104,7 @@ LRESULT CALLBACK DOWNLOAD_MODAL_WINDOW::WndProc(HWND hWnd, UINT uMsg, WPARAM wPa
 
 		break;
 	}
-	case WM_USER + 2:
+	case DOWNLOAD_WND_MESSAGE::MSG_DOWNLOAD_GAME:
 	{
 		DOWNLOAD_WINDOW_BUTTONS& download_buttons = DOWNLOAD_WINDOW_BUTTONS::getInstance();
 		auto& btns = download_buttons.get_download_buttons();
@@ -149,7 +154,7 @@ LRESULT CALLBACK DOWNLOAD_MODAL_WINDOW::WndProc(HWND hWnd, UINT uMsg, WPARAM wPa
 
 		break;
 	}
-	case WM_USER + 3:
+	case DOWNLOAD_WND_MESSAGE::MSG_UNZIP_FILE:
 	{
 		// Current operation
 		operation = CURRENT_OPERATION::OPERATION_UNZIP_FILE;

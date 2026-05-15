@@ -6,7 +6,6 @@
 // Download lib constants
 #define DEFAULT_ZIP_PATH "temp.zip"
 #define DEFAULT_OUT_PATH "game"
-#define GOOGLE_VERSION_FILE_ID "1hjtR0WkW5e-i5GPU7OSWQ4SdMOafGI7G"
 #define GOOGLE_DRIVE_HOST "drive.usercontent.google.com"
 #define DOWNLOAD_HANDLER_LIB_NAME "download.dll"
 //====================================================================
@@ -29,7 +28,7 @@
 #define BTN_DISCORD_HEIGHT 80
 #define BTN_DISCORD_EXTRA_PADDING 0
 #define BTN_DISCORD_X_COORD 40
-#define BTN_DISCORD_Y_COORD 400
+#define BTN_DISCORD_Y_COORD 450
 //====================================================================
 // Download music submod button (special)
 #define BTN_DOWNLOAD_MUSIC_WIDTH 100
@@ -69,7 +68,7 @@
 #define SETTINGS_HEAD "NRM_LAUNCHER_SETTINGS"
 #define SETTINGS_LINE_TERMINATE ";"
 #define SETTINGS_PARAM_DELIMETER ":"
-#define SETTINGS_DATA_FIELDS 6
+#define SETTINGS_DATA_FIELDS 7
 #define SETTINGS_FIELD_MAX_LENGTH 200
 //====================================================================
 // Utility

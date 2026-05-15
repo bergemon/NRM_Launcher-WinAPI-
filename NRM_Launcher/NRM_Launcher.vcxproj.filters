@@ -67,11 +67,11 @@
     <Filter Include="Source Files\utils\main_titlebar_text">
       <UniqueIdentifier>{e4f8e007-5d2a-44ed-add4-f73f11841b26}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\download_modal\buttons\remove_all_thread_proc">
-      <UniqueIdentifier>{13f655b2-3271-4b36-a0d5-c48d4bca9f7b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\download_modal\buttons\download_operations">
+    <Filter Include="Source Files\download_modal\utils">
       <UniqueIdentifier>{17826117-1e25-4765-8a8b-20d0bf61f6de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\utils\wchar_to_multibyte">
+      <UniqueIdentifier>{443c71ef-8b23-4f49-ab72-b8123b80851a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -180,11 +180,14 @@
     <ClCompile Include="get_main_titlebar_text.cpp">
       <Filter>Source Files\utils\main_titlebar_text</Filter>
     </ClCompile>
-    <ClCompile Include="remove_all_thread.cpp">
-      <Filter>Source Files\download_modal\buttons\remove_all_thread_proc</Filter>
-    </ClCompile>
     <ClCompile Include="download_operations.cpp">
-      <Filter>Source Files\download_modal\buttons\download_operations</Filter>
+      <Filter>Source Files\download_modal\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="remove_all_thread.cpp">
+      <Filter>Source Files\download_modal\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="wchar_to_utf8.cpp">
+      <Filter>Source Files\utils\wchar_to_multibyte</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -245,11 +248,14 @@
     <ClInclude Include="get_main_titlebar_text.h">
       <Filter>Source Files\utils\main_titlebar_text</Filter>
     </ClInclude>
-    <ClInclude Include="remove_all_thread.h">
-      <Filter>Source Files\download_modal\buttons\remove_all_thread_proc</Filter>
-    </ClInclude>
     <ClInclude Include="download_operations.h">
-      <Filter>Source Files\download_modal\buttons\download_operations</Filter>
+      <Filter>Source Files\download_modal\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="remove_all_thread.h">
+      <Filter>Source Files\download_modal\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="wchar_to_utf8.h">
+      <Filter>Source Files\utils\wchar_to_multibyte</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

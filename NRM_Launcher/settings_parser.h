@@ -12,6 +12,7 @@ class LAUNCHER_SETTINGS
 public:
 	enum SETTINGS_PARAM
 	{
+		VER_FILE_ID,
 		DISCORD,
 		ON_PLAY,
 		CLEAR_CACHE,
@@ -20,6 +21,7 @@ public:
 		THREADS_TO_UNZIP
 	};
 
+	[[nodiscard]] std::wstring_view get_ver_file_id() const;
 	[[nodiscard]] const std::wstring_view get_discord_link() const;
 	[[nodiscard]] uint32_t get_on_play_state() const;
 	[[nodiscard]] uint32_t get_clear_cache_state() const;

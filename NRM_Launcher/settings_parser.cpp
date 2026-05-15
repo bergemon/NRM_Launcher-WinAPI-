@@ -41,6 +41,7 @@ void LAUNCHER_SETTINGS::initialize() noexcept(false)
 	}
 
 	m_params.reserve(SETTINGS_DATA_FIELDS);
+	m_params.emplace_back(SETTINGS_PARAM::VER_FILE_ID, TO_W_STRING("ver_file_id"), TO_W_STRING("0"));
 	m_params.emplace_back(SETTINGS_PARAM::DISCORD, TO_W_STRING("discord_link"), TO_W_STRING("0"));
 	m_params.emplace_back(SETTINGS_PARAM::ON_PLAY, TO_W_STRING("on_play"), TO_W_STRING("0"));
 	m_params.emplace_back(SETTINGS_PARAM::CLEAR_CACHE, TO_W_STRING("clear_cache"), TO_W_STRING("0"));
@@ -156,6 +157,11 @@ void LAUNCHER_SETTINGS::set_param(SETTINGS_PARAM param, const wchar_t* value_par
 	}
 
 	m_params[param].value = value_param;
+}
+//====================================================================
+[[nodiscard]] std::wstring_view LAUNCHER_SETTINGS::get_ver_file_id() const
+{
+	return m_params[SETTINGS_PARAM::VER_FILE_ID].value;
 }
 //====================================================================
 [[nodiscard]] const std::wstring_view LAUNCHER_SETTINGS::get_discord_link() const

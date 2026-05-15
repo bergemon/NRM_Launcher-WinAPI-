@@ -103,6 +103,7 @@ extern "C" DWORD WINAPI get_zip_info(_In_ LPVOID lpParameter)
 	start and end id of entries in UNZIP_INFO struct to handle by ziplib */
 extern "C" DWORD WINAPI unzip_file(_In_ LPVOID lpParameter)
 {
+	namespace fs = std::filesystem;
 	UNZIP_INFO* info = (UNZIP_INFO*)lpParameter;
 
 	// Open ZIP archive
@@ -147,10 +148,10 @@ extern "C" DWORD WINAPI unzip_file(_In_ LPVOID lpParameter)
 		}
 
 		// Full name of the file (including path)
-		const char* file_name = file_info.name;
+		std::string file_name = file_info.name;
 
 		// If it is a directory - create it
-		if (file_name[strlen(file_name) - 1] == '/')
+		if (file_name.at(file_name.length() - 1) == '/')
 		{
 			namespace fs = std::filesystem;
 			fs::path fs_output_path(file_name);
@@ -175,29 +176,14 @@ extern "C" DWORD WINAPI unzip_file(_In_ LPVOID lpParameter)
 		}
 
 		// Create directory if it is not exist yes
-		std::string fstr = file_name;
-
-		std::vector<std::string> paths;
-		while (fstr.find("/") != std::string::npos)
-		{
-			fstr = fstr.substr(0, fstr.rfind("/"));
-			paths.push_back(fstr);
-		}
 		EnterCriticalSection(info->critical_section);
-		namespace fs = std::filesystem;
-		fs::create_directories(fstr = fstr.substr(0, fstr.rfind("\\")));
-		for (auto iter = paths.rbegin(); iter != paths.rend(); ++iter)
-		{
-			if (!fs::exists(iter->c_str()))
-			{
-				fs::create_directory(iter->c_str());
-			}
-		}
+		fs::path file_full_path(file_name.substr(0, file_name.rfind("/")));
+		fs::create_directories(file_full_path);
 		LeaveCriticalSection(info->critical_section);
 
 		// Create file on disk
 		HANDLE hFile = CreateFileA(
-			file_name,
+			file_name.c_str(),
 			GENERIC_WRITE,
 			FILE_SHARE_READ,
 			NULL,

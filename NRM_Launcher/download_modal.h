@@ -8,6 +8,13 @@
 #include "download_buttons.h"
 #include "download.h"
 
+enum DOWNLOAD_WND_MESSAGE
+{
+	MSG_CHECK_VERSION = WM_USER + 1,
+	MSG_DOWNLOAD_GAME = WM_USER + 2,
+	MSG_UNZIP_FILE = WM_USER + 3
+};
+
 class DOWNLOAD_MODAL_WINDOW
 {
 public:

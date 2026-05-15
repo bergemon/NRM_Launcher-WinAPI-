@@ -108,6 +108,10 @@ LRESULT CALLBACK LAUNCHER_BUTTONS::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, 
 			}
 
 			break;
+		case BUTTON_TYPE::BTN_DOWNLOAD_MUSIC:
+
+
+			break;
 		}
 
 		btnType = nullptr;
